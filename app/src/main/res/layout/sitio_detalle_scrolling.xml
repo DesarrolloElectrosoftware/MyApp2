@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
+    android:background="#ccc"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.app.myapp.activityes.SitioDetalle"
+    tools:showIn="@layout/activity_sitio_detalle">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--ImageView
+            android:id="@+id/imv_galeria"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/kamran" /-->
+        <!-- BARRA DE ATAJOS DE BOTONES -->
+        <LinearLayout
+            android:id="@+id/linear_toggles"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginBottom="10dp"
+            android:padding="0dp">
+
+            <ToggleButton
+                android:id="@+id/btn_favoritos"
+                style="@style/ToggleFavorito" />
+
+            <ToggleButton
+                android:id="@+id/btn_asistencia"
+                style="@style/ToggleAsistencia"
+                android:visibility="gone" />
+
+            <ToggleButton
+                android:id="@+id/btn_calificar"
+                style="@style/ToggleCalificar" />
+
+            <Button
+                android:id="@+id/btn_comentar"
+                style="@style/ToggleComentar" />
+        </LinearLayout>
+
+        <!-- DETALLE DEL SITIO -->
+        <RelativeLayout
+            android:id="@+id/rl_detalle_sitio"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/cardBackGround"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:id="@+id/linear_imagen_mapa"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/img_card_detail"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:background="@drawable/border"
+                    android:src="@drawable/mapa_preview_diag" />
+
+                <TextView
+                    android:id="@+id/text_ruteo_sitio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="¿Cómo Llegar?"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lldata"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@+id/linear_imagen_mapa"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_nombre_sitio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bell-Air Bar"
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_direccion_sitio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Calle 33 # 34a - 66"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/text_calificacion_sitio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:text="4,8"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_horario_sitio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="06:00 pm - 02:00 am"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/text_categoria_sitio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bar - Discoteca"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/text_telefono_sitio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="301 433 2949"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- SECCION DE COMENTARIOS -->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_comentarios"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="...Ver más comentarios..."
+            android:textColor="#000000"
+            android:gravity="center_horizontal"
+            android:id="@+id/txt_ver_mas_comentarios"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@color/cardBackGround"/>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Categorias">
+        <item>Arte y Entretenimiento</item>
+        <item>Universidad y Educación</item>
+        <item>Comida</item>
+        <item>Hogar – Trabajo – Otros</item>
+        <item>Vida Nocturna</item>
+        <item>Parques y Aire Libre</item>
+        <item>Compras</item>
+        <item>Viajes</item>
+    </string-array>
+</resources>

@@ -36,7 +36,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/MyThemeNoTittle"
             android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            >
         </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -47,6 +54,7 @@
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -64,6 +72,10 @@
             android:name=".activityes.SitioDetalle"
             android:label="Detalle del sitio"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".fragments.FragmentUsuario"
+            android:label="@string/title_activity_fragment_usuario"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

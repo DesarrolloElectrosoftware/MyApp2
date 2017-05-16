@@ -101,4 +101,5 @@
     </string>
     <string name="title_activity_fragment_perfil">FragmentPerfil</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_fragment_usuario">FragmentUsuario</string>
 </resources>

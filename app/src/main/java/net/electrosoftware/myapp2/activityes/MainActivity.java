@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.fragments.FragmentMapa;
-import net.electrosoftware.myapp2.fragments.FragmentPerfilUsuario;
+import net.electrosoftware.myapp2.fragments.FragmentUsuario;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity
             //fragmentTransaction = true;
             Log.i("NavigationView", "Eventos");
         } else if (id == R.id.nav_perfil) {
-            fragment = new FragmentPerfilUsuario();
+            fragment = new FragmentUsuario();
             fragmentTransaction = true;
             Log.i("NavigationView", "Perfil");
         } else if (id == R.id.nav_cerrar) {

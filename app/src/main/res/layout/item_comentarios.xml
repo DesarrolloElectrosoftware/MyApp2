@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cv_comentario"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="80dp"
     android:layout_marginBottom="6dp">
 
     <LinearLayout
@@ -33,8 +33,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Mohammed Salah Mustafi"
-                android:textColor="#000000"
-                android:textSize="18sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -43,8 +43,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Es un buen lugar para disfrutar tomandose unos tragos"
-                android:textColor="#000000"
-                android:textSize="16sp" />
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="13sp" />
         </LinearLayout>
 
         <TextView
@@ -54,7 +54,7 @@
             android:layout_alignParentRight="true"
             android:layout_weight="3"
             android:text="2 Mayo 2016"
-            android:textColor="#000000"
+            android:textColor="@color/colorAccent"
             android:textSize="10sp" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

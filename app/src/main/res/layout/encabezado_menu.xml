@@ -18,7 +18,7 @@
         android:orientation="horizontal">
 
         <com.alexzh.circleimageview.CircleImageView
-            android:id="@+id/imgperfil_menu"
+            android:id="@+id/imv_encabezado_foto_perfil"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginLeft="5dp"
@@ -31,6 +31,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/txt_encabezado_nombre_usuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -38,7 +39,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txt_encabezado_correo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="cuenta@android.com" />

@@ -2,6 +2,7 @@ package net.electrosoftware.myapp2.activityes;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -9,13 +10,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import net.electrosoftware.myapp2.R;
+import net.electrosoftware.myapp2.fragments.FragmentAgregarEvento;
 import net.electrosoftware.myapp2.fragments.FragmentMapa;
 import net.electrosoftware.myapp2.fragments.FragmentUsuario;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +37,23 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
+
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Presione ATRÁS de nuevo para salir", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 
     @Override
@@ -74,15 +92,14 @@ public class MainActivity extends AppCompatActivity
             fragment = new FragmentMapa();
             fragmentTransaction = true;
         } else if (id == R.id.nav_eventos) {
-            //fragment = new EventosFragment();
-            //fragmentTransaction = true;
-            Log.i("NavigationView", "Eventos");
+            fragment = new FragmentAgregarEvento();
+            fragmentTransaction = true;
         } else if (id == R.id.nav_perfil) {
             fragment = new FragmentUsuario();
             fragmentTransaction = true;
             Log.i("NavigationView", "Perfil");
         } else if (id == R.id.nav_cerrar) {
-            Log.i("NavigationView", "Cerrar");
+            finish();
         } else if (id == R.id.nav_share) {
             Log.i("NavigationView", "Share");
         } else if (id == R.id.nav_send) {

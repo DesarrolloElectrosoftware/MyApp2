@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    tools:context="net.electrosoftware.myapp2.activityes.AgregarComentarioActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btn_comentario_publicar"
+        android:layout_marginBottom="12dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/txt_comentario_agregar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1"
+            android:gravity="top"
+            android:hint="Deja tu comentario"
+            android:textSize="21sp" />
+
+        <ImageView
+            android:id="@+id/imv_comentario_agregar_imagen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/agregar_image"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_comentario_publicar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_background"
+        android:text="Publicar Comentario"
+        android:textColor="@color/colorSecondaryText" />
+</RelativeLayout>

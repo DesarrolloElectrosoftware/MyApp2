@@ -1,6 +1,8 @@
 package net.electrosoftware.myapp2.activityes;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -10,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,10 +40,15 @@ public class SitioDetalle extends AppCompatActivity {
     TextView text_nombre_sitio, text_direccion_sitio, text_calificacion_sitio, text_horario_sitio, text_categoria_sitio, text_telefono_sitio;
     ImageView imv_foto_lugar;
 
+    // CALIFICACION
     TextView txt_dial_titulo_rate, txt_dial_puntaje_rate;
     SmileRating rtng_dial_smile_rate;
     Button btn_dial_cancelar_rate, btn_dial_aceptar_rate;
 
+    // COMENTARIO
+    TextView txt_dial_comentario_titulo;
+    EditText et_dial_comentario_agregar;
+    Button btn_dial_comentario_cancelar, btn_dial_comentario_aceptar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +88,24 @@ public class SitioDetalle extends AppCompatActivity {
                 if (btn_calificar.isChecked()) {
                     calificarSitio(text_nombre_sitio.getText().toString());
                     //Toast.makeText(SitioDetalle.this, "Califica este Lugar", Toast.LENGTH_SHORT).show();
+                } else {
+                    new AlertDialog.Builder(SitioDetalle.this).setTitle("Confirmación")
+                        .setMessage("¿Está seguro de eliminar su calificación?")
+                        .setIcon(R.mipmap.ic_launcher)
+                        .setCancelable(true)
+                        .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                btn_calificar.setChecked(false);
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                btn_calificar.setChecked(true);
+                            }
+                        })
+                        .show();
                 }
             }
         });
@@ -86,7 +113,8 @@ public class SitioDetalle extends AppCompatActivity {
         btn_comentar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //startActivity(new Intent(SitioDetalle.this, AgregarComentarioActivity.class));
+                comentarSitio(text_nombre_sitio.getText().toString());
             }
         });
 
@@ -140,23 +168,23 @@ public class SitioDetalle extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    public void calificarSitio(String nombreFiltro) {
+    public void calificarSitio(String nombreSitio) {
 
         final Dialog dialog = new Dialog(SitioDetalle.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialogo_calificacion);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         txt_dial_titulo_rate = (TextView) dialog.findViewById(R.id.txt_dial_titulo_rate);
         txt_dial_puntaje_rate = (TextView) dialog.findViewById(R.id.txt_dial_puntaje_rate);
 
         rtng_dial_smile_rate = (SmileRating) dialog.findViewById(R.id.rtng_dial_smile_rate);
-        final int level = rtng_dial_smile_rate.getRating(); //level is from 1 to 5
 
         btn_dial_cancelar_rate = (Button) dialog.findViewById(R.id.btn_dial_cancelar_rate);
         btn_dial_aceptar_rate = (Button) dialog.findViewById(R.id.btn_dial_aceptar_rate);
 
-        txt_dial_titulo_rate.setText(nombreFiltro);
-        txt_dial_puntaje_rate.setText("Tu calificación: " + level);
+        txt_dial_titulo_rate.setText(nombreSitio);
+        //txt_dial_puntaje_rate.setText("Tu calificación: " + level);
 
         rtng_dial_smile_rate.setNameForSmile(BaseRating.TERRIBLE, "Muy Malo");
         rtng_dial_smile_rate.setNameForSmile(BaseRating.BAD, "Malo");
@@ -170,6 +198,7 @@ public class SitioDetalle extends AppCompatActivity {
                 // reselected is false when user selects different smiley that previously selected one
                 // true when the same smiley is selected.
                 // Except if it first time, then the value will be false.
+                int level = rtng_dial_smile_rate.getRating(); //level is from 1 to 5
 
                 switch (smiley) {
                     case SmileRating.BAD:
@@ -212,6 +241,42 @@ public class SitioDetalle extends AppCompatActivity {
                 dialog.dismiss();
                 dialog.cancel();
                 btn_calificar.setChecked(true);
+            }
+        });
+
+        dialog.show();
+    }
+
+    public void comentarSitio(String nombreSitio) {
+        final Dialog dialog = new Dialog(SitioDetalle.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialogo_comentario);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        txt_dial_comentario_titulo = (TextView) dialog.findViewById(R.id.txt_dial_comentario_titulo);
+        et_dial_comentario_agregar = (EditText) dialog.findViewById(R.id.et_dial_comentario_agregar);
+
+        btn_dial_comentario_cancelar = (Button) dialog.findViewById(R.id.btn_dial_comentario_cancelar);
+        btn_dial_comentario_aceptar = (Button) dialog.findViewById(R.id.btn_dial_comentario_aceptar);
+
+        txt_dial_comentario_titulo.setText(nombreSitio);
+
+        btn_dial_comentario_cancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                dialog.cancel();
+                //btn_calificar.setChecked(false);
+            }
+        });
+
+        btn_dial_comentario_aceptar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SitioDetalle.this, "Comentario agregado", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                dialog.cancel();
+                //btn_calificar.setChecked(true);
             }
         });
 

@@ -60,8 +60,8 @@
         <item name="android:padding">8dp</item>
         <item name="android:background">@color/cardBackGround</item>
         <item name="android:drawableTop">@drawable/ic_fav_selector_bg</item>
-        <item name="android:textOn">Guardado</item>
-        <item name="android:textOff">Guardar</item>
+        <item name="android:textOn">Favorito</item>
+        <item name="android:textOff">Favorito!</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>

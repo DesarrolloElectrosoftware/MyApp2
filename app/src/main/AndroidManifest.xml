@@ -71,7 +71,12 @@
         <activity
             android:name=".activityes.SitioDetalle"
             android:label="Detalle del sitio"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".activityes.AgregarComentarioActivity"
+            android:label="Deja tu comentario"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>

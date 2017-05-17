@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
@@ -492,6 +493,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialogo_filtro);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         txt_titulo_filtro = (TextView) dialog.findViewById(R.id.txt_titulo_filtro);
         btn_filtro_fecha = (ImageButton) dialog.findViewById(R.id.btn_filtro_fecha);

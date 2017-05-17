@@ -72,10 +72,6 @@
             android:name=".activityes.SitioDetalle"
             android:label="Detalle del sitio"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".fragments.FragmentUsuario"
-            android:label="@string/title_activity_fragment_usuario"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -92,11 +93,11 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     FloatingActionButton fabLugares, fabEventos, fabPromociones;
 
     TextView txt_titulo_filtro;
-    TextView btn_filtro_fecha;
-    static TextView txt_fecha_filtro;
+    ImageButton btn_filtro_fecha;
+    EditText txt_fecha_filtro;
     ArrayAdapter adapterCategorias;
     MaterialSpinner spinner_categoria;
-    TextView btn_cancelar, btn_aceptar;
+    Button btn_cancelar, btn_aceptar;
     LinearLayout linear_filtro_calendario;
 
     public FragmentMapa() {
@@ -166,14 +167,14 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         fabEventos = (FloatingActionButton) view.findViewById(R.id.fabEventos);
         fabPromociones = (FloatingActionButton) view.findViewById(R.id.fabPromociones);
 
-        fabLugares.setColorNormal(Color.parseColor("#3f51b5"));
-        fabLugares.setColorPressed(Color.parseColor("#303f9f"));
+        fabLugares.setColorNormal(Color.parseColor("#F44336"));
+        fabLugares.setColorPressed(Color.parseColor("#D32F2F"));
 
-        fabEventos.setColorNormal(Color.parseColor("#3f51b5"));
-        fabEventos.setColorPressed(Color.parseColor("#303f9f"));
+        fabEventos.setColorNormal(Color.parseColor("#F44336"));
+        fabEventos.setColorPressed(Color.parseColor("#D32F2F"));
 
-        fabPromociones.setColorNormal(Color.parseColor("#3f51b5"));
-        fabPromociones.setColorPressed(Color.parseColor("#303f9f"));
+        fabPromociones.setColorNormal(Color.parseColor("#F44336"));
+        fabPromociones.setColorPressed(Color.parseColor("#D32F2F"));
 
         fabLugares.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -493,11 +494,11 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         dialog.setContentView(R.layout.dialogo_filtro);
 
         txt_titulo_filtro = (TextView) dialog.findViewById(R.id.txt_titulo_filtro);
-        btn_filtro_fecha = (TextView) dialog.findViewById(R.id.btn_filtro_fecha);
-        txt_fecha_filtro = (TextView) dialog.findViewById(R.id.txt_fecha_filtro);
+        btn_filtro_fecha = (ImageButton) dialog.findViewById(R.id.btn_filtro_fecha);
+        txt_fecha_filtro = (EditText) dialog.findViewById(R.id.txt_fecha_filtro);
         spinner_categoria = (MaterialSpinner) dialog.findViewById(R.id.spinner_categoria);
-        btn_cancelar = (TextView) dialog.findViewById(R.id.btn_cancelar);
-        btn_aceptar = (TextView) dialog.findViewById(R.id.btn_aceptar);
+        btn_cancelar = (Button) dialog.findViewById(R.id.btn_cancelar);
+        btn_aceptar = (Button) dialog.findViewById(R.id.btn_aceptar);
         linear_filtro_calendario = (LinearLayout) dialog.findViewById(R.id.linear_filtro_calendario);
 
         txt_titulo_filtro.setText(nombreFiltro);

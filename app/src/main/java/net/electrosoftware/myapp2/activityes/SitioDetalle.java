@@ -1,17 +1,24 @@
 package net.electrosoftware.myapp2.activityes;
 
+import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.hsalf.smilerating.BaseRating;
+import com.hsalf.smilerating.SmileRating;
+
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.clasesbases.ComentariosAdapter;
 import net.electrosoftware.myapp2.clasesbases.ComentariosData;
@@ -20,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SitioDetalle extends AppCompatActivity {
+    private static final String TAG = "TAG";
     ToggleButton btn_favoritos, btn_asistencia, btn_calificar;
     Button btn_comentar;
     List<ComentariosData> dataModels;
@@ -27,6 +35,11 @@ public class SitioDetalle extends AppCompatActivity {
     RecyclerView rv_comentarios;
     TextView text_nombre_sitio, text_direccion_sitio, text_calificacion_sitio, text_horario_sitio, text_categoria_sitio, text_telefono_sitio;
     ImageView imv_foto_lugar;
+
+    TextView txt_dial_titulo_rate, txt_dial_puntaje_rate;
+    SmileRating rtng_dial_smile_rate;
+    Button btn_dial_cancelar_rate, btn_dial_aceptar_rate;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +77,8 @@ public class SitioDetalle extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (btn_calificar.isChecked()) {
-                    Toast.makeText(SitioDetalle.this, "Califica este Lugar", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(SitioDetalle.this, "Calificación eliminada", Toast.LENGTH_SHORT).show();
+                    calificarSitio(text_nombre_sitio.getText().toString());
+                    //Toast.makeText(SitioDetalle.this, "Califica este Lugar", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -126,6 +138,84 @@ public class SitioDetalle extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public void calificarSitio(String nombreFiltro) {
+
+        final Dialog dialog = new Dialog(SitioDetalle.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialogo_calificacion);
+
+        txt_dial_titulo_rate = (TextView) dialog.findViewById(R.id.txt_dial_titulo_rate);
+        txt_dial_puntaje_rate = (TextView) dialog.findViewById(R.id.txt_dial_puntaje_rate);
+
+        rtng_dial_smile_rate = (SmileRating) dialog.findViewById(R.id.rtng_dial_smile_rate);
+        final int level = rtng_dial_smile_rate.getRating(); //level is from 1 to 5
+
+        btn_dial_cancelar_rate = (Button) dialog.findViewById(R.id.btn_dial_cancelar_rate);
+        btn_dial_aceptar_rate = (Button) dialog.findViewById(R.id.btn_dial_aceptar_rate);
+
+        txt_dial_titulo_rate.setText(nombreFiltro);
+        txt_dial_puntaje_rate.setText("Tu calificación: " + level);
+
+        rtng_dial_smile_rate.setNameForSmile(BaseRating.TERRIBLE, "Muy Malo");
+        rtng_dial_smile_rate.setNameForSmile(BaseRating.BAD, "Malo");
+        rtng_dial_smile_rate.setNameForSmile(BaseRating.OKAY, "Normal");
+        rtng_dial_smile_rate.setNameForSmile(BaseRating.GOOD, "Bueno");
+        rtng_dial_smile_rate.setNameForSmile(BaseRating.GREAT, "Muy Bueno");
+
+        rtng_dial_smile_rate.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
+            @Override
+            public void onSmileySelected(@BaseRating.Smiley int smiley, boolean reselected) {
+                // reselected is false when user selects different smiley that previously selected one
+                // true when the same smiley is selected.
+                // Except if it first time, then the value will be false.
+
+                switch (smiley) {
+                    case SmileRating.BAD:
+                        Log.i(TAG, "Bad");
+                        txt_dial_puntaje_rate.setText("Tu calificación: " + level);
+                        break;
+                    case SmileRating.GOOD:
+                        Log.i(TAG, "Good");
+                        txt_dial_puntaje_rate.setText("Tu calificación: " + level);
+                        break;
+                    case SmileRating.GREAT:
+                        Log.i(TAG, "Great");
+                        txt_dial_puntaje_rate.setText("Tu calificación: " + level);
+                        break;
+                    case SmileRating.OKAY:
+                        Log.i(TAG, "Okay");
+                        txt_dial_puntaje_rate.setText("Tu calificación: " + level);
+                        break;
+                    case SmileRating.TERRIBLE:
+                        Log.i(TAG, "Terrible");
+                        txt_dial_puntaje_rate.setText("Tu calificación: " + level);
+                        break;
+                }
+            }
+        });
+
+        btn_dial_cancelar_rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                dialog.cancel();
+                btn_calificar.setChecked(false);
+            }
+        });
+
+        btn_dial_aceptar_rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SitioDetalle.this, "Sitio Calificado", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                dialog.cancel();
+                btn_calificar.setChecked(true);
+            }
+        });
+
+        dialog.show();
     }
 }
 

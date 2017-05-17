@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary">
+    android:background="@color/cardBackGround"
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/txt_titulo_filtro"
@@ -14,7 +15,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="20dp"
         android:text="TITULO DEL FILTRO"
-        android:textColor="#fff"
+        android:textColor="@color/colorPrimaryText"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -33,11 +34,8 @@
             style="@style/spinner_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_titulo_filtro"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:textColor="#fff"
-            android:textStyle="bold"
             app:ms_alignLabels="false"
             app:ms_arrowColor="#D8D8D8"
             app:ms_arrowSize="16dp"
@@ -57,26 +55,45 @@
         android:layout_marginRight="20dp"
         android:orientation="horizontal">
 
-        <TextView
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/txt_fecha_filtro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="Fecha Filtro"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimaryText" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!--TextView
             android:id="@+id/txt_fecha_filtro"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginRight="2dp"
             android:layout_weight="1"
+            android:background="@drawable/border"
             android:gravity="center_vertical|center_horizontal"
             android:text="MM/DD/AAAA"
-            android:textColor="#fff"
-            android:textStyle="bold" />
+            android:textColor="@color/colorPrimaryText"
+            android:textStyle="bold" /-->
 
-        <TextView
+
+        <ImageButton
             android:id="@+id/btn_filtro_fecha"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/border"
+            android:background="@drawable/button_calendario_filtro"
             android:gravity="center"
             android:padding="15dp"
-            android:text="Escoger Fecha"
-            android:textColor="#fff"
+            android:src="@drawable/ic_eventos"
+            android:textColor="@color/colorPrimaryText"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -85,7 +102,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear_filtro_calendario"
-        android:background="@color/cardBackGround">
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -93,28 +111,28 @@
             android:layout_alignParentRight="true"
             android:orientation="horizontal">
 
-            <TextView
+            <Button
                 android:id="@+id/btn_cancelar"
-                android:layout_width="wrap_content"
+                android:layout_width="125dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/border"
+                android:background="@drawable/button_background"
                 android:gravity="center"
                 android:padding="15dp"
                 android:text="Cancelar"
-                android:textColor="#8c9eff"
+                android:textColor="@color/colorSecondaryText"
                 android:textStyle="bold" />
 
-            <TextView
+            <Button
                 android:id="@+id/btn_aceptar"
-                android:layout_width="wrap_content"
+                android:layout_width="125dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/border"
+                android:background="@drawable/button_background"
                 android:gravity="center"
                 android:padding="15dp"
                 android:text="Filtrar"
-                android:textColor="#8c9eff"
+                android:textColor="@color/colorSecondaryText"
                 android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>

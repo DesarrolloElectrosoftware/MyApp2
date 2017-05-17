@@ -6,15 +6,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import net.electrosoftware.myapp2.R;
 
 public class Login extends AppCompatActivity {
-    TextView txt_login_appname, btn_login_registro, btn_login_acceso;
-    EditText et_login_usuario, et_login_clave;
-
+    TextView txt_login_app_name;
+    Button btn_login_registrarse, btn_login_ingresar;
+    EditText et_login_usuario, et_login_contrasena;
+    TextView txt_login_recordar_contrasena;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,32 +24,34 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         et_login_usuario = (EditText) findViewById(R.id.et_login_usuario);
-        et_login_clave = (EditText) findViewById(R.id.et_login_clave);
-        btn_login_acceso = (TextView) findViewById(R.id.btn_login_acceso);
-        btn_login_registro = (TextView) findViewById(R.id.btn_login_registro);
-        txt_login_appname = (TextView) findViewById(R.id.txt_login_appname);
+        et_login_contrasena = (EditText) findViewById(R.id.et_login_contrasena);
+        txt_login_recordar_contrasena = (TextView) findViewById(R.id.txt_login_recordar_contrasena);
+
+        btn_login_ingresar = (Button) findViewById(R.id.btn_login_ingresar);
+        btn_login_registrarse = (Button) findViewById(R.id.btn_login_registrarse);
+        txt_login_app_name = (TextView) findViewById(R.id.txt_login_app_name);
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
-        txt_login_appname.setTypeface(custom_font);
-        et_login_clave.setTypeface(custom_font);
-        btn_login_registro.setTypeface(custom_font);
-        btn_login_acceso.setTypeface(custom_font);
+        txt_login_app_name.setTypeface(custom_font);
+        et_login_contrasena.setTypeface(custom_font);
+        btn_login_registrarse.setTypeface(custom_font);
+        btn_login_ingresar.setTypeface(custom_font);
         et_login_usuario.setTypeface(custom_font);
-        btn_login_registro.setOnClickListener(new View.OnClickListener() {
+
+        btn_login_registrarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
                 startActivity(new Intent(Login.this, Registro.class));
             }
         });
-        btn_login_acceso.setOnClickListener(new View.OnClickListener() {
+
+        btn_login_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
                 startActivity(new Intent(Login.this, MainActivity.class));
             }
         });
-
-
     }
 
     @Override

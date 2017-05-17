@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/activity_fragment_perfil"
-    tools:context="com.app.myapp.Fragments.FragmentPerfil">
+    tools:context=".fragments.FragmentPerfil">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"

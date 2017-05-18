@@ -19,7 +19,7 @@ public class FragmentUsuario extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = getActivity().getLayoutInflater().inflate(R.layout.activity_fragment_usuario, null);
+        view = getActivity().getLayoutInflater().inflate(R.layout.fragment_usuario, null);
 
         return view;
     }

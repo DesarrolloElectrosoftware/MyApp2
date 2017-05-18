@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/encabezado_menu"
+        app:headerLayout="@layout/encabezado_menu_lateral"
         app:menu="@menu/menu_opciones" />
 
 </android.support.v4.widget.DrawerLayout>

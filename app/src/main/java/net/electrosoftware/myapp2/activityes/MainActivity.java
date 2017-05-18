@@ -100,12 +100,7 @@ public class MainActivity extends AppCompatActivity
             Log.i("NavigationView", "Perfil");
         } else if (id == R.id.nav_cerrar) {
             finish();
-        } else if (id == R.id.nav_share) {
-            Log.i("NavigationView", "Share");
-        } else if (id == R.id.nav_send) {
-            Log.i("NavigationView", "PSend");
         }
-
         if (fragmentTransaction) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.frag_main, fragment)

@@ -1,48 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ccc"
-    android:fitsSystemWindows="true"
-    tools:context=".activityes.SitioDetalle">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="activityes.SitioDetalle"
+    tools:showIn="@layout/scrolling_sitio_detalle">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+        <!--ImageView
+            android:id="@+id/imv_galeria"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            android:layout_height="150dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/kamran" /-->
+        <!-- BARRA DE ATAJOS DE BOTONES -->
+        <LinearLayout
+            android:id="@+id/linear_toggles"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="5dp"
+            android:padding="0dp">
 
-            <ImageView
-                android:id="@+id/imv_foto_lugar"
+            <ToggleButton
+                android:id="@+id/btn_sitio_favoritos"
+                style="@style/ToggleFavorito" />
+
+            <ToggleButton
+                android:id="@+id/btn_sitio_asistencia"
+                style="@style/ToggleAsistencia"
+                android:visibility="gone" />
+
+            <ToggleButton
+                android:id="@+id/btn_sitio_calificar"
+                style="@style/ToggleCalificar" />
+
+            <Button
+                android:id="@+id/btn_sitio_comentar"
+                style="@style/ToggleComentar" />
+        </LinearLayout>
+
+        <!-- DETALLE DEL SITIO -->
+
+        <LinearLayout
+            android:id="@+id/rl_detalle_sitio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/cardBackGround"
+            android:orientation="horizontal"
+            android:paddingBottom="2dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <LinearLayout
+                android:id="@+id/lldata"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/kamran" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
+                <TextView
+                    android:id="@+id/txt_sitio_nombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bell-Air Bar"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-    <include layout="@layout/sitio_detalle_scrolling" />
+                <TextView
+                    android:id="@+id/txt_sitio_direccion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Calle 33 # 34a - 66"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp" />
 
-    <!--android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|center_horizontal"
-        app:srcCompat="@android:drawable/ic_dialog_email" /-->
+                <TextView
+                    android:id="@+id/text_sitio_calificacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Califcación: 4,8"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp" />
 
-</android.support.design.widget.CoordinatorLayout>
+                <TextView
+                    android:id="@+id/text_sitio_horario"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="06:00 pm - 02:00 am"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/text_sitio_categoria"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bar - Discoteca"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/text_sitio_telefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="301 433 2949"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_imagen_mapa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imv_sitio_ruteo"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/mapa_preview_diag_small" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="¿Cómo Llegar?"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/txt_sitio_descripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@color/cardBackGround"
+            android:paddingBottom="4dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="4dp"
+            android:text="@string/lorem_ipsum"
+            android:textColor="@color/colorPrimaryText" />
+
+        <!-- EVENTOS PROMOS SITIO -->
+        <LinearLayout
+            android:id="@+id/linear_info_lug"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="5dp"
+            android:padding="0dp">
+
+            <Button
+                android:id="@+id/btn_sitio_eventos"
+                style="@style/ToggleEventos" />
+
+            <Button
+                android:id="@+id/btn_sitio_promociones"
+                style="@style/TogglePromociones" />
+        </LinearLayout>
+
+        <!-- SECCION DE COMENTARIOS -->
+
+        <TextView
+            android:id="@+id/txt_sec_comentarios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/cardBackGround"
+            android:gravity="center_horizontal"
+            android:padding="8dp"
+            android:text="Comentarios"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_sitio_comentarios"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/txt_sitio_ver_mas_comentarios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/cardBackGround"
+            android:gravity="center_horizontal"
+            android:padding="8dp"
+            android:text="Ver más comentarios..."
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

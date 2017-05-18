@@ -5,24 +5,30 @@
         <item
             android:id="@+id/nav_mapa"
             android:icon="@drawable/ic_map"
-            android:title="Vista en Mapa" />
-
-        <item
-            android:id="@+id/nav_eventos"
-            android:icon="@drawable/ic_eventos"
-            android:title="Agregar Evento" />
+            android:title="Mapa" />
 
         <item
             android:id="@+id/nav_perfil"
             android:icon="@drawable/ic_perfil"
             android:title="Perfil" />
+
+        <item
+            android:id="@+id/nav_eventos"
+            android:icon="@drawable/ic_eventos"
+            android:title="Mis Eventos" />
+
+        <item
+            android:id="@+id/nav_favoritos"
+            android:icon="@drawable/ic_fav"
+            android:title="Mis Favoritos" />
+
         <item
             android:id="@+id/nav_cerrar"
-            android:icon="@drawable/ic_close_sesion"
+            android:icon="@drawable/ic_exit"
             android:title="Cerrar sesión" />
     </group>
 
-    <item android:title="Communicate">
+    <!--item android:title="Communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
@@ -33,6 +39,6 @@
                 android:icon="@drawable/ic_menu_send"
                 android:title="Enviar" />
         </menu>
-    </item>
+    </item-->
 
 </menu>

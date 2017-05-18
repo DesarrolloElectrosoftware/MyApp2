@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My App</string>
+    <string name="app_name">FUNTY</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -99,7 +99,9 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eu magna nec odio rhoncus faucibus in vel risus. Nunc odio urna, suscipit et libero sollicitudin, fermentum suscipit elit. Mauris turpis.</string>
     <string name="title_activity_fragment_perfil">FragmentPerfil</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_fragment_usuario">FragmentUsuario</string>
+    <string name="title_activity_crear_evento_map">Map</string>
 </resources>

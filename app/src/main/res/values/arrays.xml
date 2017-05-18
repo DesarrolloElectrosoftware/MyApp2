@@ -10,4 +10,13 @@
         <item>Compras</item>
         <item>Viajes</item>
     </string-array>
+
+    <string-array name="Patrocinadores">
+        <item>Licorera Juaco</item>
+        <item>Deportes Milo</item>
+        <item>Carnicería el Filete</item>
+        <item>Restaurante donde la nona</item>
+        <item>Bar parranda</item>
+        <item>Motel el escape</item>
+    </string-array>
 </resources>

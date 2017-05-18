@@ -32,13 +32,13 @@ import java.util.List;
 
 public class SitioDetalle extends AppCompatActivity {
     private static final String TAG = "TAG";
-    ToggleButton btn_favoritos, btn_asistencia, btn_calificar;
-    Button btn_comentar;
+    ToggleButton btn_sitio_favoritos, btn_sitio_asistencia, btn_sitio_calificar;
+    Button btn_sitio_comentar;
     List<ComentariosData> dataModels;
     ComentariosAdapter adapter;
-    RecyclerView rv_comentarios;
-    TextView text_nombre_sitio, text_direccion_sitio, text_calificacion_sitio, text_horario_sitio, text_categoria_sitio, text_telefono_sitio;
-    ImageView imv_foto_lugar;
+    RecyclerView rv_sitio_comentarios;
+    TextView txt_sitio_nombre, txt_sitio_direccion, text_sitio_calificacion, text_sitio_horario, text_sitio_categoria, text_sitio_telefono, txt_sitio_descripcion, txt_sitio_ver_mas_comentarios;
+    ImageView imv_sitio_foto;
 
     // CALIFICACION
     TextView txt_dial_titulo_rate, txt_dial_puntaje_rate;
@@ -48,22 +48,23 @@ public class SitioDetalle extends AppCompatActivity {
     // COMENTARIO
     TextView txt_dial_comentario_titulo;
     EditText et_dial_comentario_agregar;
-    Button btn_dial_comentario_cancelar, btn_dial_comentario_aceptar;
+    Button btn_dial_comentario_cancelar, btn_dial_comentario_aceptar, btn_sitio_eventos, btn_sitio_promociones;
+    ImageView imv_sitio_ruteo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sitio_detalle);
+        setContentView(R.layout.scrolling_sitio_detalle);
 
-        btn_favoritos = (ToggleButton) findViewById(R.id.btn_favoritos);
-        btn_asistencia = (ToggleButton) findViewById(R.id.btn_asistencia);
-        btn_calificar = (ToggleButton) findViewById(R.id.btn_calificar);
-        btn_comentar = (Button) findViewById(R.id.btn_comentar);
+        btn_sitio_favoritos = (ToggleButton) findViewById(R.id.btn_sitio_favoritos);
+        btn_sitio_asistencia = (ToggleButton) findViewById(R.id.btn_sitio_asistencia);
+        btn_sitio_calificar = (ToggleButton) findViewById(R.id.btn_sitio_calificar);
+        btn_sitio_comentar = (Button) findViewById(R.id.btn_sitio_comentar);
 
-        btn_favoritos.setOnClickListener(new View.OnClickListener() {
+        btn_sitio_favoritos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (btn_favoritos.isChecked()) {
+                if (btn_sitio_favoritos.isChecked()) {
                     Toast.makeText(SitioDetalle.this, "Guardado en tus Favoritos", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(SitioDetalle.this, "Eliminado de tus Favoritos", Toast.LENGTH_SHORT).show();
@@ -71,10 +72,10 @@ public class SitioDetalle extends AppCompatActivity {
             }
         });
 
-        btn_asistencia.setOnClickListener(new View.OnClickListener() {
+        btn_sitio_asistencia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (btn_asistencia.isChecked()) {
+                if (btn_sitio_asistencia.isChecked()) {
                     Toast.makeText(SitioDetalle.this, "Asistirás a este Evento", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(SitioDetalle.this, "No asistirás a este Evento", Toast.LENGTH_SHORT).show();
@@ -82,63 +83,88 @@ public class SitioDetalle extends AppCompatActivity {
             }
         });
 
-        btn_calificar.setOnClickListener(new View.OnClickListener() {
+        btn_sitio_calificar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (btn_calificar.isChecked()) {
-                    calificarSitio(text_nombre_sitio.getText().toString());
+                if (btn_sitio_calificar.isChecked()) {
+                    calificarSitio(txt_sitio_nombre.getText().toString());
                     //Toast.makeText(SitioDetalle.this, "Califica este Lugar", Toast.LENGTH_SHORT).show();
                 } else {
                     new AlertDialog.Builder(SitioDetalle.this).setTitle("Confirmación")
-                        .setMessage("¿Está seguro de eliminar su calificación?")
-                        .setIcon(R.mipmap.ic_launcher)
-                        .setCancelable(true)
-                        .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                btn_calificar.setChecked(false);
-                            }
-                        })
-                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                btn_calificar.setChecked(true);
-                            }
-                        })
-                        .show();
+                            .setMessage("¿Está seguro de eliminar su calificación?")
+                            .setIcon(R.mipmap.ic_launcher)
+                            .setCancelable(true)
+                            .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    btn_sitio_calificar.setChecked(false);
+                                }
+                            })
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    btn_sitio_calificar.setChecked(true);
+                                }
+                            })
+                            .show();
                 }
             }
         });
 
-        btn_comentar.setOnClickListener(new View.OnClickListener() {
+        btn_sitio_comentar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //startActivity(new Intent(SitioDetalle.this, AgregarComentarioActivity.class));
-                comentarSitio(text_nombre_sitio.getText().toString());
+                comentarSitio(txt_sitio_nombre.getText().toString());
             }
         });
 
-        rv_comentarios = (RecyclerView) findViewById(R.id.rv_comentarios);
+        rv_sitio_comentarios = (RecyclerView) findViewById(R.id.rv_sitio_comentarios);
         LinearLayoutManager linearlayoutmanager = new LinearLayoutManager(SitioDetalle.this);
-        rv_comentarios.setLayoutManager(linearlayoutmanager);
-        rv_comentarios.setHasFixedSize(true);
+        rv_sitio_comentarios.setLayoutManager(linearlayoutmanager);
+        rv_sitio_comentarios.setHasFixedSize(true);
         initializeData();
         initializeAdapter();
 
-        text_nombre_sitio = (TextView) findViewById(R.id.text_nombre_sitio);
-        text_nombre_sitio.setText(getIntent().getStringExtra("NombreSitio"));
+        txt_sitio_nombre = (TextView) findViewById(R.id.txt_sitio_nombre);
+        txt_sitio_nombre.setText(getIntent().getStringExtra("NombreSitio"));
 
-        text_direccion_sitio = (TextView) findViewById(R.id.text_direccion_sitio);
-        text_direccion_sitio.setText(getIntent().getStringExtra("DireccionSitio"));
+        txt_sitio_direccion = (TextView) findViewById(R.id.txt_sitio_direccion);
+        txt_sitio_direccion.setText(getIntent().getStringExtra("DireccionSitio"));
 
-        text_calificacion_sitio = (TextView) findViewById(R.id.text_calificacion_sitio);
-        text_calificacion_sitio.setText(getIntent().getStringExtra("RatingSitio"));
+        text_sitio_calificacion = (TextView) findViewById(R.id.text_sitio_calificacion);
+        text_sitio_calificacion.setText("Calificación: " + getIntent().getStringExtra("RatingSitio"));
 
-        text_horario_sitio = (TextView) findViewById(R.id.text_horario_sitio);
-        text_categoria_sitio = (TextView) findViewById(R.id.text_categoria_sitio);
-        text_telefono_sitio = (TextView) findViewById(R.id.text_telefono_sitio);
+        text_sitio_horario = (TextView) findViewById(R.id.text_sitio_horario);
+        text_sitio_categoria = (TextView) findViewById(R.id.text_sitio_categoria);
+        text_sitio_telefono = (TextView) findViewById(R.id.text_sitio_telefono);
+        txt_sitio_descripcion = (TextView) findViewById(R.id.txt_sitio_descripcion);
 
-        imv_foto_lugar = (ImageView) findViewById(R.id.imv_foto_lugar);
+        imv_sitio_foto = (ImageView) findViewById(R.id.imv_sitio_foto);
+
+        btn_sitio_eventos = (Button) findViewById(R.id.btn_sitio_eventos);
+        btn_sitio_eventos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SitioDetalle.this, "No hay eventos en este Lugar", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btn_sitio_promociones = (Button) findViewById(R.id.btn_sitio_promociones);
+        btn_sitio_promociones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SitioDetalle.this, "No hay promociones de este lugar", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        txt_sitio_ver_mas_comentarios = (TextView) findViewById(R.id.txt_sitio_ver_mas_comentarios);
+        txt_sitio_ver_mas_comentarios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     private void initializeData() {
@@ -160,7 +186,7 @@ public class SitioDetalle extends AppCompatActivity {
 
     private void initializeAdapter() {
         ComentariosAdapter adapter = new ComentariosAdapter(dataModels);
-        rv_comentarios.setAdapter(adapter);
+        rv_sitio_comentarios.setAdapter(adapter);
     }
 
     @Override
@@ -230,7 +256,7 @@ public class SitioDetalle extends AppCompatActivity {
             public void onClick(View view) {
                 dialog.dismiss();
                 dialog.cancel();
-                btn_calificar.setChecked(false);
+                btn_sitio_calificar.setChecked(false);
             }
         });
 
@@ -240,7 +266,7 @@ public class SitioDetalle extends AppCompatActivity {
                 Toast.makeText(SitioDetalle.this, "Sitio Calificado", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
                 dialog.cancel();
-                btn_calificar.setChecked(true);
+                btn_sitio_calificar.setChecked(true);
             }
         });
 
@@ -266,7 +292,7 @@ public class SitioDetalle extends AppCompatActivity {
             public void onClick(View view) {
                 dialog.dismiss();
                 dialog.cancel();
-                //btn_calificar.setChecked(false);
+                //btn_sitio_calificar.setChecked(false);
             }
         });
 
@@ -276,7 +302,7 @@ public class SitioDetalle extends AppCompatActivity {
                 Toast.makeText(SitioDetalle.this, "Comentario agregado", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
                 dialog.cancel();
-                //btn_calificar.setChecked(true);
+                //btn_sitio_calificar.setChecked(true);
             }
         });
 

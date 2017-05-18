@@ -44,7 +44,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/estilo_spinner</item>
-        <item name="android:layout_margin">5dp</item>
         <item name="android:textAppearance">@style/TextAppearanceSpinner</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">20dp</item>
@@ -60,8 +59,8 @@
         <item name="android:padding">8dp</item>
         <item name="android:background">@color/cardBackGround</item>
         <item name="android:drawableTop">@drawable/ic_fav_selector_bg</item>
-        <item name="android:textOn">Favorito</item>
-        <item name="android:textOff">Favorito!</item>
+        <item name="android:textOn">Favorito!</item>
+        <item name="android:textOff">Favorito</item>
         <item name="android:disabledAlpha">?android:attr/disabledAlpha</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -103,6 +102,28 @@
         <item name="android:background">@color/cardBackGround</item>
         <item name="android:drawableTop">@drawable/ic_comentar</item>
         <item name="android:text">Comentar</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ToggleEventos" parent="android:Widget">
+        <item name="android:padding">8dp</item>
+        <item name="android:background">@color/cardBackGround</item>
+        <item name="android:drawableTop">@drawable/ic_eventos_black</item>
+        <item name="android:text">Eventos</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TogglePromociones" parent="android:Widget">
+        <item name="android:drawableTop">@drawable/ic_promociones_black</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:text">Promociones</item>
+        <item name="android:background">@color/cardBackGround</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>

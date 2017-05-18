@@ -15,7 +15,7 @@ import net.electrosoftware.myapp2.R;
 
 
 public class Registro extends AppCompatActivity {
-    EditText et_registro_contrasena, et_registro_telefono, et_registro_email, et_registro_usuario;
+    EditText et_registro_contrasena, /*et_registro_telefono,*/ et_registro_email, et_registro_usuario;
     TextView txt_registro_app_name;
     Button btn_registro_registrarse;
     ImageButton btn_registro_foto;
@@ -28,12 +28,12 @@ public class Registro extends AppCompatActivity {
         et_registro_usuario = (EditText) findViewById(R.id.et_registro_usuario);
         et_registro_contrasena = (EditText) findViewById(R.id.et_registro_contrasena);
         et_registro_email = (EditText) findViewById(R.id.et_registro_email);
-        et_registro_telefono = (EditText) findViewById(R.id.et_registro_telefono);
+        //et_registro_telefono = (EditText) findViewById(R.id.et_registro_telefono);
         btn_registro_registrarse = (Button) findViewById(R.id.btn_registro_registrarse);
 
         Typeface custom_font = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
         et_registro_email.setTypeface(custom_font);
-        et_registro_telefono.setTypeface(custom_font);
+        //et_registro_telefono.setTypeface(custom_font);
         et_registro_contrasena.setTypeface(custom_font);
         et_registro_usuario.setTypeface(custom_font);
         btn_registro_registrarse.setTypeface(custom_font);

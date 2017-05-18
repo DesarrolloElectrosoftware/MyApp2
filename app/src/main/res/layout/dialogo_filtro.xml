@@ -85,16 +85,12 @@
 
         <ImageButton
             android:id="@+id/btn_filtro_fecha"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/button_calendario_filtro"
-            android:gravity="center"
             android:padding="15dp"
-            android:src="@drawable/ic_eventos"
-            android:textColor="@color/colorPrimaryText"
-            android:textStyle="bold" />
+            android:src="@drawable/ic_eventos" />
 
     </LinearLayout>
 

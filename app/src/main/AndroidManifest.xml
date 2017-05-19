@@ -41,7 +41,6 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            >
         </activity>
 
         <meta-data
@@ -69,15 +68,32 @@
             android:theme="@style/MyThemeNoTittle"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activityes.SitioDetalle"
+            android:name=".activityes.LugarDetalle"
             android:label="Detalle del sitio"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".activityes.EventoDetalle" />
-        <activity android:name=".activityes.PromoDetalle" />
         <activity
-            android:name=".activityes.CrearEventoMapa"
-            android:label="@string/title_activity_crear_evento_map"></activity>
+            android:name=".activityes.EventoDetalle"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activityes.PromoDetalle"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activityes.AgregarEventoMapa"
+            android:label="@string/title_activity_crear_evento_map"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activityes.AgregarEvento"
+            android:label="@string/title_activity_crear_evento_map"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activityes.Comentarios"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
+    <service
+        android:name="cnet.electrosoftware.myapp2.FetchAddressIntentService"
+        android:exported="false" />
 
 </manifest>

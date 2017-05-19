@@ -61,7 +61,7 @@ import net.electrosoftware.myapp2.Objetos.FirebaseReferences;
 import net.electrosoftware.myapp2.Objetos.GeoPunto;
 import net.electrosoftware.myapp2.Objetos.InfoCorta;
 import net.electrosoftware.myapp2.R;
-import net.electrosoftware.myapp2.activityes.SitioDetalle;
+import net.electrosoftware.myapp2.activityes.LugarDetalle;
 import net.electrosoftware.myapp2.clasesbases.DownloadTask;
 
 import java.io.IOException;
@@ -133,7 +133,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SitioDetalle.class);
+                Intent intent = new Intent(getActivity(), LugarDetalle.class);
                 intent.putExtra("NombreSitio", NameCard.getText().toString());
                 intent.putExtra("DireccionSitio", DirectionCard.getText().toString());
                 intent.putExtra("RatingSitio", RatingCard.getText().toString());
@@ -204,15 +204,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         miMapa = googleMap;

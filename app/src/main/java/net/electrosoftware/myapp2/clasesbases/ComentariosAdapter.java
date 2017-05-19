@@ -17,9 +17,9 @@ import java.util.List;
  * Created by Jonathan on 13/05/2017.
  */
 
-public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.PersonViewHolder> {
+public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.ComentariosViewHolder> {
 
-    public static class PersonViewHolder extends RecyclerView.ViewHolder {
+    public static class ComentariosViewHolder extends RecyclerView.ViewHolder {
 
         TextView txt_nombre_usuario_comentario;
         TextView txt_texto_comentario;
@@ -27,7 +27,7 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
         ImageView imv_foto_perfil_comentario;
         CardView cv_comentario;
 
-        PersonViewHolder(View itemView) {
+        ComentariosViewHolder(View itemView) {
             super(itemView);
             txt_nombre_usuario_comentario = (TextView) itemView.findViewById(R.id.txt_nombre_usuario_comentario);
             txt_texto_comentario = (TextView) itemView.findViewById(R.id.txt_texto_comentario);
@@ -49,14 +49,14 @@ public class ComentariosAdapter extends RecyclerView.Adapter<ComentariosAdapter.
     }
 
     @Override
-    public PersonViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public ComentariosViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_comentarios, viewGroup, false);
-        PersonViewHolder pvh = new PersonViewHolder(v);
+        ComentariosViewHolder pvh = new ComentariosViewHolder(v);
         return pvh;
     }
 
     @Override
-    public void onBindViewHolder(PersonViewHolder personViewHolder, final int i) {
+    public void onBindViewHolder(ComentariosViewHolder personViewHolder, final int i) {
         personViewHolder.txt_nombre_usuario_comentario.setText(comentariosDataList.get(i).getNombreUsuario());
         int comentarioLength = comentariosDataList.get(i).comentarioTexto.length();
         if (comentarioLength >= 30) {

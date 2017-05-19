@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#ccc"
     android:fitsSystemWindows="true"
-    tools:context=".activityes.SitioDetalle">
+    tools:context=".activityes.PromoDetalle">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -24,7 +24,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/imv_sitio_foto"
+                android:id="@+id/imv_promo_foto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -34,7 +34,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/activity_sitio_detalle" />
+    <include layout="@layout/activity_promo_detalle" />
 
     <!--android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

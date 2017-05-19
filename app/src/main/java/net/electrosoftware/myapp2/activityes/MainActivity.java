@@ -13,8 +13,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import net.electrosoftware.myapp2.R;
-import net.electrosoftware.myapp2.fragments.FragmentAgregarEvento;
 import net.electrosoftware.myapp2.fragments.FragmentMapa;
+import net.electrosoftware.myapp2.fragments.FragmentMisEventos;
 import net.electrosoftware.myapp2.fragments.FragmentUsuario;
 
 public class MainActivity extends AppCompatActivity
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
             fragment = new FragmentMapa();
             fragmentTransaction = true;
         } else if (id == R.id.nav_eventos) {
-            fragment = new FragmentAgregarEvento();
+            fragment = new FragmentMisEventos();
             fragmentTransaction = true;
         } else if (id == R.id.nav_perfil) {
             fragment = new FragmentUsuario();

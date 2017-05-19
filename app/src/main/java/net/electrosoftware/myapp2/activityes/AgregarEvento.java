@@ -1,12 +1,11 @@
-package net.electrosoftware.myapp2.fragments;
+package net.electrosoftware.myapp2.activityes;
 
 import android.app.DatePickerDialog;
-import android.app.Fragment;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -20,9 +19,8 @@ import java.util.Calendar;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 
-public class FragmentAgregarEvento extends Fragment {
+public class AgregarEvento extends AppCompatActivity {
 
-    private View view;
     ArrayAdapter adapterCategorias, adapterPatrocinador;
     MaterialSpinner spinner_evento_categoria, spinner_evento_patrocinador;
     EditText et_evento_nombre, et_evento_telefono, et_evento_fechainicio, et_evento_fechafin, et_evento_horainicio, et_evento_horafin, et_evento_descripcion;
@@ -31,44 +29,33 @@ public class FragmentAgregarEvento extends Fragment {
 
     Calendar calendar;
 
-    public FragmentAgregarEvento() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+        setContentView(R.layout.activity_agregar_evento);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = getActivity().getLayoutInflater().inflate(R.layout.fragment_agregar_evento, container, false);
-        // Inflate the layout for this fragment
-
-        et_evento_nombre = (EditText) view.findViewById(R.id.et_evento_nombre);
-        et_evento_telefono = (EditText) view.findViewById(R.id.et_evento_telefono);
+        et_evento_nombre = (EditText) findViewById(R.id.et_evento_nombre);
+        et_evento_telefono = (EditText) findViewById(R.id.et_evento_telefono);
 
         calendar = Calendar.getInstance();
 
-        adapterCategorias = ArrayAdapter.createFromResource(getActivity(), R.array.Categorias, android.R.layout.simple_spinner_item);
+        adapterCategorias = ArrayAdapter.createFromResource(AgregarEvento.this, R.array.Categorias, android.R.layout.simple_spinner_item);
         adapterCategorias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        adapterPatrocinador = ArrayAdapter.createFromResource(getActivity(), R.array.Patrocinadores, android.R.layout.simple_spinner_item);
+        adapterPatrocinador = ArrayAdapter.createFromResource(AgregarEvento.this, R.array.Patrocinadores, android.R.layout.simple_spinner_item);
         adapterPatrocinador.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        spinner_evento_categoria = (MaterialSpinner) view.findViewById(R.id.spinner_evento_categoria);
+        spinner_evento_categoria = (MaterialSpinner) findViewById(R.id.spinner_evento_categoria);
         spinner_evento_categoria.setAdapter(adapterCategorias);
 
-        spinner_evento_patrocinador = (MaterialSpinner) view.findViewById(R.id.spinner_evento_patrocinador);
+        spinner_evento_patrocinador = (MaterialSpinner) findViewById(R.id.spinner_evento_patrocinador);
         spinner_evento_patrocinador.setAdapter(adapterPatrocinador);
 
-        et_evento_fechainicio = (EditText) view.findViewById(R.id.et_evento_fechainicio);
-        btn_evento_fechainicio = (ImageButton) view.findViewById(R.id.btn_evento_fechainicio);
+        et_evento_fechainicio = (EditText) findViewById(R.id.et_evento_fechainicio);
+        btn_evento_fechainicio = (ImageButton) findViewById(R.id.btn_evento_fechainicio);
         btn_evento_fechainicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                DatePickerDialog dpd = new DatePickerDialog(AgregarEvento.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year,
@@ -80,12 +67,12 @@ public class FragmentAgregarEvento extends Fragment {
             }
         });
 
-        et_evento_fechafin = (EditText) view.findViewById(R.id.et_evento_fechafin);
-        btn_evento_fechafin = (ImageButton) view.findViewById(R.id.btn_evento_fechafin);
+        et_evento_fechafin = (EditText) findViewById(R.id.et_evento_fechafin);
+        btn_evento_fechafin = (ImageButton) findViewById(R.id.btn_evento_fechafin);
         btn_evento_fechafin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                DatePickerDialog dpd = new DatePickerDialog(AgregarEvento.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -96,13 +83,13 @@ public class FragmentAgregarEvento extends Fragment {
             }
         });
 
-        et_evento_horainicio = (EditText) view.findViewById(R.id.et_evento_horainicio);
-        btn_evento_horainicio = (ImageButton) view.findViewById(R.id.btn_evento_horainicio);
+        et_evento_horainicio = (EditText) findViewById(R.id.et_evento_horainicio);
+        btn_evento_horainicio = (ImageButton) findViewById(R.id.btn_evento_horainicio);
         btn_evento_horainicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Launch Time Picker Dialog
-                TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AgregarEvento.this,
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -117,6 +104,11 @@ public class FragmentAgregarEvento extends Fragment {
                                     hourString = (hourOfDay - 12) < 10 ? "0" + (hourOfDay - 12) : "" + (hourOfDay - 12);
                                 }
                                 String minuteString = minute < 10 ? "0" + minute : "" + minute;
+
+                                if (hourString.equalsIgnoreCase("00")) {
+                                    hourString = "12";
+                                }
+
                                 String time = hourString + ":" + minuteString + " " + AM_PM;
 
                                 et_evento_horainicio.setText(time);
@@ -126,13 +118,13 @@ public class FragmentAgregarEvento extends Fragment {
             }
         });
 
-        et_evento_horafin = (EditText) view.findViewById(R.id.et_evento_horafin);
-        btn_evento_horafin = (ImageButton) view.findViewById(R.id.btn_evento_horafin);
+        et_evento_horafin = (EditText) findViewById(R.id.et_evento_horafin);
+        btn_evento_horafin = (ImageButton) findViewById(R.id.btn_evento_horafin);
         btn_evento_horafin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Launch Time Picker Dialog
-                TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AgregarEvento.this,
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -156,22 +148,22 @@ public class FragmentAgregarEvento extends Fragment {
             }
         });
 
-        btn_evento_cancelar = (Button) view.findViewById(R.id.btn_evento_cancelar);
+        btn_evento_cancelar = (Button) findViewById(R.id.btn_evento_cancelar);
         btn_evento_cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().finish();
+                finish();
             }
         });
 
-        btn_evento_continuar = (Button) view.findViewById(R.id.btn_evento_continuar);
+        btn_evento_continuar = (Button) findViewById(R.id.btn_evento_continuar);
         btn_evento_continuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(AgregarEvento.this, AgregarEventoMapa.class));
             }
         });
-        return view;
-    }
 
+        super.onCreate(savedInstanceState);
+    }
 }

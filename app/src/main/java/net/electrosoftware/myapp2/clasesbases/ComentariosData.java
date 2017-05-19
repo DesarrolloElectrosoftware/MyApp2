@@ -9,13 +9,14 @@ import android.graphics.Bitmap;
 public class ComentariosData {
 
     Bitmap fotoUsuario;
-    String nombreUsuario, fechaComentario, comentarioTexto;
+    String nombreUsuario, fechaComentario, comentarioTexto, calificacionComentario;
 
-    public ComentariosData(Bitmap fotousuario, String nombreusuario, String fechacomentario, String comentariotexto) {
+    public ComentariosData(Bitmap fotousuario, String nombreusuario, String fechacomentario, String comentariotexto, String calificacioncomentario) {
         this.fotoUsuario = fotousuario;
         this.nombreUsuario = nombreusuario;
         this.fechaComentario = fechacomentario;
         this.comentarioTexto = comentariotexto;
+        this.calificacionComentario = calificacioncomentario;
     }
 
     public Bitmap getFotoUsuario() {
@@ -48,5 +49,13 @@ public class ComentariosData {
 
     public void setComentarioTexto(String comentarioTexto) {
         this.comentarioTexto = comentarioTexto;
+    }
+
+    public String getCalificacionComentario() {
+        return calificacionComentario;
+    }
+
+    public void setCalificacionComentario(String calificacionComentario) {
+        this.calificacionComentario = calificacionComentario;
     }
 }

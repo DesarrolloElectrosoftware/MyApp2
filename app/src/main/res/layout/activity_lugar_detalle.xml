@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="#ccc"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="activityes.SitioDetalle"
-    tools:showIn="@layout/scrolling_sitio_detalle">
+    tools:context=".activityes.LugarDetalle"
+    tools:showIn="@layout/scrolling_lugar_detalle">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,27 +29,27 @@
             android:padding="0dp">
 
             <ToggleButton
-                android:id="@+id/btn_sitio_favoritos"
+                android:id="@+id/btn_lugar_favoritos"
                 style="@style/ToggleFavorito" />
 
             <ToggleButton
-                android:id="@+id/btn_sitio_asistencia"
+                android:id="@+id/btn_lugar_asistencia"
                 style="@style/ToggleAsistencia"
                 android:visibility="gone" />
 
             <ToggleButton
-                android:id="@+id/btn_sitio_calificar"
+                android:id="@+id/btn_lugar_calificar"
                 style="@style/ToggleCalificar" />
 
             <Button
-                android:id="@+id/btn_sitio_comentar"
+                android:id="@+id/btn_lugar_comentar"
                 style="@style/ToggleComentar" />
         </LinearLayout>
 
-        <!-- DETALLE DEL SITIO -->
+        <!-- DETALLE DEL lugar -->
 
         <LinearLayout
-            android:id="@+id/rl_detalle_sitio"
+            android:id="@+id/rl_detalle_lugar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/cardBackGround"
@@ -67,7 +67,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txt_sitio_nombre"
+                    android:id="@+id/txt_lugar_nombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Bell-Air Bar"
@@ -76,7 +76,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/txt_sitio_direccion"
+                    android:id="@+id/txt_lugar_direccion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Calle 33 # 34a - 66"
@@ -84,7 +84,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/text_sitio_calificacion"
+                    android:id="@+id/text_lugar_calificacion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Califcación: 4,8"
@@ -92,7 +92,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/text_sitio_horario"
+                    android:id="@+id/text_lugar_horario"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="06:00 pm - 02:00 am"
@@ -100,7 +100,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/text_sitio_categoria"
+                    android:id="@+id/text_lugar_categoria"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Bar - Discoteca"
@@ -108,7 +108,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/text_sitio_telefono"
+                    android:id="@+id/text_lugar_telefono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="301 433 2949"
@@ -127,7 +127,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imv_sitio_ruteo"
+                    android:id="@+id/imv_lugar_ruteo"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:src="@drawable/mapa_preview_diag_small" />
@@ -145,7 +145,7 @@
 
         </LinearLayout>
         <TextView
-            android:id="@+id/txt_sitio_descripcion"
+            android:id="@+id/txt_lugar_descripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -157,7 +157,7 @@
             android:text="@string/lorem_ipsum"
             android:textColor="@color/colorPrimaryText" />
 
-        <!-- EVENTOS PROMOS SITIO -->
+        <!-- EVENTOS PROMOS lugar -->
         <LinearLayout
             android:id="@+id/linear_info_lug"
             android:layout_width="match_parent"
@@ -166,11 +166,11 @@
             android:padding="0dp">
 
             <Button
-                android:id="@+id/btn_sitio_eventos"
+                android:id="@+id/btn_lugar_eventos"
                 style="@style/ToggleEventos" />
 
             <Button
-                android:id="@+id/btn_sitio_promociones"
+                android:id="@+id/btn_lugar_promociones"
                 style="@style/TogglePromociones" />
         </LinearLayout>
 
@@ -191,12 +191,12 @@
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_sitio_comentarios"
+            android:id="@+id/rv_lugar_comentarios"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <TextView
-            android:id="@+id/txt_sitio_ver_mas_comentarios"
+            android:id="@+id/txt_lugar_ver_mas_comentarios"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"

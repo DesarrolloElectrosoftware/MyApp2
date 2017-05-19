@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,10 +29,16 @@ public class AgregarEvento extends AppCompatActivity {
     Button btn_evento_cancelar, btn_evento_continuar;
 
     Calendar calendar;
+    Toolbar mToolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_agregar_evento);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbarCrearEvento);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mToolbar.setTitle("Mis Eventos");
 
         et_evento_nombre = (EditText) findViewById(R.id.et_evento_nombre);
         et_evento_telefono = (EditText) findViewById(R.id.et_evento_telefono);

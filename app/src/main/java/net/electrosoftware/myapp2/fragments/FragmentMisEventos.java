@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ public class FragmentMisEventos extends Fragment {
 
     List<MisEventosData> dataModels;
     MisEventosAdapter adapter;
+    Toolbar mToolbar;
 
     public FragmentMisEventos() {
         // Required empty public constructor
@@ -43,6 +45,9 @@ public class FragmentMisEventos extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = getActivity().getLayoutInflater().inflate(R.layout.fragment_mis_eventos, container, false);
+
+        mToolbar = (Toolbar) view.findViewById(R.id.toolbarMisEventos);
+        mToolbar.setTitle("Mis Eventos");
 
         txt_mis_eventos_crear = (TextView) view.findViewById(R.id.txt_mis_eventos_crear);
         txt_mis_eventos_crear.setOnClickListener(new View.OnClickListener() {

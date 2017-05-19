@@ -146,7 +146,7 @@ public class LugarDetalle extends AppCompatActivity {
         btn_lugar_eventos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(LugarDetalle.this, "No hay eventos en este Lugar", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(LugarDetalle.this, EventoDetalle.class));
             }
         });
 
@@ -154,7 +154,6 @@ public class LugarDetalle extends AppCompatActivity {
         btn_lugar_promociones.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(LugarDetalle.this, "No hay promociones de este lugar", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(LugarDetalle.this, PromoDetalle.class));
             }
         });

@@ -25,6 +25,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -85,11 +86,12 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activityes.AgregarEvento"
-            android:label="@string/title_activity_crear_evento_map"
+            android:label="Crear Evento"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activityes.Comentarios"
+            android:label="Comentarios"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
     <service

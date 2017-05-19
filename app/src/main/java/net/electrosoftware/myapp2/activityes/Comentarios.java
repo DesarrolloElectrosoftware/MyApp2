@@ -2,13 +2,13 @@ package net.electrosoftware.myapp2.activityes;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 
 import net.electrosoftware.myapp2.R;
-import net.electrosoftware.myapp2.clasesbases.ComentariosAdapter;
 import net.electrosoftware.myapp2.clasesbases.ComentariosAdapterLarge;
 import net.electrosoftware.myapp2.clasesbases.ComentariosData;
 
@@ -18,11 +18,17 @@ import java.util.List;
 public class Comentarios extends AppCompatActivity {
     RecyclerView rv_comentarios_large;
     List<ComentariosData> dataModels;
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comentarios);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbarComent);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mToolbar.setTitle("Mis Eventos");
 
         rv_comentarios_large = (RecyclerView) findViewById(R.id.rv_comentarios_large);
         LinearLayoutManager linearlayoutmanager = new LinearLayoutManager(Comentarios.this);

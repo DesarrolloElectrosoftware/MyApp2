@@ -7,59 +7,50 @@
     android:layout_height="match_parent"
     tools:context="fragments.FragmentMapa">
 
-    <!-- BARRA BUSQUEDA ESTILO GOOGLE SEARH BOX -->
-    <LinearLayout
-        android:id="@+id/container_toolbar"
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/frag_mapa"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|left"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/txt_mapa_buscar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/search_textview_back_ground"
-            android:drawableLeft="@drawable/ic_btn_current_location"
-            android:drawablePadding="4dp"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:text="Buscar ubicación"
-            android:textSize="20sp" />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true" />
 
     <!-- BARRA BUSQUEDA ANTIGUA -->
-    <!--LinearLayout
+    <LinearLayout
         android:id="@+id/frag_linearDir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:alpha="0.5"
-        android:background="@drawable/cell_shape"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/frag_textoBuscar"
+            android:layout_width="220dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/search_textview_back_ground"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:hint="Buscar ubicación"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/frag_btnBuscar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_search"
+            android:padding="10dp" />
+
+        <!--EditText
             android:id="@+id/frag_textoBuscar"
             android:layout_width="200dp"
             android:layout_height="34dp"
             android:background="@drawable/cell_shape"
             android:hint="Buscar localización"
             android:paddingLeft="10dp"
-            android:textColor="@android:color/black" />
-
-        <Button
-            android:id="@+id/frag_btnBuscar"
-            android:layout_width="37dp"
-            android:layout_height="34dp"
-            android:background="@drawable/ic_search" />
+            android:textColor="@android:color/black" /-->
 
     </LinearLayout>
--->
 
     <!-- TARJETA CON INFO DEL SITIO MARKER-->
     <RelativeLayout
@@ -174,11 +165,5 @@
             fab:fab_title="Promociones" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
-
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/frag_mapa"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true" />
 
 </FrameLayout>

@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -76,8 +77,8 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     MapView mMapView;
     View view, dialogo_filtro;
     private GoogleMap miMapa;
-    //Button btnBuscarDireccion;
-    //EditText DireccionBuscar;
+    Button btnBuscarDireccion;
+    EditText DireccionBuscar;
     double latitud = 0.0;
     double longitud = 0.0;
     double latitudDestino = 0.0;
@@ -141,7 +142,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        /*DireccionBuscar = (EditText) view.findViewById(R.id.frag_textoBuscar);
+        DireccionBuscar = (EditText) view.findViewById(R.id.frag_textoBuscar);
         btnBuscarDireccion = (Button) view.findViewById(R.id.frag_btnBuscar);
         btnBuscarDireccion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +161,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
 
                 }
             }
-        });*/
+        });
 
         // FAB MENU
         fab_menu = (FloatingActionsMenu) view.findViewById(R.id.fab_menu);

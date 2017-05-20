@@ -16,17 +16,17 @@
     <!-- BARRA BUSQUEDA ANTIGUA -->
     <LinearLayout
         android:id="@+id/frag_linearDir"
-        android:layout_width="match_parent"
+        android:layout_width="280dp"
         android:layout_height="60dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/search_textview_back_ground"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/frag_textoBuscar"
             android:layout_width="220dp"
             android:layout_height="match_parent"
-            android:background="@drawable/search_textview_back_ground"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:hint="Buscar ubicación"
@@ -36,8 +36,8 @@
 
         <Button
             android:id="@+id/frag_btnBuscar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
             android:background="@drawable/ic_search"
             android:padding="10dp" />
 

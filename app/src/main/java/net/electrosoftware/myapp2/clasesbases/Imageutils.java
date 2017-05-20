@@ -495,7 +495,6 @@ public class Imageutils {
         }
     }
 
-
     /**
      * Intent ActivityResult
      *
@@ -543,8 +542,6 @@ public class Imageutils {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
                 }
                 break;
         }

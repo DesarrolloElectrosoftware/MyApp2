@@ -130,6 +130,17 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="ToggleLugares" parent="android:Widget">
+        <item name="android:padding">8dp</item>
+        <item name="android:background">@color/cardBackGround</item>
+        <item name="android:drawableTop">@drawable/ic_lugares_empresario</item>
+        <item name="android:text">Lugares</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="ActionBar" parent="Theme.AppCompat">
         <item name="android:background">@color/colorPrimaryDark</item>
         <item name="android:titleTextStyle">@style/ActionBar.TitleTextStyle</item>

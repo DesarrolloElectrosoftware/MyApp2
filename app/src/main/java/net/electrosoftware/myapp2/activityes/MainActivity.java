@@ -15,6 +15,7 @@ import android.widget.Toast;
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.fragments.FragmentMapa;
 import net.electrosoftware.myapp2.fragments.FragmentMisEventos;
+import net.electrosoftware.myapp2.fragments.FragmentMisFavoritos;
 import net.electrosoftware.myapp2.fragments.FragmentUsuario;
 
 public class MainActivity extends AppCompatActivity
@@ -94,13 +95,16 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_eventos) {
             fragment = new FragmentMisEventos();
             fragmentTransaction = true;
+        } else if (id == R.id.nav_favoritos) {
+            fragment = new FragmentMisFavoritos();
+            fragmentTransaction = true;
         } else if (id == R.id.nav_perfil) {
             fragment = new FragmentUsuario();
             fragmentTransaction = true;
-            Log.i("NavigationView", "Perfil");
         } else if (id == R.id.nav_cerrar) {
             finish();
         }
+
         if (fragmentTransaction) {
             getFragmentManager().beginTransaction()
                     .replace(R.id.frag_main, fragment)

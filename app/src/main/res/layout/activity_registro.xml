@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
@@ -22,10 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_registro_app_name"
+        android:layout_marginBottom="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="30dp"
         android:background="@color/cardBackGround"
         android:elevation="4dp"
         android:orientation="vertical"
@@ -114,10 +115,10 @@
         </LinearLayout>
 
         <Button
-            android:layout_below="@+id/linear_registro_content"
             android:id="@+id/btn_registro_registrarse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/linear_registro_content"
             android:layout_marginTop="22dp"
             android:background="@drawable/button_background"
             android:text="Registrarse"
@@ -127,13 +128,30 @@
 
     </RelativeLayout>
 
-    <ImageButton
-        android:id="@+id/btn_registro_foto"
+    <!--ImageView
+        android:id="@+id/imv_registro_foto"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_below="@+id/txt_registro_app_name"
         android:layout_centerHorizontal="true"
         android:background="@drawable/user_profile_image_background"
         android:elevation="4dp"
-        android:src="@drawable/ic_add_photo" />
+        android:padding="20dp"
+        android:src="@drawable/ic_add_photo" /-->
+
+    <com.alexzh.circleimageview.CircleImageView
+        android:id="@+id/imv_registro_foto"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/txt_registro_app_name"
+        android:layout_centerHorizontal="true"
+        android:elevation="4dp"
+        android:src="@drawable/ic_add_photo"
+        app:view_backgroundColor="@color/cardBackGround"
+        app:view_borderColor="@color/colorPrimary"
+        app:view_borderWidth="2dp"
+        app:view_shadowDx="2dp"
+        app:view_shadowDy="0dp"
+        app:view_shadowRadius="2dp" />
+
 </RelativeLayout>

@@ -21,6 +21,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/encabezado_menu_lateral"
-        app:menu="@menu/menu_opciones" />
+        app:menu="@menu/menu_usuario" />
 
 </android.support.v4.widget.DrawerLayout>

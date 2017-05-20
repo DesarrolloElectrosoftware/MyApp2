@@ -7,13 +7,34 @@
     android:layout_height="match_parent"
     tools:context="fragments.FragmentMapa">
 
-    <com.google.android.gms.maps.MapView
-        android:fitsSystemWindows="true"
-        android:id="@+id/frag_mapa"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+    <!-- BARRA BUSQUEDA ESTILO GOOGLE SEARH BOX -->
     <LinearLayout
+        android:id="@+id/container_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_mapa_buscar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_textview_back_ground"
+            android:drawableLeft="@drawable/ic_btn_current_location"
+            android:drawablePadding="4dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:text="Buscar ubicación"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <!-- BARRA BUSQUEDA ANTIGUA -->
+    <!--LinearLayout
         android:id="@+id/frag_linearDir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,7 +59,9 @@
             android:background="@drawable/ic_search" />
 
     </LinearLayout>
+-->
 
+    <!-- TARJETA CON INFO DEL SITIO MARKER-->
     <RelativeLayout
         android:id="@+id/RLCard"
         android:layout_width="250dp"
@@ -103,6 +126,7 @@
 
     </RelativeLayout>
 
+    <!-- MENU FILTRO FLOTANTE -->
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/fab_menu"
         android:layout_width="wrap_content"
@@ -150,10 +174,11 @@
             fab:fab_title="Promociones" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
-    <!--<android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_gravity="bottom"
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/frag_mapa"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />-->
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true" />
 
 </FrameLayout>

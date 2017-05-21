@@ -111,6 +111,13 @@
             android:name=".activityes.EventosEmpresario"
             android:label="Eventos"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activityes.Galeria"
+            android:label="Galería"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activityes.GaleriaDetalle"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

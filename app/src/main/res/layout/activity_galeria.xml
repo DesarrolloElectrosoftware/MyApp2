@@ -1,0 +1,22 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cardBackGround">
+
+    <include
+        android:id="@+id/toolbarGaleria"
+        layout="@layout/toolbar" />
+
+    <GridView
+        android:layout_below="@+id/toolbarGaleria"
+        android:id="@+id/grid_galeria"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:columnWidth="100dp"
+        android:drawSelectorOnTop="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth" />
+</RelativeLayout>

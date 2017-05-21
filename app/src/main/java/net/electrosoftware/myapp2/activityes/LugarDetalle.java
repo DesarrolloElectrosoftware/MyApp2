@@ -141,7 +141,12 @@ public class LugarDetalle extends AppCompatActivity {
         txt_lugar_descripcion = (TextView) findViewById(R.id.txt_lugar_descripcion);
 
         imv_lugar_foto = (ImageView) findViewById(R.id.imv_lugar_foto);
-
+        imv_lugar_foto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LugarDetalle.this, Galeria.class));
+            }
+        });
         btn_lugar_eventos = (Button) findViewById(R.id.btn_lugar_eventos);
         btn_lugar_eventos.setOnClickListener(new View.OnClickListener() {
             @Override

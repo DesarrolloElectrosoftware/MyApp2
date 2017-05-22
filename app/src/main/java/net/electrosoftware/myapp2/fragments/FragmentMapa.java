@@ -11,13 +11,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +38,17 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -71,6 +76,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
+
+import static com.makeramen.roundedimageview.RoundedImageView.TAG;
 
 public class FragmentMapa extends Fragment implements OnMapReadyCallback {
 
@@ -100,7 +107,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     MaterialSpinner spinner_categoria;
     Button btn_cancelar, btn_aceptar;
     LinearLayout linear_filtro_calendario;
-
+    ImageView searchMarker;
 
     public FragmentMapa() {
         // Required empty public constructor
@@ -142,7 +149,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        DireccionBuscar = (EditText) view.findViewById(R.id.frag_textoBuscar);
+        /*DireccionBuscar = (EditText) view.findViewById(R.id.frag_textoBuscar);
         btnBuscarDireccion = (Button) view.findViewById(R.id.frag_btnBuscar);
         btnBuscarDireccion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +168,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
 
                 }
             }
-        });
+        });*/
 
         // FAB MENU
         fab_menu = (FloatingActionsMenu) view.findViewById(R.id.fab_menu);
@@ -202,6 +209,8 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
             }
         });
 
+        searchMarker = (ImageView) view.findViewById(R.id.searchMarker);
+
         return view;
     }
 
@@ -229,6 +238,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                 if (cardView.getVisibility() == View.VISIBLE) {
                     fade_out();
                 }
+                searchMarker.setVisibility(View.GONE);
             }
         });
 
@@ -238,7 +248,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
             public boolean onMyLocationButtonClick() {
                 Location miUbicacion = miMapa.getMyLocation();
                 miMapa.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(miUbicacion.getLatitude(), miUbicacion.getLongitude()), 16f));
-
+                searchMarker.setVisibility(View.GONE);
                 if (cardView.getVisibility() == View.VISIBLE) {
                     fade_out();
                 }
@@ -281,10 +291,18 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         final FirebaseStorage storage = FirebaseStorage.getInstance();
 
         empresas = new ArrayList<>();
-        tipos.add("business");
-        tipos.add("clothings");
-        tipos.add("hotels");
-        tipos.add("shopping");
+        //tipos.add("business");
+        //tipos.add("clothings");
+        //tipos.add("hotels");
+        //tipos.add("shopping");
+
+        tipos.add("deporte");
+        tipos.add("restaurante");
+        tipos.add("religion");
+        tipos.add("rumba");
+        tipos.add("arte");
+        tipos.add("musica");
+        tipos.add("ropa");
 
         for (final String t : tipos) {
             final DatabaseReference EmpresasTipoRef = database.getReference(
@@ -301,11 +319,14 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                         e.setGeoPunto(g);
                         empresas.add(e);
 
+                        final int id = getResources().getIdentifier("icon_lugar_" + t, "drawable", "net.electrosoftware.myapp2");
+
                         e.setMarker(miMapa.addMarker(new MarkerOptions()
                                 .position(new LatLng(g.getLat(), g.getLng()))
                                 .title(e.getKey())
-                                .icon(BitmapDescriptorFactory
-                                        .fromBitmap(resizedBitmap("map-icons/" + t + ".png", 80, 100)))));
+                                .icon(BitmapDescriptorFactory.fromResource(id))));
+                        //BitmapDescriptorFactory
+                        //.fromBitmap(resizedBitmap("map-icons/" + t + ".png", 80, 100)))));
                     }
                 }
 
@@ -379,12 +400,40 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                     fade_in();
                 }
 
+                searchMarker.setVisibility(View.GONE);
                 return true;
             }
         });
 
         adapterCategorias = ArrayAdapter.createFromResource(getActivity(), R.array.Categorias, android.R.layout.simple_spinner_item);
         adapterCategorias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+        autocompleteFragment.setBoundsBias(new LatLngBounds(
+                new LatLng(-79.85749609375, -5.100027762345325), new LatLng(-66.59973828124998, 12.737772434600243)));
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName());
+                miMapa.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 17f));
+
+                searchMarker.setVisibility(View.VISIBLE);
+
+                /*Marker MarkerBusqueda = miMapa.addMarker(new MarkerOptions()
+                        .position(place.getLatLng())
+                        .title(place.getName().toString())
+                        .icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap("map-icons/places.png", 80, 100))));*/
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+
     }
 
     @Override

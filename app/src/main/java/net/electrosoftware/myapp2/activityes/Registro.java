@@ -8,8 +8,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,15 +19,27 @@ import android.widget.Toast;
 
 import com.alexzh.circleimageview.CircleImageView;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.clasesbases.Imageutils;
+import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
+import net.electrosoftware.myapp2.firebaseClases.Usuario;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+
+import fr.ganfra.materialspinner.MaterialSpinner;
 
 
 public class Registro extends AppCompatActivity implements Imageutils.ImageAttachmentListener {
@@ -35,6 +48,10 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
     TextView txt_registro_app_name;
     Button btn_registro_registrarse;
     ImageButton btn_registro_foto;
+    String perfil = "no";
+    MaterialSpinner spinner_registro_Perfil;
+
+    ArrayAdapter adapterPerfiles;
 
     CircleImageView imv_registro_foto;
 
@@ -42,8 +59,8 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
 
 
     //For Image Attachment
-    private Bitmap bitmap;
-    private String file_name;
+    Bitmap bitmap = null;
+    String file_name = "Sin imagen";
     Imageutils imageutils;
 
     @Override
@@ -66,56 +83,112 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
         et_registro_usuario.setTypeface(custom_font);
         btn_registro_registrarse.setTypeface(custom_font);
 
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        adapterPerfiles = ArrayAdapter.createFromResource(Registro.this, R.array.Perfiles, android.R.layout.simple_spinner_item);
+        spinner_registro_Perfil = (MaterialSpinner) findViewById(R.id.spinner_registro_Perfil);
+        spinner_registro_Perfil.setAdapter(adapterPerfiles);
+
+        spinner_registro_Perfil.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > -1) {
+                    perfil = spinner_registro_Perfil.getSelectedItem().toString();
+                }else{
+                    perfil = "no";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                perfil = "no";
+            }
+        });
+
         btn_registro_registrarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //startActivity(new Intent(Registro.this, Empresarios.class));
-                if (et_registro_usuario.getText().toString().length() > 0) {
-                    if (et_registro_email.getText().toString().length() > 0) {
-                        if (et_registro_contrasena.getText().toString().equalsIgnoreCase(et_registro_contrasena_confir.getText().toString())) {
-                            mAuth.createUserWithEmailAndPassword(et_registro_email.getText().toString(),
-                                    et_registro_contrasena.getText().toString())
-                                    .addOnCompleteListener(Registro.this, new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if (task.isSuccessful()) {
-                                                // Sign in success, update UI with the signed-in user's information
-                                                //Log.d(TAG, "createUserWithEmail:success");
-                                                FirebaseUser user = mAuth.getCurrentUser();
-                                                user.getUid();
 
-                                                //updateUI(user);
-                                            } else {
-                                                // If sign in fails, display a message to the user.
-                                                //Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                                String error = task.getException().toString();
-                                                if (error.indexOf("WEAK_PASSWORD") != -1) {
-                                                    error = "La contraseña es muy débil";
-                                                } else if (error.indexOf("FirebaseAuthInvalidCredentialsException") != -1) {
-                                                    error = "El correo no es válido";
-                                                } else if (error.indexOf("FirebaseAuthUserCollisionException") != -1) {
-                                                    error = "Ya existe una cuenta asosciada al correo";
+                if (!perfil.equalsIgnoreCase("no")) {
+                    if (et_registro_usuario.getText().toString().length() > 0) {
+                        if (et_registro_email.getText().toString().length() > 0) {
+                            if (et_registro_contrasena.getText().toString().equalsIgnoreCase(et_registro_contrasena_confir.getText().toString())) {
+                                mAuth.createUserWithEmailAndPassword(et_registro_email.getText().toString(),
+                                        et_registro_contrasena.getText().toString())
+                                        .addOnCompleteListener(Registro.this, new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                if (task.isSuccessful()) {
+
+                                                    if(bitmap != null){
+                                                        final FirebaseStorage storage = FirebaseStorage.getInstance();
+                                                        StorageReference storageRef = storage.getReference("foto usuarios").child(file_name);
+
+
+                                                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                                        byte[] data = baos.toByteArray();
+
+                                                        UploadTask uploadTask = storageRef.putBytes(data);
+                                                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception exception) {
+                                                                // Handle unsuccessful uploads
+                                                            }
+                                                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                                                                //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                                            }
+                                                        });
+
+                                                    }
+
+
+                                                    FirebaseUser userFire = mAuth.getCurrentUser();
+                                                    final DatabaseReference UsuariosRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
+                                                    Usuario user = new Usuario(perfil, et_registro_usuario.getText().toString(), file_name);
+                                                    user.writeNewUser(UsuariosRef, userFire.getUid() );
+                                                    //userFire.getUid();
+
+                                                    //updateUI(user);
+                                                } else {
+                                                    // If sign in fails, display a message to the user.
+                                                    //Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                                    String error = task.getException().toString();
+                                                    if (error.indexOf("WEAK_PASSWORD") != -1) {
+                                                        error = "La contraseña es muy débil";
+                                                    } else if (error.indexOf("FirebaseAuthInvalidCredentialsException") != -1) {
+                                                        error = "El correo no es válido";
+                                                    } else if (error.indexOf("FirebaseAuthUserCollisionException") != -1) {
+                                                        error = "Ya existe una cuenta asosciada al correo";
+                                                    }
+                                                    Toast.makeText(Registro.this, error,
+                                                            Toast.LENGTH_LONG).show();
+                                                    //updateUI(null);
                                                 }
-                                                Toast.makeText(Registro.this, error,
-                                                        Toast.LENGTH_LONG).show();
-                                                //updateUI(null);
+
+                                                // ...
                                             }
-
-                                            // ...
-                                        }
-                                    });
+                                        });
 
 
+                            } else {
+                                et_registro_contrasena_confir.setError("Las contraseñas do coinciden");
+                                //Toast.makeText(Registro.this, "Las contraseñas no coinciden")
+                            }
                         } else {
-                            et_registro_contrasena_confir.setError("Las contraseñas do coinciden");
-                            //Toast.makeText(Registro.this, "Las contraseñas no coinciden")
+                            et_registro_email.setError("El correo es necesario");
                         }
                     } else {
-                        et_registro_email.setError("El correo es necesario");
+                        et_registro_usuario.setError("Falta su nombre");
                     }
-                } else {
-                    et_registro_usuario.setError("Falta su nombre");
+                }else{
+                    Toast.makeText(Registro.this, "Debe seleccionar el perfil", Toast.LENGTH_LONG).show();
                 }
+
 
 
             }
@@ -131,12 +204,12 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
         });
     }
 
-    @Override
+    /*@Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         startActivity(new Intent(Registro.this, Login.class));
         finish();
         return super.onKeyDown(keyCode, event);
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -152,8 +225,8 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
 
     @Override
     public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-        this.bitmap = file;
-        this.file_name = filename;
+        bitmap = file;
+        file_name = filename;
         imv_registro_foto.setImageBitmap(file);
 
         String path = Environment.getExternalStorageDirectory() + File.separator + "ImageAttach" + File.separator;

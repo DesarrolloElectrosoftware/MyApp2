@@ -31,4 +31,9 @@
         <item>@drawable/kamran8</item>
         <item>@drawable/kamran9</item>
     </string-array>
+
+    <string-array name="Perfiles">
+        <item>Consumidor</item>
+        <item>Empresario</item>
+    </string-array>
 </resources>

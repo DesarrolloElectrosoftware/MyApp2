@@ -56,10 +56,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import net.electrosoftware.myapp2.Objetos.Empresa;
-import net.electrosoftware.myapp2.Objetos.FirebaseReferences;
-import net.electrosoftware.myapp2.Objetos.GeoPunto;
-import net.electrosoftware.myapp2.Objetos.InfoCorta;
+import net.electrosoftware.myapp2.firebaseClases.Empresa;
+import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
+import net.electrosoftware.myapp2.firebaseClases.GeoPunto;
+import net.electrosoftware.myapp2.firebaseClases.InfoCorta;
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.activityes.LugarDetalle;
 import net.electrosoftware.myapp2.clasesbases.DownloadTask;

@@ -1,4 +1,4 @@
-package net.electrosoftware.myapp2.Objetos;
+package net.electrosoftware.myapp2.firebaseClases;
 
 import com.google.android.gms.maps.model.Marker;
 

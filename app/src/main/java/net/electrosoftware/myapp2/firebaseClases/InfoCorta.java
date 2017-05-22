@@ -1,4 +1,4 @@
-package net.electrosoftware.myapp2.Objetos;
+package net.electrosoftware.myapp2.firebaseClases;
 
 /**
  * Created by CARLOS MAESTRE on 15/03/2017.

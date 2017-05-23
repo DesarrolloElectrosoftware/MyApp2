@@ -39,7 +39,7 @@
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/txt_dial_mis_eventos_direccion"
+                android:id="@+id/txt_dial_mis_eventos_tipo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Carrera 25 # 35 - 94"

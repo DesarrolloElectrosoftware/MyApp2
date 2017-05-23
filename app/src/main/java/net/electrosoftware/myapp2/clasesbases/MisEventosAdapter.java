@@ -28,7 +28,7 @@ public class MisEventosAdapter extends RecyclerView.Adapter<MisEventosAdapter.Mi
         MisEventosViewHolder(View itemView) {
             super(itemView);
             txt_dial_mis_eventos_nombre = (TextView) itemView.findViewById(R.id.txt_dial_mis_eventos_nombre);
-            txt_dial_mis_eventos_direccion = (TextView) itemView.findViewById(R.id.txt_dial_mis_eventos_direccion);
+            txt_dial_mis_eventos_direccion = (TextView) itemView.findViewById(R.id.txt_dial_mis_eventos_tipo);
             imv_dial_mis_eventos_foto = (ImageView) itemView.findViewById(R.id.imv_dial_mis_eventos_foto);
             cv_mis_eventos = (CardView) itemView.findViewById(R.id.cv_mis_eventos);
         }

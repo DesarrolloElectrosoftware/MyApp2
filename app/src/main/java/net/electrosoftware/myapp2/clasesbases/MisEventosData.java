@@ -10,12 +10,12 @@ public class MisEventosData {
 
     Bitmap fotoEvento;
     String nombreEvento;
-    String direccionEvento;
+    String tipoevento;
 
-    public MisEventosData(Bitmap fotoevento, String nombreevento, String direccionevento) {
+    public MisEventosData(Bitmap fotoevento, String nombreevento, String tipoevento) {
         this.fotoEvento = fotoevento;
         this.nombreEvento = nombreevento;
-        this.direccionEvento = direccionevento;
+        this.tipoevento = tipoevento;
     }
 
     public Bitmap getFotoEvento() {
@@ -35,10 +35,10 @@ public class MisEventosData {
     }
 
     public String getDireccionEvento() {
-        return direccionEvento;
+        return tipoevento;
     }
 
     public void setDireccionEvento(String direccionEvento) {
-        this.direccionEvento = direccionEvento;
+        this.tipoevento = direccionEvento;
     }
 }

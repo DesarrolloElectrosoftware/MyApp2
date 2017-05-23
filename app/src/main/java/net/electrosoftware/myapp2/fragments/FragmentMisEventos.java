@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,10 +14,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.activityes.AgregarEvento;
 import net.electrosoftware.myapp2.clasesbases.MisEventosAdapter;
 import net.electrosoftware.myapp2.clasesbases.MisEventosData;
+import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
+import net.electrosoftware.myapp2.firebaseClases.itemListaSitio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +44,9 @@ public class FragmentMisEventos extends Fragment {
     List<MisEventosData> dataModels;
     MisEventosAdapter adapter;
     Toolbar mToolbar;
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final FirebaseStorage storage = FirebaseStorage.getInstance();
+    Bitmap icon = null;
 
     public FragmentMisEventos() {
         // Required empty public constructor
@@ -68,11 +86,89 @@ public class FragmentMisEventos extends Fragment {
 
     private void initializeData() {
         dataModels = new ArrayList<>();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final DatabaseReference listaRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
+                .child(user.getUid())
+                .child(FirebaseReferences.EVENTOS_REFERENCE);
 
-        Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.kamran);
+            listaRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    //Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.kamran);
+                    icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.no_image_found);
+                    String tipo = "";
+                    //Iterable<DataSnapshot> items = dataSnapshot.getChildren();
+                    try {
 
-        dataModels.add(new MisEventosData(icon, "Twitterwire", "8 Arrowood Drive"));
+
+                    for (DataSnapshot  i: dataSnapshot.getChildren()){
+                        String idEvento = i.getKey();
+                        itemListaSitio item = i.getValue(itemListaSitio.class);
+
+                        if(!item.getFoto().equalsIgnoreCase("Sin imagen")){
+                            StorageReference fotoRef = storage.getReference().child("foto usuarios/"+item.getFoto());
+                            fotoRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    icon = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+
+                                    // Use the bytes to display the image
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                    //imageCard.setImageResource(R.drawable.no_image_found);
+                                }
+                            });
+
+
+
+                            switch (item.getTipo()){
+                                case "Restaurante" :
+                                    tipo = "Restaurante y Gastronomía";
+                                    break;
+                                case "Rumba" :  tipo = "Rumba, Bares y Discotecas";
+                                    break ;
+                                case "Cultura" :  tipo = "Arte y Cultura";
+                                    break ;
+                                case "Musica" :  tipo = "Música y Conciertos";
+                                    break ;
+                                case "Deporte" :  tipo = "Deporte y Salud";
+                                    break ;
+                                case "Ropa" :  tipo = "Ropa y Accesorios";
+                                    break ;
+                                case "Religion" :  tipo = "Religión";
+                                    break ;
+                            }
+
+                            dataModels.add(new MisEventosData(icon, item.getNombre(), tipo));
+
+
+                        }
+
+
+
+                    }
+                    }catch (Exception e){
+                        //Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // Failed to read value
+                    //Log.w(TAG, "Failed to read value.", error.toException());
+                }
+            });
+
+
+
+
+
+        /*dataModels.add(new MisEventosData(icon, "Twitterwire", "8 Arrowood Drive"));
         dataModels.add(new MisEventosData(icon, "Oyoloo", "34 Jay Hill"));
         dataModels.add(new MisEventosData(icon, "Avavee", "9 Forest Lane"));
         dataModels.add(new MisEventosData(icon, "Twinder", "511 Sauthoff Pass"));
@@ -80,7 +176,7 @@ public class FragmentMisEventos extends Fragment {
         dataModels.add(new MisEventosData(icon, "Skajo", "3699 Sunfield Crossing"));
         dataModels.add(new MisEventosData(icon, "Twitternation", "840 Parkside Terrace"));
         dataModels.add(new MisEventosData(icon, "Youspan", "74 Doe Crossing Hill"));
-        dataModels.add(new MisEventosData(icon, "Quire", "8 Nevada Plaza"));
+        dataModels.add(new MisEventosData(icon, "Quire", "8 Nevada Plaza"));*/
     }
 
     private void initializeAdapter() {

@@ -40,6 +40,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -53,6 +55,7 @@ import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.firebaseClases.Evento;
 import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
 import net.electrosoftware.myapp2.firebaseClases.Punto;
+import net.electrosoftware.myapp2.firebaseClases.itemListaSitio;
 
 import java.io.ByteArrayOutputStream;
 
@@ -136,17 +139,27 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
         btn_eventomap_guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 LatLng pos = mMap.getCameraPosition().target;
                 Punto p = new Punto(pos.latitude + "", pos.longitude + "");
-                final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
+
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                //Toast.makeText(AgregarEventoMapa.this, "User key: " + userRef.getKey(), Toast.LENGTH_SHORT).show();
+
                 final DatabaseReference SitiosRef = database.getReference(FirebaseReferences.SITIO_REFERENCE);
+                String key = evento.writeNewEvento(SitiosRef);
+
                 final DatabaseReference ListaUserEventoRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
-                        .child(userRef.getKey()).child(FirebaseReferences.EVENTOS_REFERENCE);
+                        .child(user.getUid())
+                        .child(FirebaseReferences.EVENTOS_REFERENCE)
+                        .child(key);
+                itemListaSitio iten = new itemListaSitio(evento.getNombre(), evento.getTipo(), evento.getRutaFoto());
+                iten.writeItemListaSitio(ListaUserEventoRef);
+
                 final DatabaseReference FiltroEventosTipoRef = database.getReference(FirebaseReferences.FILTRO_REFERENCE)
                         .child(FirebaseReferences.EVENTOS_REFERENCE).child(evento.tipo);
-                String key = evento.writeNewEvento(SitiosRef);
                 p.writePunto(FiltroEventosTipoRef, key);
-                ListaUserEventoRef.setValue(key);
+
 
                 if (bitmap != null) {
                     final FirebaseStorage storage = FirebaseStorage.getInstance();

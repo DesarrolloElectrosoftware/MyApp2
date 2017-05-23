@@ -10,4 +10,8 @@ public class FirebaseReferences {
     final public static String EMPRESAS_REFERENCE = "empresas";
     final public static String INFOCORTA_REFERENCE = "infocorta";
     final public static String USUARIOS_REFERENCE = "usuarios";
+    final public static String SITIO_REFERENCE = "sitio";
+    final public static String FILTRO_REFERENCE = "filtro";
+    final public static String EVENTOS_REFERENCE = "eventos";
+    final public static String LISTA_REFERENCE = "lista";
 }

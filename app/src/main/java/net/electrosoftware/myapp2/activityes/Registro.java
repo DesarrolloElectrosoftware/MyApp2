@@ -59,7 +59,7 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
-
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
     //For Image Attachment
     Bitmap bitmap = null;
     String file_name = "Sin imagen";
@@ -84,8 +84,6 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
         et_registro_contrasena_confir.setTypeface(custom_font);
         et_registro_usuario.setTypeface(custom_font);
         btn_registro_registrarse.setTypeface(custom_font);
-
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         adapterPerfiles = ArrayAdapter.createFromResource(Registro.this, R.array.Perfiles, android.R.layout.simple_spinner_item);
         spinner_registro_Perfil = (MaterialSpinner) findViewById(R.id.spinner_registro_Perfil);

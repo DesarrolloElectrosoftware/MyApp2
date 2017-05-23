@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -36,10 +38,23 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.clasesbases.AppUtils;
 import net.electrosoftware.myapp2.clasesbases.FetchAddressIntentService;
+import net.electrosoftware.myapp2.firebaseClases.Comunicador;
+import net.electrosoftware.myapp2.firebaseClases.Evento;
+import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
+import net.electrosoftware.myapp2.firebaseClases.Punto;
+
+import java.io.ByteArrayOutputStream;
 
 public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -56,6 +71,7 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
     /**
      * The formatted location address.
      */
+    public Evento evento;
     protected String mAddressOutput;
     protected String mAreaOutput;
     protected String mCityOutput;
@@ -64,6 +80,10 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
 
     Button btn_eventomap_cancelar, btn_eventomap_guardar;
+
+    public Bitmap bitmap;
+
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,9 +136,50 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
         btn_eventomap_guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AgregarEventoMapa.this, "Localización del evento Guardada", Toast.LENGTH_SHORT).show();
+                LatLng pos = mMap.getCameraPosition().target;
+                Punto p = new Punto(pos.latitude + "", pos.longitude + "");
+                final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
+                final DatabaseReference SitiosRef = database.getReference(FirebaseReferences.SITIO_REFERENCE);
+                final DatabaseReference ListaUserEventoRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
+                        .child(userRef.getKey()).child(FirebaseReferences.EVENTOS_REFERENCE);
+                final DatabaseReference FiltroEventosTipoRef = database.getReference(FirebaseReferences.FILTRO_REFERENCE)
+                        .child(FirebaseReferences.EVENTOS_REFERENCE).child(evento.tipo);
+                String key = evento.writeNewEvento(SitiosRef);
+                p.writePunto(FiltroEventosTipoRef, key);
+                ListaUserEventoRef.setValue(key);
+
+                if (bitmap != null) {
+                    final FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference("foto sitios").child("eventos").child(evento.getRutaFoto());
+
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] data = baos.toByteArray();
+
+                    UploadTask uploadTask = storageRef.putBytes(data);
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                            //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        }
+                    });
+
+                }
+
+                Toast.makeText(AgregarEventoMapa.this, "El evento se a registrado", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(AgregarEventoMapa.this, MainActivity.class));
             }
         });
+
+        evento = (Evento) Comunicador.getObjeto1();
+        bitmap = (Bitmap) Comunicador.getObjeto2();
     }
 
     @Override

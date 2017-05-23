@@ -87,15 +87,15 @@ public class Login extends AppCompatActivity {
 
                                         final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
 
-                                        userRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                                        userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 Usuario usuario = dataSnapshot.getValue(Usuario.class);
-                                                usuario.getPerfil();
+
                                                 if(usuario.getPerfil().equalsIgnoreCase("Consumidor")){
                                                     startActivity(new Intent(Login.this, MainActivity.class));
                                                 }else if(usuario.getPerfil().equalsIgnoreCase("Empresario")){
-                                                    //startActivity(new Intent(Login.this, MainActivity.class));
+                                                    startActivity(new Intent(Login.this, Empresarios.class));
                                                 }
                                             }
 

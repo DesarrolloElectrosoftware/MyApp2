@@ -30,7 +30,9 @@ import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.activityes.AgregarEvento;
 import net.electrosoftware.myapp2.clasesbases.MisEventosAdapter;
 import net.electrosoftware.myapp2.clasesbases.MisEventosData;
+import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
+import net.electrosoftware.myapp2.firebaseClases.Usuario;
 import net.electrosoftware.myapp2.firebaseClases.itemListaSitio;
 
 import java.util.ArrayList;
@@ -66,10 +68,34 @@ public class FragmentMisEventos extends Fragment {
         mToolbar = (Toolbar) view.findViewById(R.id.toolbarMisEventos);
         mToolbar.setTitle("Mis Eventos");
 
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         txt_mis_eventos_crear = (TextView) view.findViewById(R.id.txt_mis_eventos_crear);
         txt_mis_eventos_crear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //startActivity(new Intent(getActivity(), AgregarEvento.class));
+
+                final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
+
+                userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Usuario usuario = dataSnapshot.getValue(Usuario.class);
+
+                        if (usuario.getPerfil().equalsIgnoreCase("Consumidor")) {
+                            Comunicador.setTipoPerfil("Consumidor");
+                        } else if (usuario.getPerfil().equalsIgnoreCase("Empresario")) {
+                            Comunicador.setTipoPerfil("Empresario");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                        //Log.w(TAG, "Failed to read value.", error.toException());
+                    }
+                });
                 startActivity(new Intent(getActivity(), AgregarEvento.class));
             }
         });
@@ -78,6 +104,8 @@ public class FragmentMisEventos extends Fragment {
         LinearLayoutManager linearlayoutmanager = new LinearLayoutManager(getActivity());
         rv_mis_eventos.setLayoutManager(linearlayoutmanager);
         rv_mis_eventos.setHasFixedSize(true);
+
+
         initializeData();
         initializeAdapter();
 
@@ -91,28 +119,24 @@ public class FragmentMisEventos extends Fragment {
                 .child(user.getUid())
                 .child(FirebaseReferences.EVENTOS_REFERENCE);
 
-            listaRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    //Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.kamran);
-                    icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.no_image_found);
-                    String tipo = "";
-                    //Iterable<DataSnapshot> items = dataSnapshot.getChildren();
-                    try {
-
-
-                    for (DataSnapshot  i: dataSnapshot.getChildren()){
+        listaRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.kamran);
+                icon = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.no_image_found);
+                String tipo = "";
+                //Iterable<DataSnapshot> items = dataSnapshot.getChildren();
+                try {
+                    for (DataSnapshot i : dataSnapshot.getChildren()) {
                         String idEvento = i.getKey();
                         itemListaSitio item = i.getValue(itemListaSitio.class);
 
-                        if(!item.getFoto().equalsIgnoreCase("Sin imagen")){
-                            StorageReference fotoRef = storage.getReference().child("foto usuarios/"+item.getFoto());
+                        if (!item.getFoto().equalsIgnoreCase("Sin imagen")) {
+                            StorageReference fotoRef = storage.getReference().child("foto usuarios/" + item.getFoto());
                             fotoRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                                 @Override
                                 public void onSuccess(byte[] bytes) {
                                     icon = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-
                                     // Use the bytes to display the image
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
@@ -123,50 +147,52 @@ public class FragmentMisEventos extends Fragment {
                                 }
                             });
 
-
-
-                            switch (item.getTipo()){
-                                case "Restaurante" :
+                            switch (item.getTipo()) {
+                                case "Restaurante":
                                     tipo = "Restaurante y Gastronomía";
                                     break;
-                                case "Rumba" :  tipo = "Rumba, Bares y Discotecas";
-                                    break ;
-                                case "Cultura" :  tipo = "Arte y Cultura";
-                                    break ;
-                                case "Musica" :  tipo = "Música y Conciertos";
-                                    break ;
-                                case "Deporte" :  tipo = "Deporte y Salud";
-                                    break ;
-                                case "Ropa" :  tipo = "Ropa y Accesorios";
-                                    break ;
-                                case "Religion" :  tipo = "Religión";
-                                    break ;
+                                case "Rumba":
+                                    tipo = "Rumba, Bares y Discotecas";
+                                    break;
+                                case "Cultura":
+                                    tipo = "Arte y Cultura";
+                                    break;
+                                case "Musica":
+                                    tipo = "Música y Conciertos";
+                                    break;
+                                case "Deporte":
+                                    tipo = "Deporte y Salud";
+                                    break;
+                                case "Ropa":
+                                    tipo = "Ropa y Accesorios";
+                                    break;
+                                case "Religion":
+                                    tipo = "Religión";
+                                    break;
                             }
-
                             dataModels.add(new MisEventosData(icon, item.getNombre(), tipo));
 
 
+                            if (dataModels.size() == 1) {
+                                adapter = new MisEventosAdapter(dataModels);
+                                rv_mis_eventos.setAdapter(adapter);
+                            } else if (dataModels.size() > 1) {
+                                adapter.notifyDataSetChanged();
+                            }
                         }
-
-
-
                     }
-                    }catch (Exception e){
-                        //Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-
+                } catch (Exception e) {
+                    //Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    // Failed to read value
-                    //Log.w(TAG, "Failed to read value.", error.toException());
-                }
-            });
+            }
 
-
-
-
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
 
         /*dataModels.add(new MisEventosData(icon, "Twitterwire", "8 Arrowood Drive"));
         dataModels.add(new MisEventosData(icon, "Oyoloo", "34 Jay Hill"));
@@ -180,7 +206,6 @@ public class FragmentMisEventos extends Fragment {
     }
 
     private void initializeAdapter() {
-        MisEventosAdapter adapter = new MisEventosAdapter(dataModels);
         rv_mis_eventos.setAdapter(adapter);
     }
 

@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity
 
         if (fragmentTransaction) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.frag_main, fragment)
+                    .replace(R.id.frag_main, fragment)
                     .commit();
 
             //menuItem.setChecked(true);

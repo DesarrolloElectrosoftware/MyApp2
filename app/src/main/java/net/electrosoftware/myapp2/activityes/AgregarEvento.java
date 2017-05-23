@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TimePicker;
 
 import com.alexzh.circleimageview.CircleImageView;
@@ -46,6 +48,7 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
     Bitmap bitmap = null;
     String file_name = "Sin imagen";
     Imageutils imageutils;
+    LinearLayout linear_evento_patrocinador;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,7 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mToolbar.setTitle("Mis Eventos");
+        mToolbar.setTitleTextColor(Color.WHITE);
 
         et_evento_nombre = (EditText) findViewById(R.id.et_evento_nombre);
         et_evento_telefono = (EditText) findViewById(R.id.et_evento_telefono);
@@ -81,6 +85,14 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
 
         spinner_evento_patrocinador = (MaterialSpinner) findViewById(R.id.spinner_evento_patrocinador);
         spinner_evento_patrocinador.setAdapter(adapterPatrocinador);
+
+        linear_evento_patrocinador = (LinearLayout) findViewById(R.id.linear_evento_patrocinador);
+
+        if (Comunicador.getTipoPerfil().equalsIgnoreCase("Empresario")) {
+            linear_evento_patrocinador.setVisibility(View.VISIBLE);
+        } else if (Comunicador.getTipoPerfil().equalsIgnoreCase("Consumidor")) {
+            linear_evento_patrocinador.setVisibility(View.GONE);
+        }
 
         et_evento_fechainicio = (EditText) findViewById(R.id.et_evento_fechainicio);
         et_evento_descripcion = (EditText) findViewById(R.id.et_evento_descripcion);
@@ -172,6 +184,11 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
                                     hourString = (hourOfDay - 12) < 10 ? "0" + (hourOfDay - 12) : "" + (hourOfDay - 12);
                                 }
                                 String minuteString = minute < 10 ? "0" + minute : "" + minute;
+
+                                if (hourString.equalsIgnoreCase("00")) {
+                                    hourString = "12";
+
+                                }
                                 String time = hourString + ":" + minuteString + " " + AM_PM;
 
                                 et_evento_horafin.setText(time);
@@ -195,7 +212,7 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
             public void onClick(View view) {
 
                 String tipo = "";
-                switch (spinner_evento_categoria.getSelectedItemPosition()){
+                switch (spinner_evento_categoria.getSelectedItemPosition()) {
                     case 1:
                         tipo = "Restaurante";
                         break;

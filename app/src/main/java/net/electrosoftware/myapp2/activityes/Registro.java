@@ -1,5 +1,7 @@
 package net.electrosoftware.myapp2.activityes;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -146,11 +148,26 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
 
                                                     }
 
-
                                                     FirebaseUser userFire = mAuth.getCurrentUser();
                                                     final DatabaseReference UsuariosRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
                                                     Usuario user = new Usuario(perfil, et_registro_usuario.getText().toString(), file_name);
                                                     user.writeNewUser(UsuariosRef, userFire.getUid() );
+
+                                                    new AlertDialog.Builder(Registro.this)
+                                                            //.setTitle("Confirmación")
+                                                            .setMessage("Usted se a registrado con éxito")
+                                                            .setIcon(R.mipmap.ic_launcher)
+                                                            .setCancelable(true)
+                                                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    startActivity(new Intent(Registro.this, Login.class));
+                                                                }
+                                                            })
+                                                            .show();
+
+
+                                                    //finish();
                                                     //userFire.getUid();
 
                                                     //updateUI(user);

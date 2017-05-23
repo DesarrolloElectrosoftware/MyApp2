@@ -4,8 +4,8 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,12 +14,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 import net.electrosoftware.myapp2.R;
 
 public class Login extends AppCompatActivity {
     TextView txt_login_app_name;
     Button btn_login_registrarse, btn_login_ingresar;
-    EditText et_login_usuario, et_login_contrasena;
+    EditText et_correo_usuario, et_login_contrasena;
     TextView txt_login_recordar_contrasena;
 
     // DIALOGO RECORDAR PASS
@@ -32,7 +37,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        et_login_usuario = (EditText) findViewById(R.id.et_login_usuario);
+        et_correo_usuario = (EditText) findViewById(R.id.et_correo_usuario);
         et_login_contrasena = (EditText) findViewById(R.id.et_login_contrasena);
         txt_login_recordar_contrasena = (TextView) findViewById(R.id.txt_login_recordar_contrasena);
 
@@ -44,7 +49,10 @@ public class Login extends AppCompatActivity {
         et_login_contrasena.setTypeface(custom_font);
         btn_login_registrarse.setTypeface(custom_font);
         btn_login_ingresar.setTypeface(custom_font);
-        et_login_usuario.setTypeface(custom_font);
+        et_correo_usuario.setTypeface(custom_font);
+
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        //FirebaseAuth.AuthStateListener mAuthListener;
 
         btn_login_registrarse.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +64,31 @@ public class Login extends AppCompatActivity {
         btn_login_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Login.this, MainActivity.class));
+                if (et_correo_usuario.getText().toString().length()>0 && et_login_contrasena.getText().toString().length()>0){
+                mAuth.signInWithEmailAndPassword(et_correo_usuario.getText().toString(), et_login_contrasena.getText().toString())
+                        .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                //Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                                if (task.isSuccessful()) {
+
+                                    startActivity(new Intent(Login.this, MainActivity.class));
+                                }else{
+                                    //Log.w(TAG, "signInWithEmail:failed", task.getException());
+
+                                    Toast.makeText(Login.this, "Correo o contraseña incorrecta", Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_LONG).show();
+                                }
+
+                                // ...
+                            }
+                        });
+                //startActivity(new Intent(Login.this, MainActivity.class));
+
+            }else{
+                Toast.makeText(Login.this, "Correo o contraseña incorrecta", Toast.LENGTH_LONG).show();
+            }
             }
         });
 
@@ -68,11 +100,11 @@ public class Login extends AppCompatActivity {
         });
     }
 
-    @Override
+    /*@Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         finish();
         return super.onKeyDown(keyCode, event);
-    }
+    }*/
 
     public void recordarPass(String texto) {
         final Dialog dialog = new Dialog(Login.this);
@@ -99,9 +131,28 @@ public class Login extends AppCompatActivity {
         btn_dial_recordar_aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(Login.this, "Se ha enviado una solicitud de reinicio de contraseña a tu correo, revísalo", Toast.LENGTH_LONG).show();
-                dialog.dismiss();
-                dialog.cancel();
+
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                if(et_dial_recordar_correo.getText().toString().length()>0) {
+
+                    auth.sendPasswordResetEmail(et_dial_recordar_correo.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(Login.this, "Se ha enviado una solicitud de reinicio de contraseña a tu correo, revísalo", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(Login.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+
+                    dialog.dismiss();
+                    dialog.cancel();
+                }else{
+                    Toast.makeText(Login.this, "Es necesario el correo", Toast.LENGTH_LONG).show();
+                }
+
 
             }
         });

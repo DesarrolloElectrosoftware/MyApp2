@@ -30,7 +30,7 @@
             app:view_shadowRadius="2dp" />
 
         <TextView
-            android:id="@+id/txt_encabezado_nombre_usuario"
+            android:id="@+id/txt_encabezado_nombre_usuario_Empresario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -40,7 +40,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txt_encabezado_correo"
+            android:id="@+id/txt_encabezado_correo_Empresario"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="cmaestre@gmail.com"

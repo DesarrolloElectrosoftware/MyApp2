@@ -96,7 +96,7 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position > -1) {
                     perfil = spinner_registro_Perfil.getSelectedItem().toString();
-                }else{
+                } else {
                     perfil = "no";
                 }
             }
@@ -123,7 +123,7 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
                                             public void onComplete(@NonNull Task<AuthResult> task) {
                                                 if (task.isSuccessful()) {
 
-                                                    if(bitmap != null){
+                                                    if (bitmap != null) {
                                                         final FirebaseStorage storage = FirebaseStorage.getInstance();
                                                         StorageReference storageRef = storage.getReference("foto usuarios").child(file_name);
 
@@ -151,8 +151,7 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
                                                     FirebaseUser userFire = mAuth.getCurrentUser();
                                                     final DatabaseReference UsuariosRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
                                                     Usuario user = new Usuario(perfil, et_registro_usuario.getText().toString(), file_name);
-                                                    user.writeNewUser(UsuariosRef, userFire.getUid() );
-
+                                                    user.writeNewUser(UsuariosRef, userFire.getUid());
                                                     new AlertDialog.Builder(Registro.this)
                                                             //.setTitle("Confirmación")
                                                             .setMessage("Usted se a registrado con éxito")
@@ -182,8 +181,7 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
                                                     } else if (error.indexOf("FirebaseAuthUserCollisionException") != -1) {
                                                         error = "Ya existe una cuenta asosciada al correo";
                                                     }
-                                                    Toast.makeText(Registro.this, error,
-                                                            Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(Registro.this, error, Toast.LENGTH_LONG).show();
                                                     //updateUI(null);
                                                 }
 
@@ -202,10 +200,9 @@ public class Registro extends AppCompatActivity implements Imageutils.ImageAttac
                     } else {
                         et_registro_usuario.setError("Falta su nombre");
                     }
-                }else{
+                } else {
                     Toast.makeText(Registro.this, "Debe seleccionar el perfil", Toast.LENGTH_LONG).show();
                 }
-
 
 
             }

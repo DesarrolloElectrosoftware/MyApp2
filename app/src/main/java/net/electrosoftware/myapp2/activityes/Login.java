@@ -1,8 +1,10 @@
 package net.electrosoftware.myapp2.activityes;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -40,7 +42,11 @@ public class Login extends AppCompatActivity {
     EditText et_dial_recordar_correo;
     Button btn_dial_recordar_cancelar, btn_dial_recordar_aceptar;
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
+    ProgressDialog PDInicioSesion = null;
+    Usuario usuario;
+    int correoLength, contrasenaLength;
+    String correoText, contrasenaText;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +67,11 @@ public class Login extends AppCompatActivity {
         btn_login_ingresar.setTypeface(custom_font);
         et_correo_usuario.setTypeface(custom_font);
 
-        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        //FirebaseAuth.AuthStateListener mAuthListener;
+        correoLength = et_correo_usuario.getText().toString().length();
+        contrasenaLength = et_login_contrasena.getText().toString().length();
+
+        correoText = et_correo_usuario.getText().toString();
+        contrasenaText = et_login_contrasena.getText().toString();
 
         btn_login_registrarse.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,61 +83,9 @@ public class Login extends AppCompatActivity {
         btn_login_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (et_correo_usuario.getText().toString().length()>0 && et_login_contrasena.getText().toString().length()>0){
-                mAuth.signInWithEmailAndPassword(et_correo_usuario.getText().toString(), et_login_contrasena.getText().toString())
-                        .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                //Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                                if (task.isSuccessful()) {
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    if (user!=null){
-
-                                        final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
-
-                                        userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                Usuario usuario = dataSnapshot.getValue(Usuario.class);
-
-                                                if(usuario.getPerfil().equalsIgnoreCase("Consumidor")) {
-                                                    startActivity(new Intent(Login.this, MainActivity.class));
-                                                }else if(usuario.getPerfil().equalsIgnoreCase("Empresario")){
-                                                    startActivity(new Intent(Login.this, Empresarios.class));
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError error) {
-                                                // Failed to read value
-                                                //Log.w(TAG, "Failed to read value.", error.toException());
-                                            }
-                                        });
-
-
-                                    }else {
-
-                                    }
-
-                                }else{
-                                    //Log.w(TAG, "signInWithEmail:failed", task.getException());
-
-                                    Toast.makeText(Login.this, "Correo o contraseña incorrecta", Toast.LENGTH_LONG).show();
-                                    //Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_LONG).show();
-                                }
-
-                                // ...
-                            }
-                        });
-                //startActivity(new Intent(Login.this, MainActivity.class));
-
-            }else{
-                Toast.makeText(Login.this, "Correo o contraseña incorrecta", Toast.LENGTH_LONG).show();
-            }
+                new Logueo().execute();
             }
         });
-
         txt_login_recordar_contrasena.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,9 +125,8 @@ public class Login extends AppCompatActivity {
         btn_dial_recordar_aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 FirebaseAuth auth = FirebaseAuth.getInstance();
-                if(et_dial_recordar_correo.getText().toString().length()>0) {
+                if (et_dial_recordar_correo.getText().toString().length() > 0) {
 
                     auth.sendPasswordResetEmail(et_dial_recordar_correo.getText().toString())
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -186,7 +142,7 @@ public class Login extends AppCompatActivity {
 
                     dialog.dismiss();
                     dialog.cancel();
-                }else{
+                } else {
                     Toast.makeText(Login.this, "Es necesario el correo", Toast.LENGTH_LONG).show();
                 }
 
@@ -195,5 +151,73 @@ public class Login extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private class Logueo extends AsyncTask<String, Float, Integer> {
+
+        protected void onPreExecute() {
+            PDInicioSesion = ProgressDialog.show(Login.this, "Iniciando Sesión", "Iniciando Sesión, espera un momento...", true, true);
+            PDInicioSesion.setCancelable(false);
+        }
+
+        protected Integer doInBackground(String... parametros) {
+            final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            //FirebaseAuth.AuthStateListener mAuthListener;
+
+            if (correoLength > 0 && contrasenaLength > 0) {
+                mAuth.signInWithEmailAndPassword(correoText, contrasenaText)
+                        .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                //Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                                if (task.isSuccessful()) {
+                                    user = FirebaseAuth.getInstance().getCurrentUser();
+                                    if (user != null) {
+                                        final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
+                                        userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                usuario = dataSnapshot.getValue(Usuario.class);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError error) {
+                                                // Failed to read value
+                                                //Log.w(TAG, "Failed to read value.", error.toException());
+                                            }
+                                        });
+                                    } else {
+                                        Toast.makeText(Login.this, "No se ha establecido conexión con el servicio", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    //Log.w(TAG, "signInWithEmail:failed", task.getException());
+
+                                    Toast.makeText(Login.this, "Correo o contraseña incorrecta", Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        });
+                //startActivity(new Intent(Login.this, MainActivity.class));
+            } else {
+                Toast.makeText(Login.this, "Correo o contraseña incorrecta", Toast.LENGTH_LONG).show();
+            }
+            return 0;
+        }
+
+        protected void onPostExecute(Integer bytes) {
+            Login.this.PDInicioSesion.dismiss();
+            if (user != null) {
+                if (usuario.getPerfil().equalsIgnoreCase("Consumidor")) {
+                    startActivity(new Intent(Login.this, MainActivity.class));
+                } else if (usuario.getPerfil().equalsIgnoreCase("Empresario")) {
+                    startActivity(new Intent(Login.this, Empresarios.class));
+                }
+            } else {
+                Toast.makeText(Login.this, "No se ha establecido conexión con el servicio", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
     }
 }

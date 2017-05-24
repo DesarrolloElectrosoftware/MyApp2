@@ -48,4 +48,5 @@ public class Usuario {
     public void setRutaFoto(String rutaFoto) {
         this.rutaFoto = rutaFoto;
     }
+
 }

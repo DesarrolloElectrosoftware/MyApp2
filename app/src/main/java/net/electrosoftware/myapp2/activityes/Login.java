@@ -19,9 +19,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import net.electrosoftware.myapp2.R;
+import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
+import net.electrosoftware.myapp2.firebaseClases.Usuario;
 
 public class Login extends AppCompatActivity {
     TextView txt_login_app_name;
@@ -79,16 +85,16 @@ public class Login extends AppCompatActivity {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user!=null){
 
-                                        /*final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
+                                        final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
 
                                         userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 Usuario usuario = dataSnapshot.getValue(Usuario.class);
 
-                                                if(usuario.getPerfil().equalsIgnoreCase("Consumidor")){*/
+                                                if(usuario.getPerfil().equalsIgnoreCase("Consumidor")) {
                                                     startActivity(new Intent(Login.this, MainActivity.class));
-                                                /*}else if(usuario.getPerfil().equalsIgnoreCase("Empresario")){
+                                                }else if(usuario.getPerfil().equalsIgnoreCase("Empresario")){
                                                     startActivity(new Intent(Login.this, Empresarios.class));
                                                 }
                                             }
@@ -98,7 +104,7 @@ public class Login extends AppCompatActivity {
                                                 // Failed to read value
                                                 //Log.w(TAG, "Failed to read value.", error.toException());
                                             }
-                                        });*/
+                                        });
 
 
                                     }else {

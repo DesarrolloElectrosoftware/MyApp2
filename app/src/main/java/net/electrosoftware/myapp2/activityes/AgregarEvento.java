@@ -214,32 +214,32 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
                 String tipo = "";
                 switch (spinner_evento_categoria.getSelectedItemPosition()) {
                     case 1:
-                        tipo = "Restaurante";
+                        tipo = "restaurante";
                         break;
                     case 2:
-                        tipo = "Rumba";
+                        tipo = "rumba";
                         break;
                     case 3:
-                        tipo = "Cultura";
+                        tipo = "cultura";
                         break;
                     case 4:
-                        tipo = "Musica";
+                        tipo = "musica";
                         break;
                     case 5:
-                        tipo = "Deporte";
+                        tipo = "deporte";
                         break;
                     case 6:
-                        tipo = "Ropa";
+                        tipo = "ropa";
                         break;
                     case 7:
-                        tipo = "Religion";
+                        tipo = "religion";
                         break;
                 }
                 Evento evento = new Evento(
                         et_evento_nombre.getText().toString(),
                         et_evento_telefono.getText().toString(),
-                        et_evento_fechainicio.getText().toString(),
-                        et_evento_fechafin.getText().toString(),
+                        et_evento_fechainicio.getText().toString().replace("/", "-"),
+                        et_evento_fechafin.getText().toString().replace("/", "-"),
                         et_evento_horainicio.getText().toString(),
                         et_evento_horainicio.getText().toString(),
                         spinner_evento_patrocinador.getSelectedItem().toString(),

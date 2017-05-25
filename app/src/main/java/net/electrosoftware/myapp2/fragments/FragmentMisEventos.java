@@ -117,7 +117,7 @@ public class FragmentMisEventos extends Fragment {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference listaRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
                 .child(user.getUid())
-                .child(FirebaseReferences.EVENTOS_REFERENCE);
+                .child(FirebaseReferences.EVENTO_REFERENCE);
 
         listaRef.addValueEventListener(new ValueEventListener() {
             @Override

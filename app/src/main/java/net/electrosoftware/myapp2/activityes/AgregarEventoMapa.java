@@ -141,7 +141,7 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
             public void onClick(View v) {
 
                 LatLng pos = mMap.getCameraPosition().target;
-                Punto p = new Punto(pos.latitude + "", pos.longitude + "");
+                Punto p = new Punto(pos.latitude, pos.longitude);
 
                 final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 //Toast.makeText(AgregarEventoMapa.this, "User key: " + userRef.getKey(), Toast.LENGTH_SHORT).show();
@@ -151,13 +151,13 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
 
                 final DatabaseReference ListaUserEventoRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
                         .child(user.getUid())
-                        .child(FirebaseReferences.EVENTOS_REFERENCE)
+                        .child(FirebaseReferences.EVENTO_REFERENCE)
                         .child(key);
                 itemListaSitio iten = new itemListaSitio(evento.getNombre(), evento.getTipo(), evento.getRutaFoto());
                 iten.writeItemListaSitio(ListaUserEventoRef);
 
                 final DatabaseReference FiltroEventosTipoRef = database.getReference(FirebaseReferences.FILTRO_REFERENCE)
-                        .child(FirebaseReferences.EVENTOS_REFERENCE).child(evento.tipo);
+                        .child(FirebaseReferences.EVENTO_REFERENCE).child(evento.getFechaIni()).child(evento.getTipo());
                 p.writePunto(FiltroEventosTipoRef, key);
 
 

@@ -1,6 +1,7 @@
 package net.electrosoftware.myapp2.activityes;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -20,17 +21,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import net.electrosoftware.myapp2.R;
-import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
-import net.electrosoftware.myapp2.firebaseClases.Usuario;
+import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.fragments.FragmentMapa;
 import net.electrosoftware.myapp2.fragments.FragmentMisEventos;
 import net.electrosoftware.myapp2.fragments.FragmentMisFavoritos;
@@ -43,6 +39,8 @@ public class MainActivity extends AppCompatActivity
     CircleImageView imv_encabezado_foto_perfil_Consumidor;
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final FirebaseStorage storage = FirebaseStorage.getInstance();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +56,39 @@ public class MainActivity extends AppCompatActivity
                 .findViewById(R.id.txt_encabezado_nombre_usuario_Consumidor);
         txt_encabezado_correo_Consumidor = (TextView) navigationView.getHeaderView(0).findViewById(R.id.txt_encabezado_correo_Consumidor);
         imv_encabezado_foto_perfil_Consumidor = (CircleImageView) navigationView.getHeaderView(0).findViewById(R.id.imv_encabezado_foto_perfil_Consumidor);
+
+
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user!=null){
 
-            final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
+            txt_encabezado_nombre_usuario_Consumidor.setText(Comunicador.getUsuario().getNombre());
+            txt_encabezado_correo_Consumidor.setText(user.getEmail());
+            String Foto = Comunicador.getUsuario().getRutaFoto();
+            if(!Foto.equalsIgnoreCase("Sin imagen")){
+                StorageReference fotoRef = storage.getReference().child("foto usuarios/"+Foto);
+                fotoRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        imv_encabezado_foto_perfil_Consumidor.setImageBitmap(b);
 
+                        // Use the bytes to display the image
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                        //imageCard.setImageResource(R.drawable.no_image_found);
+                    }
+                });
+            }
+
+            /*
             userRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -96,11 +122,14 @@ public class MainActivity extends AppCompatActivity
                     //Log.w(TAG, "Failed to read value.", error.toException());
                 }
             });
+            */
 
 
         }else {
-
+            startActivity(new Intent(MainActivity.this, Login.class));
+            finish();
         }
+
 
     }
 

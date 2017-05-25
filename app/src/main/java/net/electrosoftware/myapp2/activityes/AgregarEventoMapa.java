@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,6 +60,9 @@ import net.electrosoftware.myapp2.firebaseClases.Punto;
 import net.electrosoftware.myapp2.firebaseClases.itemListaSitio;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -142,6 +147,15 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
 
                 LatLng pos = mMap.getCameraPosition().target;
                 Punto p = new Punto(pos.latitude, pos.longitude);
+
+                evento.setLat(pos.latitude);
+                evento.setLng(pos.longitude);
+                try {
+                    evento.setDireccion(LagLngToDir(pos.latitude, pos.longitude));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    evento.setDireccion("");
+                }
 
                 final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 //Toast.makeText(AgregarEventoMapa.this, "User key: " + userRef.getKey(), Toast.LENGTH_SHORT).show();
@@ -456,6 +470,29 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
             // Indicates that the activity closed before a selection was made. For example if
             // the user pressed the back button.
         }
+    }
+
+    public String LagLngToDir(double latitude, double longitude ) throws IOException {
+        try {
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(this, Locale.getDefault());
+
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+        /*String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        String city = addresses.get(0).getLocality();
+        String state = addresses.get(0).getAdminArea();
+        String country = addresses.get(0).getCountryName();
+        String postalCode = addresses.get(0).getPostalCode();
+        String knownName = addresses.get(0).getFeatureName();*/  // Only if available else return NULL
+
+            return addresses.get(0).getAddressLine(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+
     }
 }
 

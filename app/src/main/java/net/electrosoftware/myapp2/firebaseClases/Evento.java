@@ -11,13 +11,17 @@ public class Evento {
     public String nombre;
     public String telefono;
     public String fechaIni;
-    public String fehcaFin;
+    public String fechaFin;
     public String horaIni;
     public String horaFin;
     public String patrocinador;
     public String tipo;
     public String descripcion;
     public String rutaFoto;
+    public String direccion;
+    public int asistentes;
+    public double lat;
+    public double lng;
     //public Bitmap foto;
 
     public Evento() {
@@ -29,17 +33,53 @@ public class Evento {
         return key;
     }
 
-    public Evento(String nombre, String telefono, String fechaIni, String fehcaFin, String horaIni, String horaFin, String patrocinador, String tipo, String descripcion, String rutaFoto) {
+    public Evento(String nombre, String telefono, String fechaIni, String fechaFin, String horaIni, String horaFin, String patrocinador, String tipo, String descripcion, String rutaFoto, String direccion, int asistentes, double lat, double lng) {
         this.nombre = nombre;
         this.telefono = telefono;
         this.fechaIni = fechaIni;
-        this.fehcaFin = fehcaFin;
+        this.fechaFin = fechaFin;
         this.horaIni = horaIni;
         this.horaFin = horaFin;
         this.patrocinador = patrocinador;
         this.tipo = tipo;
         this.descripcion = descripcion;
         this.rutaFoto = rutaFoto;
+        this.direccion = direccion;
+        this.asistentes = asistentes;
+        this.lat = lat;
+        this.lng = lng;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public int getAsistentes() {
+        return asistentes;
+    }
+
+    public void setAsistentes(int asistentes) {
+        this.asistentes = asistentes;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 
     /*public Bitmap getFoto() {
@@ -82,12 +122,12 @@ public class Evento {
         this.fechaIni = fechaIni;
     }
 
-    public String getFehcaFin() {
-        return fehcaFin;
+    public String getFechaFin() {
+        return fechaFin;
     }
 
-    public void setFehcaFin(String fehcaFin) {
-        this.fehcaFin = fehcaFin;
+    public void setFechaFin(String fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
     public String getHoraIni() {

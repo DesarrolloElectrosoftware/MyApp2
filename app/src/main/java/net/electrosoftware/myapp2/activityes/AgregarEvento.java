@@ -249,7 +249,8 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
                         spinner_evento_patrocinador.getSelectedItem().toString(),
                         tipo,
                         et_evento_descripcion.getText().toString(),
-                        file_name);
+                        file_name,
+                        "", 0, 0.0, 0.0);
                 //evento.setFoto(bitmap);
                 Comunicador.setObjeto1(evento);
                 Comunicador.setObjeto2(bitmap);

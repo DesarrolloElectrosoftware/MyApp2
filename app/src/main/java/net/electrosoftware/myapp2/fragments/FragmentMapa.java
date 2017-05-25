@@ -62,8 +62,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import net.electrosoftware.myapp2.R;
+import net.electrosoftware.myapp2.activityes.EventoDetalle;
 import net.electrosoftware.myapp2.activityes.LugarDetalle;
+import net.electrosoftware.myapp2.activityes.PromoDetalle;
 import net.electrosoftware.myapp2.clasesbases.DownloadTask;
+import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.firebaseClases.Empresa;
 import net.electrosoftware.myapp2.firebaseClases.Evento;
 import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
@@ -157,7 +160,19 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), LugarDetalle.class);
+                Intent intent = new Intent();
+                switch (filtroSitio){
+                    case "lugar":
+                        intent = new Intent(getActivity(), LugarDetalle.class);
+                        break;
+                    case "evento":
+                        intent = new Intent(getActivity(), EventoDetalle.class);
+                        break;
+                    case "promocion":
+                        intent = new Intent(getActivity(), PromoDetalle.class);
+                        break;
+                }
+
                 intent.putExtra("NombreSitio", NameCard.getText().toString());
                 intent.putExtra("DireccionSitio", DirectionCard.getText().toString());
                 intent.putExtra("RatingSitio", RatingCard.getText().toString());
@@ -452,9 +467,12 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                                                     imageCard.setImageResource(R.drawable.no_image_found);
                                                 }
 
+                                                Comunicador.setObjeto1(imageCard);
+                                                Comunicador.setEvento(ev);
+
                                                 NameCard.setText(ev.getNombre());
-                                                DirectionCard.setText(ev.getTipo());
-                                                RatingCard.setText(ev.getTelefono());
+                                                DirectionCard.setText(ev.getDireccion());
+                                                RatingCard.setText(ev.getAsistentes() + "");
 
                                             } else {
                                                 imageCard.setImageResource(R.drawable.no_image_found);

@@ -10,6 +10,7 @@ public class Comunicador {
     private static Object objeto1 = null;
     private static Object objeto2 = null;
     private static Usuario usuario = null;
+    private static Evento evento = null;
 
     public static void setObjeto1(Object newObjeto) {
         objeto1 = newObjeto;
@@ -41,5 +42,13 @@ public class Comunicador {
 
     public static void setUsuario(Usuario usuario) {
         Comunicador.usuario = usuario;
+    }
+
+    public static Evento getEvento() {
+        return evento;
+    }
+
+    public static void setEvento(Evento evento) {
+        Comunicador.evento = evento;
     }
 }

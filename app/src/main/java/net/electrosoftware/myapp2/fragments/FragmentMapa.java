@@ -98,7 +98,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     //List<Sitio> Promociones = new ArrayList<>();
     List<RutaRef> rutasReferenciadas = new ArrayList<>();
     String filtroSitio = "lugar";
-    String fechaFiltro= "";
+    String fechaFiltro = "";
 
     List<Empresa> empresas = new ArrayList<>();
     List<String> tipos = new ArrayList<>();
@@ -118,6 +118,9 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     Button btn_cancelar, btn_filtar;
     LinearLayout linear_filtro_calendario;
     ImageView searchMarker;
+
+    String markerSelect = "";
+    RutaRef rutaRefSitio = null;
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -304,7 +307,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         });
 
 
-
         empresas = new ArrayList<>();
         //tipos.add("business");
         //tipos.add("clothings");
@@ -351,7 +353,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
-        }*/
+        }
 
         final DatabaseReference EmpresaInfoCortaRef = database.getReference(
                 FirebaseReferences.EMPRESAS_REFERENCE).child(FirebaseReferences.INFOCORTA_REFERENCE);
@@ -363,7 +365,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                     //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
 
                     imageCard.setImageResource(R.drawable.loading);
-                    if (ev.getRutaFoto()!= null && !(ev.getRutaFoto().equalsIgnoreCase("Sin imagen"))) {
+                    if (ev.getRutaFoto() != null && !(ev.getRutaFoto().equalsIgnoreCase("Sin imagen"))) {
                         StorageReference imagesRef = storage.getReference("foto sitios/" + ev.getRutaFoto());
                         imagesRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                             @Override
@@ -400,16 +402,78 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        };
+        };*/
 
         miMapa.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                for (Sitio s : Sitios) {
-                    if (s.getMarker().getTitle().equalsIgnoreCase(marker.getTitle())) {
-                        EmpresaInfoCortaRef.child(s.getKey()).addValueEventListener(eventListener);
-                    } else {
-                        EmpresaInfoCortaRef.child(s.getKey()).removeEventListener(eventListener);
+
+                if (!(marker.getTitle().equalsIgnoreCase(markerSelect))) {
+                    markerSelect = marker.getTitle();
+                    if (rutaRefSitio != null) {
+                        rutaRefSitio.getdatabaseReference().removeEventListener(rutaRefSitio.getvalueEventListener());
+                        rutaRefSitio = null;
+                    }
+                    rutaRefSitio = new RutaRef();
+                    rutaRefSitio.setdatabaseReference(database.getReference(FirebaseReferences.SITIO_REFERENCE).child(markerSelect));
+
+                    for (Sitio s : Sitios) {
+                        if (s.getMarker().getTitle().equalsIgnoreCase(marker.getTitle())) {
+                            rutaRefSitio.setvalueEventListener(
+                                    rutaRefSitio.getdatabaseReference().addValueEventListener(
+                                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    switch (filtroSitio){
+                                        case "lugar":
+                                            break;
+                                        case "evento":
+                                            Evento ev = dataSnapshot.getValue(Evento.class);
+                                            if (ev != null) {
+                                                //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
+                                                imageCard.setImageResource(R.drawable.loading);
+                                                if (ev.getRutaFoto() != null && !(ev.getRutaFoto().equalsIgnoreCase("Sin imagen"))) {
+                                                    StorageReference imagesRef = storage.getReference("foto sitios/"+filtroSitio+"/" + ev.getRutaFoto());
+                                                    imagesRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                        @Override
+                                                        public void onSuccess(byte[] bytes) {
+                                                            Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                                            imageCard.setImageBitmap(b);
+                                                            // Use the bytes to display the image
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception exception) {
+                                                            // Handle any errors
+                                                            imageCard.setImageResource(R.drawable.no_image_found);
+                                                        }
+                                                    });
+                                                } else {
+                                                    imageCard.setImageResource(R.drawable.no_image_found);
+                                                }
+
+                                                NameCard.setText(ev.getNombre());
+                                                DirectionCard.setText(ev.getTipo());
+                                                RatingCard.setText(ev.getTelefono());
+
+                                            } else {
+                                                imageCard.setImageResource(R.drawable.no_image_found);
+                                                NameCard.setText("Lo sentimos, no tenemos información de este punto");
+                                                DirectionCard.setText("X_X");
+                                                RatingCard.setText("0");
+                                            }
+                                            break;
+                                        case "promocion":
+                                            break;
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            }));
+                        }
                     }
                 }
 
@@ -480,7 +544,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         mMapView.onLowMemory();
     }
 
-    public void limpiarMapa(){
+    public void limpiarMapa() {
 
 
         for (Sitio s : Sitios) {
@@ -494,17 +558,17 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         rutasReferenciadas.clear();
     }
 
-    public void filtrarSitrios(){
+    public void filtrarSitrios() {
 
         limpiarMapa();
         for (final String t : tipos) {
             final DatabaseReference sitiosRef;
-            if (filtroSitio.equalsIgnoreCase("lugar")){
+            if (filtroSitio.equalsIgnoreCase("lugar")) {
                 sitiosRef = database.getReference(
                         FirebaseReferences.FILTRO_REFERENCE)
                         .child(filtroSitio)
                         .child(t);
-            }else{
+            } else {
                 sitiosRef = database.getReference(
                         FirebaseReferences.FILTRO_REFERENCE)
                         .child(filtroSitio).child(fechaFiltro)
@@ -521,7 +585,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                         e.setGeoPunto(g);
                         Sitios.add(e);
 
-                        final int id = getResources().getIdentifier("icon_"+filtroSitio+"_" + t, "drawable", "net.electrosoftware.myapp2");
+                        final int id = getResources().getIdentifier("icon_" + filtroSitio + "_" + t, "drawable", "net.electrosoftware.myapp2");
 
                         e.setMarker(miMapa.addMarker(new MarkerOptions()
                                 .position(new LatLng(g.getLat(), g.getLng()))
@@ -704,8 +768,8 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity(), "Filtro Aplicado", Toast.LENGTH_SHORT).show();
-                if(ocultarSpiner==0){
-                    fechaFiltro = txt_fecha_filtro.getText().toString().replace("/","-").replace(" ", "");
+                if (ocultarSpiner == 0) {
+                    fechaFiltro = txt_fecha_filtro.getText().toString().replace("/", "-").replace(" ", "");
                 }
                 filtrarSitrios();
                 dialog.dismiss();

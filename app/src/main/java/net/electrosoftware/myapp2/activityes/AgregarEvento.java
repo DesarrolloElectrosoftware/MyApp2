@@ -1,5 +1,6 @@
 package net.electrosoftware.myapp2.activityes;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -49,10 +50,13 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
     String file_name = "Sin imagen";
     Imageutils imageutils;
     LinearLayout linear_evento_patrocinador;
+    public static Activity agregarEvent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_agregar_evento);
+
+        agregarEvent = this;
 
         mToolbar = (Toolbar) findViewById(R.id.toolbarCrearEvento);
         setSupportActionBar(mToolbar);
@@ -238,8 +242,8 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
                 Evento evento = new Evento(
                         et_evento_nombre.getText().toString(),
                         et_evento_telefono.getText().toString(),
-                        et_evento_fechainicio.getText().toString().replace("/", "-"),
-                        et_evento_fechafin.getText().toString().replace("/", "-"),
+                        et_evento_fechainicio.getText().toString().replace("/", "-").replace(" " , ""),
+                        et_evento_fechafin.getText().toString().replace("/", "-").replace(" " , ""),
                         et_evento_horainicio.getText().toString(),
                         et_evento_horainicio.getText().toString(),
                         spinner_evento_patrocinador.getSelectedItem().toString(),

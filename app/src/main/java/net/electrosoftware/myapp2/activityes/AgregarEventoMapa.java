@@ -163,7 +163,7 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
 
                 if (bitmap != null) {
                     final FirebaseStorage storage = FirebaseStorage.getInstance();
-                    StorageReference storageRef = storage.getReference("foto sitios").child("eventos").child(evento.getRutaFoto());
+                    StorageReference storageRef = storage.getReference("foto sitios").child("evento").child(evento.getRutaFoto());
 
 
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -187,6 +187,8 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
                 }
 
                 Toast.makeText(AgregarEventoMapa.this, "El evento se a registrado", Toast.LENGTH_SHORT).show();
+                AgregarEvento.agregarEvent.finish();
+                finish();
                 startActivity(new Intent(AgregarEventoMapa.this, MainActivity.class));
             }
         });

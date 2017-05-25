@@ -9,6 +9,7 @@ public class Comunicador {
 
     private static Object objeto1 = null;
     private static Object objeto2 = null;
+    private static Usuario usuario = null;
 
     public static void setObjeto1(Object newObjeto) {
         objeto1 = newObjeto;
@@ -32,5 +33,13 @@ public class Comunicador {
 
     public static void setTipoPerfil(String tipoPerfil) {
         TipoPerfil = tipoPerfil;
+    }
+
+    public static Usuario getUsuario() {
+        return usuario;
+    }
+
+    public static void setUsuario(Usuario usuario) {
+        Comunicador.usuario = usuario;
     }
 }

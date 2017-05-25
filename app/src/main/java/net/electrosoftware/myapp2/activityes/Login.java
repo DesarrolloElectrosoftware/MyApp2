@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import net.electrosoftware.myapp2.R;
+import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
 import net.electrosoftware.myapp2.firebaseClases.Usuario;
 
@@ -41,12 +42,21 @@ public class Login extends AppCompatActivity {
     TextView txt_dial_titulo_recordar;
     EditText et_dial_recordar_correo;
     Button btn_dial_recordar_cancelar, btn_dial_recordar_aceptar;
-    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
     ProgressDialog PDInicioSesion = null;
     Usuario usuario;
     int correoLength, contrasenaLength;
     String correoText, contrasenaText;
+
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
     FirebaseUser user;
+
+    final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
+
+    ValueEventListener cargarUsuarioEvent = null;
+
+    boolean flagTask = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +102,16 @@ public class Login extends AppCompatActivity {
                 recordarPass("RECORDAR CONTRASEÑA");
             }
         });
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (PDInicioSesion != null){
+            Login.this.PDInicioSesion.dismiss();
+            userRef.removeEventListener(cargarUsuarioEvent);
+        }
+
+
     }
 
     /*@Override
@@ -156,12 +176,13 @@ public class Login extends AppCompatActivity {
     private class Logueo extends AsyncTask<String, Float, Integer> {
 
         protected void onPreExecute() {
+            flagTask = false;
             PDInicioSesion = ProgressDialog.show(Login.this, "Iniciando Sesión", "Iniciando Sesión, espera un momento...", true, true);
             PDInicioSesion.setCancelable(false);
         }
 
         protected Integer doInBackground(String... parametros) {
-            final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
             //FirebaseAuth.AuthStateListener mAuthListener;
 
             if (correoLength > 0 && contrasenaLength > 0) {
@@ -171,13 +192,24 @@ public class Login extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 //Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
                                 if (task.isSuccessful()) {
+                                    //flagTask = true;
                                     user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
-                                        final DatabaseReference userRef = database.getReference(FirebaseReferences.USUARIOS_REFERENCE);
-                                        userRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+                                        cargarUsuarioEvent = userRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 usuario = dataSnapshot.getValue(Usuario.class);
+                                                Comunicador.setUsuario(usuario);
+
+                                                if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Consumidor")) {
+                                                    startActivity(new Intent(Login.this, MainActivity.class));
+                                                } else if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Empresario")) {
+                                                    startActivity(new Intent(Login.this, Empresarios.class));
+                                                }
+                                                //Login.this.PDInicioSesion.dismiss();
+
                                             }
 
                                             @Override
@@ -187,8 +219,13 @@ public class Login extends AppCompatActivity {
                                             }
                                         });
                                     } else {
+                                        //flagTask = true;
+                                        Login.this.PDInicioSesion.dismiss();
                                         Toast.makeText(Login.this, "No se ha establecido conexión con el servicio", Toast.LENGTH_SHORT).show();
                                     }
+
+
+
                                 } else {
                                     //Log.w(TAG, "signInWithEmail:failed", task.getException());
 
@@ -206,16 +243,19 @@ public class Login extends AppCompatActivity {
         }
 
         protected void onPostExecute(Integer bytes) {
-            Login.this.PDInicioSesion.dismiss();
-            if (user != null) {
-                if (usuario.getPerfil().equalsIgnoreCase("Consumidor")) {
-                    startActivity(new Intent(Login.this, MainActivity.class));
-                } else if (usuario.getPerfil().equalsIgnoreCase("Empresario")) {
-                    startActivity(new Intent(Login.this, Empresarios.class));
+
+           /* while (!flagTask) {
+                Login.this.PDInicioSesion.dismiss();
+                if (user != null) {
+                    if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Consumidor")) {
+                        startActivity(new Intent(Login.this, MainActivity.class));
+                    } else if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Empresario")) {
+                        startActivity(new Intent(Login.this, Empresarios.class));
+                    }
                 }
-            } else {
-                Toast.makeText(Login.this, "No se ha establecido conexión con el servicio", Toast.LENGTH_SHORT).show();
-            }
+            }*/
+
+
 
         }
 

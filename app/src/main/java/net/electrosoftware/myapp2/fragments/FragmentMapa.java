@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -11,10 +13,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -38,6 +40,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -66,6 +69,7 @@ import net.electrosoftware.myapp2.activityes.EventoDetalle;
 import net.electrosoftware.myapp2.activityes.LugarDetalle;
 import net.electrosoftware.myapp2.activityes.PromoDetalle;
 import net.electrosoftware.myapp2.clasesbases.DownloadTask;
+import net.electrosoftware.myapp2.clasesbases.MultiSelectionSpinner;
 import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.firebaseClases.Empresa;
 import net.electrosoftware.myapp2.firebaseClases.Evento;
@@ -128,6 +132,11 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final FirebaseStorage storage = FirebaseStorage.getInstance();
 
+    PlaceAutocompleteFragment autocompleteFragment;
+    private GoogleApiClient mGoogleApiClient;
+
+    MultiSelectionSpinner spinner_categoria_multi;
+
     public FragmentMapa() {
         // Required empty public constructor
     }
@@ -161,7 +170,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                switch (filtroSitio){
+                switch (filtroSitio) {
                     case "lugar":
                         intent = new Intent(getActivity(), LugarDetalle.class);
                         break;
@@ -183,32 +192,47 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        /*DireccionBuscar = (EditText) view.findViewById(R.id.frag_textoBuscar);
-        btnBuscarDireccion = (Button) view.findViewById(R.id.frag_btnBuscar);
-        btnBuscarDireccion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String g = DireccionBuscar.getText().toString();
-
-                Geocoder geocoder = new Geocoder(getActivity());
-                List<Address> addresses = null;
-
-                try {
-                    addresses = geocoder.getFromLocationName(g, 3);
-                    if (addresses != null && !addresses.equals(""))
-                        search(addresses);
-
-                } catch (Exception e) {
-
-                }
-            }
-        });*/
-
         // FAB MENU
         fab_menu = (FloatingActionsMenu) view.findViewById(R.id.fab_menu);
         fabLugares = (FloatingActionButton) view.findViewById(R.id.fabLugares);
         fabEventos = (FloatingActionButton) view.findViewById(R.id.fabEventos);
         fabPromociones = (FloatingActionButton) view.findViewById(R.id.fabPromociones);
+
+        searchMarker = (ImageView) view.findViewById(R.id.searchMarker);
+
+        autocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        FragmentManager fragmentManager = getActivity().getFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.place_autocomplete_fragment);
+        if (!getActivity().isFinishing()) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(fragment);
+            fragmentTransaction.commit();
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        mMapView.onCreate(savedInstanceState);
+        mMapView.onResume();
+        mMapView.getMapAsync(this);
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), LugarDetalle.class);
+                intent.putExtra("NombreSitio", NameCard.getText().toString());
+                intent.putExtra("DireccionSitio", DirectionCard.getText().toString());
+                intent.putExtra("RatingSitio", RatingCard.getText().toString());
+                startActivity(intent);
+            }
+        });
 
         fabLugares.setColorNormal(Color.parseColor("#F44336"));
         fabLugares.setColorPressed(Color.parseColor("#D32F2F"));
@@ -246,9 +270,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        searchMarker = (ImageView) view.findViewById(R.id.searchMarker);
-
-        return view;
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -283,8 +305,8 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
 
             @Override
             public boolean onMyLocationButtonClick() {
-                Location miUbicacion = miMapa.getMyLocation();
-                miMapa.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(miUbicacion.getLatitude(), miUbicacion.getLongitude()), 16f));
+                //Location miUbicacion = miMapa.getMyLocation();
+                //miMapa.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(miUbicacion.getLatitude(), miUbicacion.getLongitude()), 16f));
                 searchMarker.setVisibility(View.GONE);
                 if (cardView.getVisibility() == View.VISIBLE) {
                     fade_out();
@@ -440,63 +462,63 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                             rutaRefSitio.setvalueEventListener(
                                     rutaRefSitio.getdatabaseReference().addValueEventListener(
                                             new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    switch (filtroSitio){
-                                        case "lugar":
-                                            break;
-                                        case "evento":
-                                            Evento ev = dataSnapshot.getValue(Evento.class);
-                                            if (ev != null) {
-                                                //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
-                                                imageCard.setImageResource(R.drawable.loading);
-                                                if (ev.getRutaFoto() != null && !(ev.getRutaFoto().equalsIgnoreCase("Sin imagen"))) {
-                                                    StorageReference imagesRef = storage.getReference("foto sitios/"+filtroSitio+"/" + ev.getRutaFoto());
-                                                    imagesRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                        @Override
-                                                        public void onSuccess(byte[] bytes) {
-                                                            Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                            imageCard.setImageBitmap(b);
-                                                            // Use the bytes to display the image
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception exception) {
-                                                            // Handle any errors
-                                                            imageCard.setImageResource(R.drawable.no_image_found);
-                                                        }
-                                                    });
-                                                } else {
-                                                    imageCard.setImageResource(R.drawable.no_image_found);
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    switch (filtroSitio) {
+                                                        case "lugar":
+                                                            break;
+                                                        case "evento":
+                                                            Evento ev = dataSnapshot.getValue(Evento.class);
+                                                            if (ev != null) {
+                                                                //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
+                                                                imageCard.setImageResource(R.drawable.loading);
+                                                                if (ev.getRutaFoto() != null && !(ev.getRutaFoto().equalsIgnoreCase("Sin imagen"))) {
+                                                                    StorageReference imagesRef = storage.getReference("foto sitios/" + filtroSitio + "/" + ev.getRutaFoto());
+                                                                    imagesRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                                                        @Override
+                                                                        public void onSuccess(byte[] bytes) {
+                                                                            Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                                                            imageCard.setImageBitmap(b);
+                                                                            // Use the bytes to display the image
+                                                                        }
+                                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Exception exception) {
+                                                                            // Handle any errors
+                                                                            imageCard.setImageResource(R.drawable.no_image_found);
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    imageCard.setImageResource(R.drawable.no_image_found);
+                                                                }
+
+                                                                cardView.setClickable(true);
+                                                                Comunicador.setObjeto1(imageCard);
+                                                                Comunicador.setIdEvento(markerSelect);
+                                                                Comunicador.setEvento(ev);
+
+                                                                NameCard.setText(ev.getNombre());
+                                                                DirectionCard.setText(ev.getDireccion());
+                                                                RatingCard.setText(ev.getAsistentes() + "");
+
+                                                            } else {
+                                                                cardView.setClickable(false);
+                                                                imageCard.setImageResource(R.drawable.no_image_found);
+                                                                NameCard.setText("Lo sentimos, no tenemos información de este punto");
+                                                                DirectionCard.setText("X_X");
+                                                                RatingCard.setText("0");
+                                                            }
+                                                            break;
+                                                        case "promocion":
+                                                            break;
+                                                    }
                                                 }
 
-                                                cardView.setClickable(true);
-                                                Comunicador.setObjeto1(imageCard);
-                                                Comunicador.setIdEvento(markerSelect);
-                                                Comunicador.setEvento(ev);
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
 
-                                                NameCard.setText(ev.getNombre());
-                                                DirectionCard.setText(ev.getDireccion());
-                                                RatingCard.setText(ev.getAsistentes() + "");
-
-                                            } else {
-                                                cardView.setClickable(false);
-                                                imageCard.setImageResource(R.drawable.no_image_found);
-                                                NameCard.setText("Lo sentimos, no tenemos información de este punto");
-                                                DirectionCard.setText("X_X");
-                                                RatingCard.setText("0");
-                                            }
-                                            break;
-                                        case "promocion":
-                                            break;
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            }));
+                                                }
+                                            }));
                         }
                     }
                 }
@@ -513,7 +535,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         adapterCategorias = ArrayAdapter.createFromResource(getActivity(), R.array.Categorias, android.R.layout.simple_spinner_item);
         adapterCategorias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
         autocompleteFragment.setBoundsBias(new LatLngBounds(
                 new LatLng(-79.85749609375, -5.100027762345325), new LatLng(-66.59973828124998, 12.737772434600243)));
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -522,13 +543,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                 // TODO: Get info about the selected place.
                 Log.i(TAG, "Place: " + place.getName());
                 miMapa.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 17f));
-
                 searchMarker.setVisibility(View.VISIBLE);
-
-                /*Marker MarkerBusqueda = miMapa.addMarker(new MarkerOptions()
-                        .position(place.getLatLng())
-                        .title(place.getName().toString())
-                        .icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap("map-icons/places.png", 80, 100))));*/
             }
 
             @Override
@@ -755,9 +770,25 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         btn_cancelar = (Button) dialog.findViewById(R.id.btn_cancelar);
         btn_filtar = (Button) dialog.findViewById(R.id.btn_filtar);
         linear_filtro_calendario = (LinearLayout) dialog.findViewById(R.id.linear_filtro_calendario);
+        spinner_categoria_multi = (MultiSelectionSpinner) dialog.findViewById(R.id.spinner_categoria_multi);
 
         txt_titulo_filtro.setText(nombreFiltro);
         spinner_categoria.setAdapter(adapterCategorias);
+
+        String[] array = {"Categorías: ", "Restaurante y Gastronomía", "Rumba, Bares y Discotecas", "Arte y Cultura", "Música y Conciertos", "Deporte y Salud", "Ropa y Accesorios", "Religión"};
+        spinner_categoria_multi.setItems(array);
+        spinner_categoria_multi.setSelection(new int[]{0});
+        spinner_categoria_multi.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+            @Override
+            public void selectedIndices(List<Integer> indices) {
+
+            }
+
+            @Override
+            public void selectedStrings(List<String> strings) {
+                Toast.makeText(getActivity(), strings.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
 
         if (ocultarSpiner == 1) {
             linear_filtro_calendario.setVisibility(View.GONE);

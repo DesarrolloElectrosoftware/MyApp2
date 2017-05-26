@@ -46,10 +46,29 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linear_filtro_calendario"
+        android:id="@+id/linear_spinner_multi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear_spinner"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+
+        <net.electrosoftware.myapp2.clasesbases.MultiSelectionSpinner
+            android:id="@+id/spinner_categoria_multi"
+            style="@style/spinner_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_filtro_calendario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_spinner_multi"
         android:layout_marginBottom="15dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"

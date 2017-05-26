@@ -108,6 +108,17 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="ToggleAct" parent="android:Widget">
+        <item name="android:padding">8dp</item>
+        <item name="android:background">@color/cardBackGround</item>
+        <item name="android:drawableTop">@drawable/ic_actualizar</item>
+        <item name="android:text">Actualizar</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="ToggleEventos" parent="android:Widget">
         <item name="android:padding">8dp</item>
         <item name="android:background">@color/cardBackGround</item>

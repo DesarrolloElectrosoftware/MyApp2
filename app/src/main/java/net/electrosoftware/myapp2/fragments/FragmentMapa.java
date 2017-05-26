@@ -166,6 +166,9 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                         intent = new Intent(getActivity(), LugarDetalle.class);
                         break;
                     case "evento":
+                        rutaRefSitio.getdatabaseReference().removeEventListener(rutaRefSitio.getvalueEventListener());
+                        rutaRefSitio = null;
+                        limpiarMapa();
                         intent = new Intent(getActivity(), EventoDetalle.class);
                         break;
                     case "promocion":
@@ -467,7 +470,9 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                                                     imageCard.setImageResource(R.drawable.no_image_found);
                                                 }
 
+                                                cardView.setClickable(true);
                                                 Comunicador.setObjeto1(imageCard);
+                                                Comunicador.setIdEvento(markerSelect);
                                                 Comunicador.setEvento(ev);
 
                                                 NameCard.setText(ev.getNombre());
@@ -475,6 +480,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                                                 RatingCard.setText(ev.getAsistentes() + "");
 
                                             } else {
+                                                cardView.setClickable(false);
                                                 imageCard.setImageResource(R.drawable.no_image_found);
                                                 NameCard.setText("Lo sentimos, no tenemos información de este punto");
                                                 DirectionCard.setText("X_X");

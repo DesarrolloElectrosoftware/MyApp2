@@ -260,7 +260,13 @@
                             android:layout_height="wrap_content"
                             android:gravity="top|left"
                             android:hint="Descripción"
-                            android:text="Tremendo Parrandón"
+                            android:text="Esta es la descripción,
+                            Esta es la descripción, Esta es la descripción,
+                            Esta es la descripción, Esta es la descripción,
+                            Esta es la descripción, Esta es la descripción,
+                            Esta es la descripción, Esta es la descripción,
+                            Esta es la descripción, Esta es la descripción,
+                            Esta es la descripción, Esta es la descripción"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:textColorHint="@color/colorAccent" />

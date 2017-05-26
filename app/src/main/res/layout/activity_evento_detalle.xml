@@ -33,6 +33,9 @@
             <Button
                 android:id="@+id/btn_evento_comentar"
                 style="@style/ToggleComentar" />
+            <Button
+                android:id="@+id/btn_evento_act"
+                style="@style/ToggleAct" />
         </LinearLayout>
 
         <!-- DETALLE DEL evento -->

@@ -239,6 +239,13 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
                         tipo = "religion";
                         break;
                 }
+
+                String patrosinador = "Patrocina: ";
+                if(Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Consumidor")){
+                    patrosinador = patrosinador + Comunicador.getUsuario().getNombre();
+                }else{
+                    patrosinador = patrosinador + spinner_evento_patrocinador.getSelectedItem().toString();
+                }
                 Evento evento = new Evento(
                         et_evento_nombre.getText().toString(),
                         et_evento_telefono.getText().toString(),
@@ -246,7 +253,7 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
                         et_evento_fechafin.getText().toString().replace("/", "-").replace(" " , ""),
                         et_evento_horainicio.getText().toString(),
                         et_evento_horainicio.getText().toString(),
-                        spinner_evento_patrocinador.getSelectedItem().toString(),
+                        patrosinador,
                         tipo,
                         et_evento_descripcion.getText().toString(),
                         file_name,

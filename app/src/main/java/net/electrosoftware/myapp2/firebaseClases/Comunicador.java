@@ -1,5 +1,11 @@
 package net.electrosoftware.myapp2.firebaseClases;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 /**
  * Created by CARLOS MAESTRE on 23/05/2017.
  */
@@ -11,6 +17,7 @@ public class Comunicador {
     private static Object objeto2 = null;
     private static Usuario usuario = null;
     private static Evento evento = null;
+    private static String idEvento = null;
 
     public static void setObjeto1(Object newObjeto) {
         objeto1 = newObjeto;
@@ -50,5 +57,31 @@ public class Comunicador {
 
     public static void setEvento(Evento evento) {
         Comunicador.evento = evento;
+    }
+
+    public static String getIdEvento() {
+        return idEvento;
+    }
+
+    public static void setIdEvento(String idEvento) {
+        Comunicador.idEvento = idEvento;
+    }
+
+    public static void actualizarAsistentesEvento(String idEvento){
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dr = database.getReference(FirebaseReferences.ASISTENCIA_REFERENCE).child(idEvento);
+
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }

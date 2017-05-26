@@ -123,6 +123,8 @@ public class FragmentMisEventos extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.kamran);
+                dataModels.clear();
+
                 icon = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.no_image_found);
                 String tipo = "";
                 //Iterable<DataSnapshot> items = dataSnapshot.getChildren();

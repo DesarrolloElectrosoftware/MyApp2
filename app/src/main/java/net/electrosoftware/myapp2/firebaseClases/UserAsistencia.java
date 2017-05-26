@@ -1,4 +1,4 @@
-package net.electrosoftware.myapp2.activityes;
+package net.electrosoftware.myapp2.firebaseClases;
 
 import com.google.firebase.database.DatabaseReference;
 
@@ -21,4 +21,11 @@ public class UserAsistencia {
         dataRef.setValue(this);
     }
 
+    public boolean getAsistencia() {
+        return asistencia;
+    }
+
+    public void setAsistencia(boolean asistencia) {
+        this.asistencia = asistencia;
+    }
 }

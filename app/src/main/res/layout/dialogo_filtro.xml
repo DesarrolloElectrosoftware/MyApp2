@@ -29,7 +29,7 @@
         android:layout_marginRight="20dp"
         android:orientation="horizontal">
 
-        <fr.ganfra.materialspinner.MaterialSpinner
+        <!--fr.ganfra.materialspinner.MaterialSpinner
             android:id="@+id/spinner_categoria"
             style="@style/spinner_style"
             android:layout_width="match_parent"
@@ -42,7 +42,7 @@
             app:ms_floatingLabelColor="@color/colorAccent"
             app:ms_floatingLabelText="Categorías: "
             app:ms_hint="Categorías: "
-            app:ms_multiline="false" />
+            app:ms_multiline="false" /-->
     </LinearLayout>
 
     <LinearLayout

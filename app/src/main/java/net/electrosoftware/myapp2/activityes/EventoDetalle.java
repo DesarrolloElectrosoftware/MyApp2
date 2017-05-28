@@ -163,7 +163,7 @@ public class EventoDetalle extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 UserAsistencia ua= dataSnapshot.getValue(UserAsistencia.class);
-                if(ua.getAsistencia()){
+                if(ua != null && ua.getAsistencia()){
                     btn_evento_asistencia.setChecked(true);
                 }
             }

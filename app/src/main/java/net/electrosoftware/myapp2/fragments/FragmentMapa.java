@@ -129,6 +129,8 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     String markerSelect = "";
     RutaRef rutaRefSitio = null;
 
+    int[] itensCategoriaVistos = {0,1,2,3,4,5,6};
+
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -223,7 +225,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         mMapView.onResume();
         mMapView.getMapAsync(this);
 
-        cardView.setOnClickListener(new View.OnClickListener() {
+        /*cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), LugarDetalle.class);
@@ -232,7 +234,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                 intent.putExtra("RatingSitio", RatingCard.getText().toString());
                 startActivity(intent);
             }
-        });
+        });*/
 
         fabLugares.setColorNormal(Color.parseColor("#F44336"));
         fabLugares.setColorPressed(Color.parseColor("#D32F2F"));
@@ -347,7 +349,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         });
 
 
-        empresas = new ArrayList<>();
+        //empresas = new ArrayList<>();
         //tipos.add("business");
         //tipos.add("clothings");
         //tipos.add("hotels");
@@ -762,31 +764,65 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialogo_filtro);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        spinner_categoria_multi = (MultiSelectionSpinner) dialog.findViewById(R.id.spinner_categoria_multi);
+        String[] array = {"Restaurante y Gastronomía", "Rumba, Bares y Discotecas", "Arte y Cultura", "Música y Conciertos", "Deporte y Salud", "Ropa y Accesorios", "Religión"};
+        spinner_categoria_multi.setItems(array);
+        spinner_categoria_multi.setSelection(itensCategoriaVistos);
 
         txt_titulo_filtro = (TextView) dialog.findViewById(R.id.txt_titulo_filtro);
         btn_filtro_fecha = (ImageButton) dialog.findViewById(R.id.btn_filtro_fecha);
         txt_fecha_filtro = (EditText) dialog.findViewById(R.id.txt_fecha_filtro);
-        spinner_categoria = (MaterialSpinner) dialog.findViewById(R.id.spinner_categoria);
+        //spinner_categoria = (MaterialSpinner) dialog.findViewById(R.id.spinner_categoria);
         btn_cancelar = (Button) dialog.findViewById(R.id.btn_cancelar);
         btn_filtar = (Button) dialog.findViewById(R.id.btn_filtar);
         linear_filtro_calendario = (LinearLayout) dialog.findViewById(R.id.linear_filtro_calendario);
-        spinner_categoria_multi = (MultiSelectionSpinner) dialog.findViewById(R.id.spinner_categoria_multi);
+
 
         txt_titulo_filtro.setText(nombreFiltro);
-        spinner_categoria.setAdapter(adapterCategorias);
+        //spinner_categoria.setAdapter(adapterCategorias);
 
-        String[] array = {"Categorías: ", "Restaurante y Gastronomía", "Rumba, Bares y Discotecas", "Arte y Cultura", "Música y Conciertos", "Deporte y Salud", "Ropa y Accesorios", "Religión"};
-        spinner_categoria_multi.setItems(array);
-        spinner_categoria_multi.setSelection(new int[]{0});
         spinner_categoria_multi.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
             @Override
             public void selectedIndices(List<Integer> indices) {
+                //Toast.makeText(getActivity(),"aaaaaaaaaaaa", Toast.LENGTH_LONG).show();
 
+                tipos.clear();
+                itensCategoriaVistos = new int[Integer.SIZE];
+
+                for (Integer i: indices){
+                    itensCategoriaVistos[i] = i;
+                    String tipo = "";
+                    switch (i) {
+                        case 0:
+                            tipo = "restaurante";
+                            break;
+                        case 1:
+                            tipo = "rumba";
+                            break;
+                        case 2:
+                            tipo = "cultura";
+                            break;
+                        case 3:
+                            tipo = "musica";
+                            break;
+                        case 4:
+                            tipo = "deporte";
+                            break;
+                        case 5:
+                            tipo = "ropa";
+                            break;
+                        case 6:
+                            tipo = "religion";
+                            break;
+                    }
+                    tipos.add(tipo);
+                }
+                Toast.makeText(getActivity(), tipos.toString(), Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void selectedStrings(List<String> strings) {
-                Toast.makeText(getActivity(), strings.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity(), strings.toString(), Toast.LENGTH_LONG).show();
             }
         });
 

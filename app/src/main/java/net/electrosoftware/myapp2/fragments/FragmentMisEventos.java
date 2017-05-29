@@ -150,25 +150,25 @@ public class FragmentMisEventos extends Fragment {
                             });
 
                             switch (item.getTipo()) {
-                                case "Restaurante":
+                                case "restaurante":
                                     tipo = "Restaurante y Gastronomía";
                                     break;
-                                case "Rumba":
+                                case "rumba":
                                     tipo = "Rumba, Bares y Discotecas";
                                     break;
-                                case "Cultura":
+                                case "cultura":
                                     tipo = "Arte y Cultura";
                                     break;
-                                case "Musica":
+                                case "musica":
                                     tipo = "Música y Conciertos";
                                     break;
-                                case "Deporte":
+                                case "deporte":
                                     tipo = "Deporte y Salud";
                                     break;
-                                case "Ropa":
+                                case "ropa":
                                     tipo = "Ropa y Accesorios";
                                     break;
-                                case "Religion":
+                                case "religion":
                                     tipo = "Religión";
                                     break;
                             }

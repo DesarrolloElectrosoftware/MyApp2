@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,10 +31,21 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import net.electrosoftware.myapp2.R;
+import net.electrosoftware.myapp2.clasesbases.ComentariosAdapter;
+import net.electrosoftware.myapp2.clasesbases.ComentariosData;
+import net.electrosoftware.myapp2.firebaseClases.Comentario;
 import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
 import net.electrosoftware.myapp2.firebaseClases.RutaRef;
+import net.electrosoftware.myapp2.firebaseClases.SitioFavorito;
 import net.electrosoftware.myapp2.firebaseClases.UserAsistencia;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class EventoDetalle extends AppCompatActivity {
     ToggleButton btn_evento_favoritos;
@@ -46,11 +59,13 @@ public class EventoDetalle extends AppCompatActivity {
     EditText et_dial_comentario_agregar;
     Button btn_dial_comentario_cancelar, btn_dial_comentario_aceptar;
     ImageView imv_evento_foto;
-    RutaRef rutaRefSitio = null;
+    RutaRef rutaRefComentarios = null;
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final FirebaseStorage storage = FirebaseStorage.getInstance();
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    RecyclerView rv_evento_comentarios;
+    List<ComentariosData> dataModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +83,27 @@ public class EventoDetalle extends AppCompatActivity {
         text_evento_telefono = (TextView) findViewById(R.id.text_evento_telefono);
         text_evento_quien_organiza = (TextView) findViewById(R.id.text_evento_quien_organiza);
         txt_evento_descripcion = (TextView) findViewById(R.id.txt_evento_descripcion);
+        rv_evento_comentarios = (RecyclerView) findViewById(R.id.rv_evento_comentarios);
+        LinearLayoutManager linearlayoutmanager = new LinearLayoutManager(EventoDetalle.this);
+        rv_evento_comentarios.setLayoutManager(linearlayoutmanager);
+        rv_evento_comentarios.setHasFixedSize(true);
 
 
         btn_evento_favoritos = (ToggleButton) findViewById(R.id.btn_evento_favoritos);
         btn_evento_favoritos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final DatabaseReference FavoritoUserEventRef = database.getReference(FirebaseReferences.FAVORITO_REFERENCE)
+                        .child(user.getUid())
+                        .child(FirebaseReferences.EVENTO_REFERENCE)
+                        .child(Comunicador.getIdEvento());
                 if (btn_evento_favoritos.isChecked()) {
+                    SitioFavorito sf = new SitioFavorito(true);
+                    sf.writeNewSitioFavorito(FavoritoUserEventRef);
                     Toast.makeText(EventoDetalle.this, "Guardado en tus Favoritos", Toast.LENGTH_SHORT).show();
                 } else {
+                    SitioFavorito sf = new SitioFavorito(false);
+                    sf.writeNewSitioFavorito(FavoritoUserEventRef);
                     Toast.makeText(EventoDetalle.this, "Eliminado de tus Favoritos", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -110,13 +137,13 @@ public class EventoDetalle extends AppCompatActivity {
                 if (btn_evento_asistencia.isChecked()) {
                     UserAsistencia ua = new UserAsistencia(true);
                     ua.writeNewUserAsistencia(AsistenciaRef);
-                    text_evento_asistentes.setText("Asistentes: " + (Comunicador.getEvento().getAsistentes()+1));
+                    text_evento_asistentes.setText("Asistentes: " + (Comunicador.getEvento().getAsistentes() + 1));
 
                 } else {
                     UserAsistencia ua = new UserAsistencia(false);
                     ua.writeNewUserAsistencia(AsistenciaRef);
-                    int asist = (Comunicador.getEvento().getAsistentes()-1);
-                    if(asist < 0){
+                    int asist = (Comunicador.getEvento().getAsistentes() - 1);
+                    if (asist < 0) {
                         asist = 0;
                     }
                     text_evento_asistentes.setText("Asistentes: " + asist);
@@ -160,85 +187,26 @@ public class EventoDetalle extends AppCompatActivity {
                 .child(Comunicador.getIdEvento())
                 .child(user.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                UserAsistencia ua= dataSnapshot.getValue(UserAsistencia.class);
-                if(ua != null && ua.getAsistencia()){
-                    btn_evento_asistencia.setChecked(true);
-                }
-            }
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        UserAsistencia ua = dataSnapshot.getValue(UserAsistencia.class);
+                        if (ua != null && ua.getAsistencia()) {
+                            btn_evento_asistencia.setChecked(true);
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                    }
+                });
 
-        /*
-        if (rutaRefSitio != null) {
-            rutaRefSitio.getdatabaseReference().removeEventListener(rutaRefSitio.getvalueEventListener());
-            rutaRefSitio = null;
-        }
-        rutaRefSitio = new RutaRef();
-        rutaRefSitio.setdatabaseReference(database.getReference(FirebaseReferences.SITIO_REFERENCE).child(Comunicador.getIdEvento()));
-        rutaRefSitio.setvalueEventListener(
-                rutaRefSitio.getdatabaseReference().addValueEventListener(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+        cargarComentarios();
+        initializeAdapter();
 
-                                Evento ev = dataSnapshot.getValue(Evento.class);
-                                if (ev != null) {
-                                    //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
-                                    imv_evento_foto.setImageResource(R.drawable.loading);
-                                    if (ev.getRutaFoto() != null && !(ev.getRutaFoto().equalsIgnoreCase("Sin imagen"))) {
-                                        StorageReference imagesRef = storage.getReference("foto sitios/evento/" + ev.getRutaFoto());
-                                        imagesRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                            @Override
-                                            public void onSuccess(byte[] bytes) {
-                                                Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                imv_evento_foto.setImageBitmap(b);
-                                                // Use the bytes to display the image
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception exception) {
-                                                // Handle any errors
-                                                imv_evento_foto.setImageResource(R.drawable.no_image_found);
-                                            }
-                                        });
-                                    } else {
-                                        imv_evento_foto.setImageResource(R.drawable.no_image_found);
-                                    }
-
-                                    txt_evento_nombre.setText(ev.getNombre());
-                                    txt_evento_direccion.setText(ev.getDireccion());
-                                    text_evento_horario_ini.setText("Inicio: " + ev.getFechaIni() + " " + ev.getHoraIni());
-                                    text_evento_horario_fin.setText("Fin: " + ev.getFechaFin() + " " + ev.getHoraFin());
-                                    text_evento_asistentes.setText("Asistentes: " + ev.getAsistentes());
-                                    text_evento_categoria = (TextView) findViewById(R.id.text_evento_categoria);
-                                    text_evento_categoria.setText(ev.getTipo());
-                                    text_evento_telefono.setText(ev.getTelefono());
-                                    text_evento_quien_organiza.setText(ev.getPatrocinador());
-                                    txt_evento_descripcion.setText(ev.getDescripcion());
-
-
-                                } else {
-
-                                }
-
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        }));
-
-         */
 
     }
+
 
     public void comentarPromo(String nombreSitio) {
         final Dialog dialog = new Dialog(EventoDetalle.this);
@@ -265,6 +233,13 @@ public class EventoDetalle extends AppCompatActivity {
         btn_dial_comentario_aceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final DatabaseReference FavoritoUserEventRef = database.getReference(FirebaseReferences.COMENTARIO_REFERENCE)
+                        .child(Comunicador.getIdEvento())
+                        .child(user.getUid());
+
+                Comentario c = new Comentario(Comunicador.getUsuario().getNombre(), getDatePhone(), et_dial_comentario_agregar.getText().toString(), Comunicador.getUsuario().getRutaFoto());
+                c.writeNewComentario(FavoritoUserEventRef);
+
                 Toast.makeText(EventoDetalle.this, "Comentario agregado", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
                 dialog.cancel();
@@ -274,7 +249,66 @@ public class EventoDetalle extends AppCompatActivity {
         dialog.show();
     }
 
-    private void cargarEventoInFragment(){
+    private String getDatePhone() {
+
+        Calendar cal = new GregorianCalendar();
+
+        Date date = cal.getTime();
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        String formatteDate = df.format(date);
+
+        return formatteDate;
+
+    }
+
+    private void cargarComentarios() {
+        dataModels = new ArrayList<>();
+        final Bitmap icon = BitmapFactory.decodeResource(EventoDetalle.this.getResources(),
+                R.drawable.usuario);
+        if (rutaRefComentarios != null) {
+            rutaRefComentarios.getdatabaseReference().removeEventListener(rutaRefComentarios.getvalueEventListener());
+            rutaRefComentarios = null;
+        }
+        rutaRefComentarios = new RutaRef();
+        rutaRefComentarios.setdatabaseReference(database.getReference(FirebaseReferences.COMENTARIO_REFERENCE)
+                .child(Comunicador.getIdEvento()).child(user.getUid()));
+        rutaRefComentarios.setvalueEventListener(rutaRefComentarios.getdatabaseReference().addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        dataModels.clear();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Comentario c = ds.getValue(Comentario.class);
+                            String[] fecha = c.getFecha().split("-");
+                            String[] meses = {"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto"," ;Septiembre"
+                                    ,"Octubre","Noviembre","Diciemrbre"};
+                            String mes = meses[Integer.parseInt(fecha[1])-1];
+                            String fech = fecha[0] + " " + mes + " " + fecha[2];
+                            dataModels.add(new ComentariosData(icon, c.getNombreUser(), fech, c.getTextComentario(), null));
+                        }
+                        ComentariosAdapter adapter = new ComentariosAdapter(dataModels);
+                        rv_evento_comentarios.setAdapter(adapter);
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }));
+    }
+
+    private void initializeAdapter() {
+        ComentariosAdapter adapter = new ComentariosAdapter(dataModels);
+        rv_evento_comentarios.setAdapter(adapter);
+    }
+
+
+
+    private void cargarEventoInFragment() {
         Comunicador.cargarEvento(Comunicador.getIdEvento());
 
         txt_evento_nombre.setText(Comunicador.getEvento().getNombre());
@@ -283,9 +317,36 @@ public class EventoDetalle extends AppCompatActivity {
         text_evento_horario_fin.setText("Fin: " + Comunicador.getEvento().getFechaFin() + " " + Comunicador.getEvento().getHoraFin());
         text_evento_asistentes.setText("Asistentes: " + Comunicador.getEvento().getAsistentes());
         text_evento_categoria = (TextView) findViewById(R.id.text_evento_categoria);
-        text_evento_categoria.setText(Comunicador.getEvento().getTipo());
+
         text_evento_telefono.setText(Comunicador.getEvento().getTelefono());
         text_evento_quien_organiza.setText(Comunicador.getEvento().getPatrocinador());
         txt_evento_descripcion.setText(Comunicador.getEvento().getDescripcion());
+
+        String tipo = "";
+        switch (Comunicador.getEvento().getTipo()) {
+            case "restaurante":
+                tipo = "Restaurante y Gastronomía";
+                break;
+            case "rumba":
+                tipo = "Rumba, Bares y Discotecas";
+                break;
+            case "cultura":
+                tipo = "Arte y Cultura";
+                break;
+            case "musica":
+                tipo = "Música y Conciertos";
+                break;
+            case "deporte":
+                tipo = "Deporte y Salud";
+                break;
+            case "ropa":
+                tipo = "Ropa y Accesorios";
+                break;
+            case "religion":
+                tipo = "Religión";
+                break;
+        }
+
+        text_evento_categoria.setText(tipo);
     }
 }

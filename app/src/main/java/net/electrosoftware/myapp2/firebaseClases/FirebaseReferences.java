@@ -8,6 +8,8 @@ public class FirebaseReferences {
 
 
     final public static String ASISTENCIA_REFERENCE = "asistencia";
+    final public static String COMENTARIO_REFERENCE = "comentario";
+    final public static String FAVORITO_REFERENCE = "favorito";
     final public static String USUARIOS_REFERENCE = "usuarios";
     final public static String SITIO_REFERENCE = "sitio";
     final public static String FILTRO_REFERENCE = "filtro";

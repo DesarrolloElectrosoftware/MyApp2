@@ -177,8 +177,10 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                         intent = new Intent(getActivity(), LugarDetalle.class);
                         break;
                     case "evento":
-                        rutaRefSitio.getdatabaseReference().removeEventListener(rutaRefSitio.getvalueEventListener());
-                        rutaRefSitio = null;
+                        if(rutaRefSitio != null){
+                            rutaRefSitio.getdatabaseReference().removeEventListener(rutaRefSitio.getvalueEventListener());
+                            rutaRefSitio = null;
+                        }
                         limpiarMapa();
                         intent = new Intent(getActivity(), EventoDetalle.class);
                         break;

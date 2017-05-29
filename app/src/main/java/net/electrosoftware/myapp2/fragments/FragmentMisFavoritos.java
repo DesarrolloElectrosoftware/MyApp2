@@ -1,7 +1,6 @@
 package net.electrosoftware.myapp2.fragments;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -14,10 +13,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+
 import net.electrosoftware.myapp2.R;
-import net.electrosoftware.myapp2.activityes.AgregarEvento;
 import net.electrosoftware.myapp2.clasesbases.MisEventosAdapter;
 import net.electrosoftware.myapp2.clasesbases.MisEventosData;
+import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +41,10 @@ public class FragmentMisFavoritos extends Fragment {
     Toolbar mToolbar;
 
     Button btn_favoritos_lugares, btn_favoritos_eventos, btn_favoritos_promociones;
+    Bitmap icon;
+
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final FirebaseStorage storage = FirebaseStorage.getInstance();
 
     public FragmentMisFavoritos() {
         // Required empty public constructor
@@ -94,8 +103,19 @@ public class FragmentMisFavoritos extends Fragment {
         EventosDataModels = new ArrayList<>();
         PromocionesDataModels = new ArrayList<>();
 
-        Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),
+        icon = BitmapFactory.decodeResource(getActivity().getResources(),
                 R.drawable.kamran);
+
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final DatabaseReference listaFavoritoEventoRef = database.getReference(FirebaseReferences.FAVORITO_REFERENCE)
+                .child(user.getUid())
+                .child(FirebaseReferences.EVENTO_REFERENCE);
+        final DatabaseReference listaFavoritoLugarRef = database.getReference(FirebaseReferences.FAVORITO_REFERENCE)
+                .child(user.getUid())
+                .child(FirebaseReferences.LUGAR_REFERENCE);
+        final DatabaseReference listaFavoritoPromoRef = database.getReference(FirebaseReferences.FAVORITO_REFERENCE)
+                .child(user.getUid())
+                .child(FirebaseReferences.PROMOCION_REFERENCE);
 
         LugaresDataModels.add(new MisEventosData(icon, "Paraiso", "8 David Alley"));
         LugaresDataModels.add(new MisEventosData(icon, "Dois Vizinhos", "3599 Morning Hill"));

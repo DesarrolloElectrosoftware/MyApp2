@@ -98,12 +98,11 @@ public class EventoDetalle extends AppCompatActivity {
                         .child(FirebaseReferences.EVENTO_REFERENCE)
                         .child(Comunicador.getIdEvento());
                 if (btn_evento_favoritos.isChecked()) {
-                    SitioFavorito sf = new SitioFavorito(true);
+                    SitioFavorito sf = new SitioFavorito(Comunicador.getEvento().getNombre(), Comunicador.getEvento().getDireccion(), Comunicador.getEvento().getRutaFoto());
                     sf.writeNewSitioFavorito(FavoritoUserEventRef);
                     Toast.makeText(EventoDetalle.this, "Guardado en tus Favoritos", Toast.LENGTH_SHORT).show();
                 } else {
-                    SitioFavorito sf = new SitioFavorito(false);
-                    sf.writeNewSitioFavorito(FavoritoUserEventRef);
+                    FavoritoUserEventRef.removeValue();
                     Toast.makeText(EventoDetalle.this, "Eliminado de tus Favoritos", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -201,6 +200,25 @@ public class EventoDetalle extends AppCompatActivity {
                     }
                 });
 
+        database.getReference(FirebaseReferences.FAVORITO_REFERENCE)
+                .child(user.getUid())
+                .child(FirebaseReferences.EVENTO_REFERENCE)
+                .child(Comunicador.getIdEvento())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        SitioFavorito sf = dataSnapshot.getValue(SitioFavorito.class);
+                        if (sf != null) {
+                            btn_evento_favoritos.setChecked(true);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
         cargarComentarios();
         initializeAdapter();
 
@@ -282,9 +300,9 @@ public class EventoDetalle extends AppCompatActivity {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             Comentario c = ds.getValue(Comentario.class);
                             String[] fecha = c.getFecha().split("-");
-                            String[] meses = {"Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto"," ;Septiembre"
-                                    ,"Octubre","Noviembre","Diciemrbre"};
-                            String mes = meses[Integer.parseInt(fecha[1])-1];
+                            String[] meses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", " ;Septiembre"
+                                    , "Octubre", "Noviembre", "Diciemrbre"};
+                            String mes = meses[Integer.parseInt(fecha[1]) - 1];
                             String fech = fecha[0] + " " + mes + " " + fecha[2];
                             dataModels.add(new ComentariosData(icon, c.getNombreUser(), fech, c.getTextComentario(), null));
                         }
@@ -305,7 +323,6 @@ public class EventoDetalle extends AppCompatActivity {
         ComentariosAdapter adapter = new ComentariosAdapter(dataModels);
         rv_evento_comentarios.setAdapter(adapter);
     }
-
 
 
     private void cargarEventoInFragment() {

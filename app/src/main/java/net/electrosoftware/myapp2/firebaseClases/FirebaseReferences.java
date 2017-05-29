@@ -14,5 +14,7 @@ public class FirebaseReferences {
     final public static String SITIO_REFERENCE = "sitio";
     final public static String FILTRO_REFERENCE = "filtro";
     final public static String EVENTO_REFERENCE = "evento";
+    final public static String LUGAR_REFERENCE = "lugar";
+    final public static String PROMOCION_REFERENCE = "promocion";
     final public static String LISTA_REFERENCE = "lista";
 }

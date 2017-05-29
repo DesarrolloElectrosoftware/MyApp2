@@ -8,7 +8,9 @@ import com.google.firebase.database.DatabaseReference;
 
 public class SitioFavorito {
 
-    public boolean favorito;
+    public String nombreSitio;
+    public String direccion;
+    public String nombreFoto;
 
     public SitioFavorito() {
     }
@@ -17,15 +19,33 @@ public class SitioFavorito {
         dataRef.setValue(this);
     }
 
-    public SitioFavorito(boolean favorito) {
-        this.favorito = favorito;
+    public SitioFavorito(String nombreSitio, String direccion, String nombreFoto) {
+        this.nombreSitio = nombreSitio;
+        this.direccion = direccion;
+        this.nombreFoto = nombreFoto;
     }
 
-    public boolean isFavorito() {
-        return favorito;
+    public String getNombreSitio() {
+        return nombreSitio;
     }
 
-    public void setFavorito(boolean favorito) {
-        this.favorito = favorito;
+    public void setNombreSitio(String nombreSitio) {
+        this.nombreSitio = nombreSitio;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getNombreFoto() {
+        return nombreFoto;
+    }
+
+    public void setNombreFoto(String nombreFoto) {
+        this.nombreFoto = nombreFoto;
     }
 }

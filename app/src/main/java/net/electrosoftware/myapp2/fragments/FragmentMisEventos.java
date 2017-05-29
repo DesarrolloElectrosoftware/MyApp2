@@ -118,14 +118,15 @@ public class FragmentMisEventos extends Fragment {
         final DatabaseReference listaRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
                 .child(user.getUid())
                 .child(FirebaseReferences.EVENTO_REFERENCE);
+        icon = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.no_image_found);
 
-        listaRef.addValueEventListener(new ValueEventListener() {
+        listaRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.kamran);
                 dataModels.clear();
 
-                icon = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.no_image_found);
+
                 String tipo = "";
                 //Iterable<DataSnapshot> items = dataSnapshot.getChildren();
                 try {

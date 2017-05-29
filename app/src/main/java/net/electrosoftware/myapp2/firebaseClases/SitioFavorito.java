@@ -9,7 +9,7 @@ import com.google.firebase.database.DatabaseReference;
 public class SitioFavorito {
 
     public String nombreSitio;
-    public String direccion;
+    public String tipo;
     public String nombreFoto;
 
     public SitioFavorito() {
@@ -19,9 +19,9 @@ public class SitioFavorito {
         dataRef.setValue(this);
     }
 
-    public SitioFavorito(String nombreSitio, String direccion, String nombreFoto) {
+    public SitioFavorito(String nombreSitio, String tipo, String nombreFoto) {
         this.nombreSitio = nombreSitio;
-        this.direccion = direccion;
+        this.tipo = tipo;
         this.nombreFoto = nombreFoto;
     }
 
@@ -33,12 +33,12 @@ public class SitioFavorito {
         this.nombreSitio = nombreSitio;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String gettipo() {
+        return tipo;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void settipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getNombreFoto() {

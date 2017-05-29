@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -13,16 +14,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.clasesbases.MisEventosAdapter;
 import net.electrosoftware.myapp2.clasesbases.MisEventosData;
 import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
+import net.electrosoftware.myapp2.firebaseClases.SitioFavorito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +125,239 @@ public class FragmentMisFavoritos extends Fragment {
                 .child(user.getUid())
                 .child(FirebaseReferences.PROMOCION_REFERENCE);
 
-        LugaresDataModels.add(new MisEventosData(icon, "Paraiso", "8 David Alley"));
+        listaFavoritoEventoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.kamran);
+                EventosDataModels.clear();
+
+
+                String tipo = "";
+                //Iterable<DataSnapshot> items = dataSnapshot.getChildren();
+                try {
+                    for (DataSnapshot i : dataSnapshot.getChildren()) {
+                        //String idEvento = i.getKey();
+                        SitioFavorito item = i.getValue(SitioFavorito.class);
+
+                        if (!item.getNombreFoto().equalsIgnoreCase("Sin imagen")) {
+                            StorageReference fotoRef = storage.getReference().child("foto usuarios/" + item.getNombreFoto());
+                            fotoRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    icon = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                    // Use the bytes to display the image
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                    //imageCard.setImageResource(R.drawable.no_image_found);
+                                }
+                            });
+                        }
+                            switch (item.gettipo()) {
+                                case "restaurante":
+                                    tipo = "Restaurante y Gastronomía";
+                                    break;
+                                case "rumba":
+                                    tipo = "Rumba, Bares y Discotecas";
+                                    break;
+                                case "cultura":
+                                    tipo = "Arte y Cultura";
+                                    break;
+                                case "musica":
+                                    tipo = "Música y Conciertos";
+                                    break;
+                                case "deporte":
+                                    tipo = "Deporte y Salud";
+                                    break;
+                                case "ropa":
+                                    tipo = "Ropa y Accesorios";
+                                    break;
+                                case "religion":
+                                    tipo = "Religión";
+                                    break;
+                            }
+                            EventosDataModels.add(new MisEventosData(icon, item.getNombreSitio(), tipo));
+
+
+                            if (EventosDataModels.size() == 1) {
+                                Eventosadapter = new MisEventosAdapter(EventosDataModels);
+                                //rv_mis_eventos.setAdapter(Eventosadapter);
+                            } else if (EventosDataModels.size() > 1) {
+                                Eventosadapter.notifyDataSetChanged();
+                            }
+
+                    }
+                } catch (Exception e) {
+                    //Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+        listaFavoritoLugarRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.kamran);
+                LugaresDataModels.clear();
+
+
+                String tipo = "";
+                //Iterable<DataSnapshot> items = dataSnapshot.getChildren();
+                try {
+                    for (DataSnapshot i : dataSnapshot.getChildren()) {
+                        //String idEvento = i.getKey();
+                        SitioFavorito item = i.getValue(SitioFavorito.class);
+
+                        if (!item.getNombreFoto().equalsIgnoreCase("Sin imagen")) {
+                            StorageReference fotoRef = storage.getReference().child("foto usuarios/" + item.getNombreFoto());
+                            fotoRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    icon = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                    // Use the bytes to display the image
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                    //imageCard.setImageResource(R.drawable.no_image_found);
+                                }
+                            });
+                        }
+                            switch (item.gettipo()) {
+                                case "restaurante":
+                                    tipo = "Restaurante y Gastronomía";
+                                    break;
+                                case "rumba":
+                                    tipo = "Rumba, Bares y Discotecas";
+                                    break;
+                                case "cultura":
+                                    tipo = "Arte y Cultura";
+                                    break;
+                                case "musica":
+                                    tipo = "Música y Conciertos";
+                                    break;
+                                case "deporte":
+                                    tipo = "Deporte y Salud";
+                                    break;
+                                case "ropa":
+                                    tipo = "Ropa y Accesorios";
+                                    break;
+                                case "religion":
+                                    tipo = "Religión";
+                                    break;
+                            }
+                            LugaresDataModels.add(new MisEventosData(icon, item.getNombreSitio(), tipo));
+
+
+                            if (LugaresDataModels.size() == 1) {
+                                Lugaresadapter= new MisEventosAdapter(LugaresDataModels);
+                                //rv_mis_eventos.setAdapter(Eventosadapter);
+                            } else if (LugaresDataModels.size() > 1) {
+                                Lugaresadapter.notifyDataSetChanged();
+                            }
+
+                    }
+                } catch (Exception e) {
+                    //Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+        listaFavoritoPromoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.kamran);
+                PromocionesDataModels.clear();
+
+
+                String tipo = "";
+                //Iterable<DataSnapshot> items = dataSnapshot.getChildren();
+                try {
+                    for (DataSnapshot i : dataSnapshot.getChildren()) {
+                        //String idEvento = i.getKey();
+                        SitioFavorito item = i.getValue(SitioFavorito.class);
+
+                        if (!item.getNombreFoto().equalsIgnoreCase("Sin imagen")) {
+                            StorageReference fotoRef = storage.getReference().child("foto usuarios/" + item.getNombreFoto());
+                            fotoRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    icon = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                    // Use the bytes to display the image
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                    //imageCard.setImageResource(R.drawable.no_image_found);
+                                }
+                            });
+                        }
+
+                            switch (item.gettipo()) {
+                                case "restaurante":
+                                    tipo = "Restaurante y Gastronomía";
+                                    break;
+                                case "rumba":
+                                    tipo = "Rumba, Bares y Discotecas";
+                                    break;
+                                case "cultura":
+                                    tipo = "Arte y Cultura";
+                                    break;
+                                case "musica":
+                                    tipo = "Música y Conciertos";
+                                    break;
+                                case "deporte":
+                                    tipo = "Deporte y Salud";
+                                    break;
+                                case "ropa":
+                                    tipo = "Ropa y Accesorios";
+                                    break;
+                                case "religion":
+                                    tipo = "Religión";
+                                    break;
+                            }
+                            PromocionesDataModels.add(new MisEventosData(icon, item.getNombreSitio(), tipo));
+
+
+                            if (PromocionesDataModels.size() == 1) {
+                                Promocionesadapter = new MisEventosAdapter(PromocionesDataModels);
+                                //rv_mis_eventos.setAdapter(Eventosadapter);
+                            } else if (PromocionesDataModels.size() > 1) {
+                                Promocionesadapter.notifyDataSetChanged();
+                            }
+                        }
+
+                } catch (Exception e) {
+                    //Toast.makeText(MainActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                //Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+        /*LugaresDataModels.add(new MisEventosData(icon, "Paraiso", "8 David Alley"));
         LugaresDataModels.add(new MisEventosData(icon, "Dois Vizinhos", "3599 Morning Hill"));
         LugaresDataModels.add(new MisEventosData(icon, "Manaoag", "94 Orin Plaza"));
         LugaresDataModels.add(new MisEventosData(icon, "Chengzhong", "57873 Sachs Drive"));
@@ -145,7 +385,7 @@ public class FragmentMisFavoritos extends Fragment {
         PromocionesDataModels.add(new MisEventosData(icon, "Industrial", "619 Dryden Point"));
         PromocionesDataModels.add(new MisEventosData(icon, "Automotive", "1 Almo Hill"));
         PromocionesDataModels.add(new MisEventosData(icon, "Toys", "54362 Montana Avenue"));
-        PromocionesDataModels.add(new MisEventosData(icon, "Electronics", "2497 Garrison Junction"));
+        PromocionesDataModels.add(new MisEventosData(icon, "Electronics", "2497 Garrison Junction"));*/
     }
 
     private void initializeAdapter(int adapter) {

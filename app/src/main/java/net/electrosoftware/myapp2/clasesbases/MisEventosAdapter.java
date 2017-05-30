@@ -34,10 +34,10 @@ public class MisEventosAdapter extends RecyclerView.Adapter<MisEventosAdapter.Mi
         }
     }
 
-    List<MisEventosData> misEventosDataList;
+    List<MisSitiosData> misSitiosDataList;
 
-    public MisEventosAdapter(List<MisEventosData> eventosList) {
-        this.misEventosDataList = eventosList;
+    public MisEventosAdapter(List<MisSitiosData> eventosList) {
+        this.misSitiosDataList = eventosList;
     }
 
     @Override
@@ -47,21 +47,21 @@ public class MisEventosAdapter extends RecyclerView.Adapter<MisEventosAdapter.Mi
 
     @Override
     public MisEventosAdapter.MisEventosViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_mis_eventos, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_mis_sitios, viewGroup, false);
         MisEventosAdapter.MisEventosViewHolder pvh = new MisEventosAdapter.MisEventosViewHolder(v);
         return pvh;
     }
 
     @Override
     public void onBindViewHolder(MisEventosAdapter.MisEventosViewHolder misEventosViewHolder, final int i) {
-        misEventosViewHolder.txt_dial_mis_eventos_nombre.setText(misEventosDataList.get(i).getNombreEvento());
-        misEventosViewHolder.txt_dial_mis_eventos_direccion.setText(misEventosDataList.get(i).getDireccionEvento());
-        misEventosViewHolder.imv_dial_mis_eventos_foto.setImageBitmap(misEventosDataList.get(i).getFotoEvento());
+        misEventosViewHolder.txt_dial_mis_eventos_nombre.setText(misSitiosDataList.get(i).getNombreEvento());
+        misEventosViewHolder.txt_dial_mis_eventos_direccion.setText(misSitiosDataList.get(i).getDireccionEvento());
+        misEventosViewHolder.imv_dial_mis_eventos_foto.setImageBitmap(misSitiosDataList.get(i).getFotoEvento());
 
         misEventosViewHolder.cv_mis_eventos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Foto del evento " + misEventosDataList.get(i).getNombreEvento(), Snackbar.LENGTH_LONG)
+                Snackbar.make(v, "Foto del evento " + misSitiosDataList.get(i).getNombreEvento(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
             }
         });
@@ -69,6 +69,6 @@ public class MisEventosAdapter extends RecyclerView.Adapter<MisEventosAdapter.Mi
 
     @Override
     public int getItemCount() {
-        return misEventosDataList.size();
+        return misSitiosDataList.size();
     }
 }

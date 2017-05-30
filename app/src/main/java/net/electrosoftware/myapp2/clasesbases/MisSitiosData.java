@@ -6,13 +6,13 @@ import android.graphics.Bitmap;
  * Created by Jonathan on 18/05/2017.
  */
 
-public class MisEventosData {
+public class MisSitiosData {
 
     Bitmap fotoEvento;
     String nombreEvento;
     String tipoevento;
 
-    public MisEventosData(Bitmap fotoevento, String nombreevento, String tipoevento) {
+    public MisSitiosData(Bitmap fotoevento, String nombreevento, String tipoevento) {
         this.fotoEvento = fotoevento;
         this.nombreEvento = nombreevento;
         this.tipoevento = tipoevento;

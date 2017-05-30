@@ -39,6 +39,7 @@ import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
 import net.electrosoftware.myapp2.firebaseClases.RutaRef;
 import net.electrosoftware.myapp2.firebaseClases.SitioFavorito;
 import net.electrosoftware.myapp2.firebaseClases.UserAsistencia;
+import net.electrosoftware.myapp2.firebaseClases.itemListaSitio;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,8 +99,8 @@ public class EventoDetalle extends AppCompatActivity {
                         .child(FirebaseReferences.EVENTO_REFERENCE)
                         .child(Comunicador.getIdEvento());
                 if (btn_evento_favoritos.isChecked()) {
-                    SitioFavorito sf = new SitioFavorito(Comunicador.getEvento().getNombre(), Comunicador.getEvento().getDireccion(), Comunicador.getEvento().getRutaFoto());
-                    sf.writeNewSitioFavorito(FavoritoUserEventRef);
+                    itemListaSitio is = new itemListaSitio(Comunicador.getEvento().getNombre(), Comunicador.getEvento().getTipo(), Comunicador.getEvento().getRutaFoto());
+                    is.writeItemListaSitio(FavoritoUserEventRef);
                     Toast.makeText(EventoDetalle.this, "Guardado en tus Favoritos", Toast.LENGTH_SHORT).show();
                 } else {
                     FavoritoUserEventRef.removeValue();

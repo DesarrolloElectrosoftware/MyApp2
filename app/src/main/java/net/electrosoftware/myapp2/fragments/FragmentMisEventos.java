@@ -12,8 +12,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,7 +45,7 @@ import java.util.List;
 public class FragmentMisEventos extends Fragment {
     View view;
     TextView txt_mis_eventos_crear;
-    RecyclerView rv_mis_eventos;
+
 
     List<MisEventosData> dataModels;
     MisEventosAdapter adapter;
@@ -49,6 +53,10 @@ public class FragmentMisEventos extends Fragment {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final FirebaseStorage storage = FirebaseStorage.getInstance();
     Bitmap icon = null;
+
+    private RecyclerView rv_mis_eventos;
+    private FirebaseRecyclerAdapter<itemListaSitio, PostViewHolder> mPostAdapter;
+    private DatabaseReference listaEventosRef;
 
     public FragmentMisEventos() {
         // Required empty public constructor
@@ -100,14 +108,15 @@ public class FragmentMisEventos extends Fragment {
             }
         });
 
-        rv_mis_eventos = (RecyclerView) view.findViewById(R.id.rv_mis_eventos);
-        LinearLayoutManager linearlayoutmanager = new LinearLayoutManager(getActivity());
-        rv_mis_eventos.setLayoutManager(linearlayoutmanager);
-        rv_mis_eventos.setHasFixedSize(true);
+
+        //LinearLayoutManager linearlayoutmanager = new LinearLayoutManager(getActivity());
+        //rv_mis_eventos.setLayoutManager(linearlayoutmanager);
+        //rv_mis_eventos.setHasFixedSize(true);
 
 
-        initializeData();
-        initializeAdapter();
+        //initializeData();
+        //initializeAdapter();
+        initialiseScreen();
 
         return view;
     }
@@ -211,6 +220,91 @@ public class FragmentMisEventos extends Fragment {
     private void initializeAdapter() {
         rv_mis_eventos.setAdapter(adapter);
     }
+
+
+
+    public static class PostViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageView imv_dial_mis_eventos_foto;
+        public TextView txt_dial_mis_eventos_nombre;
+        public TextView txt_dial_mis_eventos_tipo;
+
+
+        public PostViewHolder(View itemView) {
+            super(itemView);
+
+            imv_dial_mis_eventos_foto = (ImageView) itemView.findViewById(R.id.imv_dial_mis_eventos_foto);
+            txt_dial_mis_eventos_nombre = (TextView) itemView.findViewById(R.id.txt_dial_mis_eventos_nombre);
+            txt_dial_mis_eventos_tipo = (TextView) itemView.findViewById(R.id.txt_dial_mis_eventos_tipo);
+        }
+
+        public void setTxt_dial_mis_eventos_nombre(String txt_dial_mis_eventos_nombre) {
+            this.txt_dial_mis_eventos_nombre.setText(txt_dial_mis_eventos_nombre);
+        }
+
+        public void setTxt_dial_mis_eventos_tipo(String txt_dial_mis_eventos_tipo) {
+            String tipo = "";
+            switch (txt_dial_mis_eventos_tipo) {
+                case "restaurante":
+                    tipo = "Restaurante y Gastronomía";
+                    break;
+                case "rumba":
+                    tipo = "Rumba, Bares y Discotecas";
+                    break;
+                case "cultura":
+                    tipo = "Arte y Cultura";
+                    break;
+                case "musica":
+                    tipo = "Música y Conciertos";
+                    break;
+                case "deporte":
+                    tipo = "Deporte y Salud";
+                    break;
+                case "ropa":
+                    tipo = "Ropa y Accesorios";
+                    break;
+                case "religion":
+                    tipo = "Religión";
+                    break;
+            }
+            this.txt_dial_mis_eventos_tipo.setText(tipo);
+        }
+    }
+
+    private void initialiseScreen() {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        rv_mis_eventos = (RecyclerView) view.findViewById(R.id.rv_mis_eventos);
+        rv_mis_eventos.setLayoutManager(new LinearLayoutManager(getActivity()));
+        listaEventosRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
+                .child(user.getUid())
+                .child(FirebaseReferences.EVENTO_REFERENCE);
+        setupAdapter();
+        rv_mis_eventos.setAdapter(mPostAdapter);
+    }
+
+    private void setupAdapter() {
+        mPostAdapter = new FirebaseRecyclerAdapter<itemListaSitio, PostViewHolder>(
+                itemListaSitio.class,
+                R.layout.item_mis_eventos,
+                PostViewHolder.class,
+                listaEventosRef
+        ) {
+            @Override
+            protected void populateViewHolder(PostViewHolder viewHolder, final itemListaSitio model, int position) {
+                StorageReference storageReference = storage.getReference().child("foto sitios/evento/" + model.getFoto());
+               // StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(model.getFoto());
+                Glide.with(getActivity())
+                        .using(new FirebaseImageLoader())
+                        .load(storageReference)
+                        .into(viewHolder.imv_dial_mis_eventos_foto);
+
+                viewHolder.setTxt_dial_mis_eventos_nombre(model.getNombre());
+                viewHolder.setTxt_dial_mis_eventos_tipo(model.getTipo());
+
+            }
+        };
+    }
+
 
 
 }

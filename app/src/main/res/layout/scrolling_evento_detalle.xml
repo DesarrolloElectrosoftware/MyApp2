@@ -8,7 +8,8 @@
     android:fitsSystemWindows="true"
     tools:context=".activityes.PromoDetalle">
 
-    <include layout="@layout/activity_evento_detalle" />
+    <include android:id="@+id/includeEvento"
+        layout="@layout/activity_evento_detalle" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -35,5 +36,15 @@
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_actualizar"
+        android:background="@color/colorPrimary"
+        app:layout_anchor="@+id/includeEvento"
+        app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>

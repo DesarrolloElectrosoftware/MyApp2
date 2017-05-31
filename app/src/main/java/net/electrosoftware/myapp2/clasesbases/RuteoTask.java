@@ -1,5 +1,7 @@
 package net.electrosoftware.myapp2.clasesbases;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -11,6 +13,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import net.electrosoftware.myapp2.activityes.Login;
 
 import org.json.JSONObject;
 
@@ -25,26 +29,27 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class DownloadTask extends AsyncTask<String, Void, String> {
+public class RuteoTask extends AsyncTask<String, Void, String> {
 
     // Downloading data in non-ui thread
-    static Context ctx;
+    static Context ctxMapa;
     static double latitud = 0.0;
     static double longitud = 0.0;
     static double latitudDestino = 0.0;
     static double longitudDestino = 0.0;
     static private Polyline Ruta;
     static GoogleMap mapa;
+    static Context ctxActivity;
+    ProgressDialog PDRuteo = null;
 
-
-    public static void Parametros(Context context, LatLng LatLngOrigen, LatLng LatLngDestino, GoogleMap googlemap) {
-        ctx = context;
+    public static void Parametros(Context contextMapa, LatLng LatLngOrigen, LatLng LatLngDestino, GoogleMap googlemap, Context contextActivity) {
+        ctxMapa = contextMapa;
         latitud = LatLngOrigen.latitude;
         longitud = LatLngOrigen.longitude;
         latitudDestino = LatLngDestino.latitude;
         longitudDestino = LatLngDestino.longitude;
         mapa = googlemap;
-
+        ctxActivity = contextActivity;
     }
 
     @Override
@@ -66,9 +71,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-
         ParserTask parserTask = new ParserTask();
-
         // Invokes the thread for parsing the JSON data
         parserTask.execute(result);
 
@@ -123,6 +126,13 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
      */
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
+        @Override
+        protected void onPreExecute() {
+            PDRuteo = ProgressDialog.show(ctxActivity, "Creando Ruta", "Buscando una ruta, espera un momento...", true, true);
+            PDRuteo.setCancelable(false);
+            super.onPreExecute();
+        }
+
         // Parsing the data in non-ui thread
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
@@ -145,6 +155,8 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         // Executes in UI thread, after the parsing process
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            Activity act = (Activity) ctxActivity;
+
             try {
                 ArrayList<LatLng> points = null;
                 PolylineOptions lineOptions = null;
@@ -177,18 +189,19 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
                         lineOptions.addAll(points);
                         lineOptions.width(4);
                         lineOptions.zIndex(99999);
-                        lineOptions.color(Color.GREEN);
+                        lineOptions.color(Color.BLUE);
                         lineOptions.geodesic(true);
-
-
                     }
                     Ruta = mapa.addPolyline(lineOptions);
+                    act.finish();
                 } else {
-                    Toast.makeText(ctx, "La función de ruteo requiere internet.", Toast.LENGTH_SHORT).show();
+                    PDRuteo.dismiss();
+                    Toast.makeText(ctxMapa, "La función de ruteo requiere internet.", Toast.LENGTH_SHORT).show();
                 }
                 // Drawing polyline in the Google Map for the i-th route
             } catch (Exception e) {
-                Toast.makeText(ctx, "No hay una ruta disponible", Toast.LENGTH_LONG).show();
+                PDRuteo.dismiss();
+                Toast.makeText(ctxMapa, "No hay una ruta disponible", Toast.LENGTH_LONG).show();
             }
         }
     }

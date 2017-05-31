@@ -1,7 +1,12 @@
 package net.electrosoftware.myapp2.firebaseClases;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +26,11 @@ public class Comunicador {
     private static Evento evento = null;
     private static String idEvento = null;
     private static Bitmap fotoEvento = null;
+    private static Drawable fotoGaleriaItem = null;
+    private static LatLng MiPosicion = null;
+    private static LatLng MiPosicionDestino = null;
+    private static GoogleMap googleMap = null;
+    private static Context contextMapa = null;
 
     public static void setObjeto1(Object newObjeto) {
         objeto1 = newObjeto;
@@ -78,7 +88,7 @@ public class Comunicador {
         Comunicador.fotoEvento = fotoEvento;
     }
 
-    public static void actualizarAsistentesEvento(final String idEvento){
+    public static void actualizarAsistentesEvento(final String idEvento) {
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference dr = database.getReference(FirebaseReferences.ASISTENCIA_REFERENCE).child(idEvento);
@@ -89,8 +99,8 @@ public class Comunicador {
                 int cont = 0;
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     UserAsistencia ua = snapshot.getValue(UserAsistencia.class);
-                    if(ua.getAsistencia()){
-                        cont = cont +1;
+                    if (ua.getAsistencia()) {
+                        cont = cont + 1;
                     }
                 }
                 database.getReference(FirebaseReferences.SITIO_REFERENCE)
@@ -105,7 +115,7 @@ public class Comunicador {
 
     }
 
-    public static void cargarEvento(String idEvento){
+    public static void cargarEvento(String idEvento) {
 
         actualizarAsistentesEvento(idEvento);
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -125,4 +135,43 @@ public class Comunicador {
 
     }
 
+    public static Drawable getFotoGaleriaItem() {
+        return fotoGaleriaItem;
+    }
+
+    public static void setFotoGaleriaItem(Drawable fotoGaleriaItem) {
+        Comunicador.fotoGaleriaItem = fotoGaleriaItem;
+    }
+
+    public static LatLng getMiPosicion() {
+        return MiPosicion;
+    }
+
+    public static void setMiPosicion(LatLng miPosicion) {
+        MiPosicion = miPosicion;
+    }
+
+    public static LatLng getMiPosicionDestino() {
+        return MiPosicionDestino;
+    }
+
+    public static void setMiPosicionDestino(LatLng miPosicionDestino) {
+        MiPosicionDestino = miPosicionDestino;
+    }
+
+    public static GoogleMap getGoogleMap() {
+        return googleMap;
+    }
+
+    public static void setGoogleMap(GoogleMap googleMap) {
+        Comunicador.googleMap = googleMap;
+    }
+
+    public static Context getContextMapa() {
+        return contextMapa;
+    }
+
+    public static void setContextMapa(Context contextMapa) {
+        Comunicador.contextMapa = contextMapa;
+    }
 }

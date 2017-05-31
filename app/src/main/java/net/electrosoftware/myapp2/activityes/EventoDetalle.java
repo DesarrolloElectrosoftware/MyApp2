@@ -1,9 +1,9 @@
 package net.electrosoftware.myapp2.activityes;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -35,6 +35,7 @@ import com.google.firebase.storage.StorageReference;
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.clasesbases.ComentariosAdapter;
 import net.electrosoftware.myapp2.clasesbases.ComentariosData;
+import net.electrosoftware.myapp2.clasesbases.RuteoTask;
 import net.electrosoftware.myapp2.firebaseClases.Comentario;
 import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
@@ -70,6 +71,7 @@ public class EventoDetalle extends AppCompatActivity {
     RecyclerView rv_evento_comentarios;
     List<ComentariosData> dataModels;
     FloatingActionButton fab_actualizar_evento;
+    ImageView imv_evento_ruteo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +171,13 @@ public class EventoDetalle extends AppCompatActivity {
 
         imv_evento_foto.setImageResource(R.drawable.loading);
 
+        imv_evento_foto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(EventoDetalle.this, Galeria.class));
+            }
+        });
+
         if (Comunicador.getEvento() != null) {
             //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
 
@@ -233,7 +242,14 @@ public class EventoDetalle extends AppCompatActivity {
         cargarComentarios();
         initializeAdapter();
 
-
+        imv_evento_ruteo = (ImageView) findViewById(R.id.imv_evento_ruteo);
+        imv_evento_ruteo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RuteoTask.Parametros(Comunicador.getContextMapa(), Comunicador.getMiPosicion(), Comunicador.getMiPosicionDestino(), Comunicador.getGoogleMap(), EventoDetalle.this);
+                new RuteoTask().execute();
+            }
+        });
     }
 
 

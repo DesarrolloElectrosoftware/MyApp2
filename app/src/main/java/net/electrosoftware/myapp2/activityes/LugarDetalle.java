@@ -27,6 +27,8 @@ import com.hsalf.smilerating.SmileRating;
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.clasesbases.ComentariosAdapter;
 import net.electrosoftware.myapp2.clasesbases.ComentariosData;
+import net.electrosoftware.myapp2.clasesbases.RuteoTask;
+import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,6 +170,22 @@ public class LugarDetalle extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LugarDetalle.this, Comentarios.class));
+            }
+        });
+
+        imv_lugar_ruteo = (ImageView) findViewById(R.id.imv_lugar_ruteo);
+        imv_lugar_ruteo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Toast.makeText(LugarDetalle.this, "Tu pos es: "
+                        + "\nLat: " + Comunicador.getMiPosicion().latitude
+                        + "\nLon: " + Comunicador.getMiPosicion().longitude
+                        + "\nPos Evento es: "
+                        + "\nLat: " + Comunicador.getMiPosicionDestino().latitude
+                        + "\nLon: " + Comunicador.getMiPosicionDestino().longitude, Toast.LENGTH_LONG).show();*/
+
+                RuteoTask.Parametros(Comunicador.getContextMapa(), Comunicador.getMiPosicion(), Comunicador.getMiPosicionDestino(), Comunicador.getGoogleMap(), LugarDetalle.this);
+                new RuteoTask().execute();
             }
         });
     }

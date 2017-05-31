@@ -1,6 +1,7 @@
 package net.electrosoftware.myapp2.activityes;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,11 +9,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import net.electrosoftware.myapp2.R;
+import net.electrosoftware.myapp2.clasesbases.RuteoTask;
+import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 
 public class PromoDetalle extends AppCompatActivity {
     ToggleButton btn_promo_favoritos;
@@ -22,6 +26,7 @@ public class PromoDetalle extends AppCompatActivity {
     TextView txt_dial_comentario_titulo;
     EditText et_dial_comentario_agregar;
     Button btn_dial_comentario_cancelar, btn_dial_comentario_aceptar;
+    ImageView imv_promo_ruteo, imv_promo_foto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,24 @@ public class PromoDetalle extends AppCompatActivity {
                 comentarPromo(txt_promo_nombre.getText().toString());
             }
         });
+
+        imv_promo_ruteo = (ImageView) findViewById(R.id.imv_promo_ruteo);
+        imv_promo_ruteo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RuteoTask.Parametros(Comunicador.getContextMapa(), Comunicador.getMiPosicion(), Comunicador.getMiPosicionDestino(), Comunicador.getGoogleMap(), PromoDetalle.this);
+                new RuteoTask().execute();
+            }
+        });
+
+        imv_promo_foto = (ImageView) findViewById(R.id.imv_promo_foto);
+        imv_promo_foto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PromoDetalle.this, Galeria.class));
+            }
+        });
+
     }
 
     public void comentarPromo(String nombreSitio) {

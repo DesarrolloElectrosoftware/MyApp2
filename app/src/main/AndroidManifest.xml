@@ -113,11 +113,10 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activityes.Galeria"
-            android:label="Galería"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="Galería" />
         <activity
             android:name=".activityes.GaleriaDetalle"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="Galería" />
     </application>
 
 </manifest>

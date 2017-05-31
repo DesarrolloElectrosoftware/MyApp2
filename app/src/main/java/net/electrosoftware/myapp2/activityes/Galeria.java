@@ -1,64 +1,58 @@
 package net.electrosoftware.myapp2.activityes;
 
-import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import net.electrosoftware.myapp2.R;
-import net.electrosoftware.myapp2.clasesbases.GridViewAdapter;
-import net.electrosoftware.myapp2.clasesbases.ImageItem;
+import net.electrosoftware.myapp2.clasesbases.CustomRecyclerViewAdapter;
+import net.electrosoftware.myapp2.clasesbases.RecyclerGaleriaAdapter;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class Galeria extends AppCompatActivity {
-    private GridView grid_galeria;
-    private GridViewAdapter gridviewadapter;
-    Toolbar mToolbar;
-    Bitmap bitmap;
+
+    private final String foto_urls[] = {
+            "https://lh6.googleusercontent.com/-55osAWw3x0Q/URquUtcFr5I/AAAAAAAAAbs/rWlj1RUKrYI/s1024/A%252520Photographer.jpg",
+            "https://lh4.googleusercontent.com/--dq8niRp7W4/URquVgmXvgI/AAAAAAAAAbs/-gnuLQfNnBA/s1024/A%252520Song%252520of%252520Ice%252520and%252520Fire.jpg",
+            "https://lh5.googleusercontent.com/-7qZeDtRKFKc/URquWZT1gOI/AAAAAAAAAbs/hqWgteyNXsg/s1024/Another%252520Rockaway%252520Sunset.jpg",
+            "https://lh3.googleusercontent.com/--L0Km39l5J8/URquXHGcdNI/AAAAAAAAAbs/3ZrSJNrSomQ/s1024/Antelope%252520Butte.jpg",
+            "https://lh6.googleusercontent.com/-8HO-4vIFnlw/URquZnsFgtI/AAAAAAAAAbs/WT8jViTF7vw/s1024/Antelope%252520Hallway.jpg",
+            "https://lh4.googleusercontent.com/-WIuWgVcU3Qw/URqubRVcj4I/AAAAAAAAAbs/YvbwgGjwdIQ/s1024/Antelope%252520Walls.jpg",
+            "https://lh6.googleusercontent.com/-UBmLbPELvoQ/URqucCdv0kI/AAAAAAAAAbs/IdNhr2VQoQs/s1024/Apre%2525CC%252580s%252520la%252520Pluie.jpg",
+            "https://lh3.googleusercontent.com/-s-AFpvgSeew/URquc6dF-JI/AAAAAAAAAbs/Mt3xNGRUd68/s1024/Backlit%252520Cloud.jpg",
+            "https://lh5.googleusercontent.com/-bvmif9a9YOQ/URquea3heHI/AAAAAAAAAbs/rcr6wyeQtAo/s1024/Bee%252520and%252520Flower.jpg",
+            "https://lh5.googleusercontent.com/-n7mdm7I7FGs/URqueT_BT-I/AAAAAAAAAbs/9MYmXlmpSAo/s1024/Bonzai%252520Rock%252520Sunset.jpg"
+    };
+
+    private RecyclerView card_recycler_view;
+    private ArrayList<String> images = new ArrayList<>();
+    private RecyclerView.LayoutManager mLayoutManager;
+    CustomRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_galeria);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbarGaleria);
-        mToolbar.setTitle("Galeria");
+        card_recycler_view = (RecyclerView) findViewById(R.id.card_recycler_view);
 
-        grid_galeria = (GridView) findViewById(R.id.grid_galeria);
-        gridviewadapter = new GridViewAdapter(this, R.layout.item_grid_galeria, getData());
-        grid_galeria.setAdapter(gridviewadapter);
+        initializeImages();
 
-        grid_galeria.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                ImageItem item = (ImageItem) parent.getItemAtPosition(position);
-                //Create intent
-                Intent intent = new Intent(Galeria.this, GaleriaDetalle.class);
-                intent.putExtra("title", item.getTitle());
-                //intent.putExtra("image", item.getImage());
-                //Start details activity
-                startActivity(intent);
-            }
-        });
+        card_recycler_view.setHasFixedSize(true);
+        mLayoutManager = new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+        card_recycler_view.setLayoutManager(mLayoutManager);
+        adapter = new RecyclerGaleriaAdapter(this, images);
+
+        card_recycler_view.setAdapter(adapter);
     }
 
-    /**
-     * Prepare some dummy data for grid_galeria
-     */
-    private ArrayList<ImageItem> getData() {
-        final ArrayList<ImageItem> imageItems = new ArrayList<>();
-        TypedArray imgs = getResources().obtainTypedArray(R.array.image_ids);
-        for (int i = 0; i < imgs.length(); i++) {
-            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imgs.getResourceId(i, -1));
-            imageItems.add(new ImageItem(bitmap, "Dann Carlton " + i));
+    private void initializeImages() {
+        images = new ArrayList<>();
+        for (int i = 0; i < foto_urls.length; i++) {
+            images.add(foto_urls[i]);
         }
-        return imageItems;
     }
 }

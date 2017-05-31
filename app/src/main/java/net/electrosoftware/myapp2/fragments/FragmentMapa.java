@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -13,6 +14,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Address;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -68,7 +72,6 @@ import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.activityes.EventoDetalle;
 import net.electrosoftware.myapp2.activityes.LugarDetalle;
 import net.electrosoftware.myapp2.activityes.PromoDetalle;
-import net.electrosoftware.myapp2.clasesbases.DownloadTask;
 import net.electrosoftware.myapp2.clasesbases.MultiSelectionSpinner;
 import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.firebaseClases.Empresa;
@@ -93,12 +96,8 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     MapView mMapView;
     View view, dialogo_filtro;
     private GoogleMap miMapa;
-    Button btnBuscarDireccion;
-    EditText DireccionBuscar;
     double latitud = 0.0;
     double longitud = 0.0;
-    double latitudDestino = 0.0;
-    double longitudDestino = 0.0;
 
     List<Sitio> Sitios = new ArrayList<>();
     //List<Sitio> Eventos = new ArrayList<>();
@@ -121,7 +120,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     ImageButton btn_filtro_fecha;
     EditText txt_fecha_filtro;
     ArrayAdapter adapterCategorias;
-    MaterialSpinner spinner_categoria;
     Button btn_cancelar, btn_filtar;
     LinearLayout linear_filtro_calendario;
     ImageView searchMarker;
@@ -135,9 +133,12 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     final FirebaseStorage storage = FirebaseStorage.getInstance();
 
     PlaceAutocompleteFragment autocompleteFragment;
-    private GoogleApiClient mGoogleApiClient;
 
     MultiSelectionSpinner spinner_categoria_multi;
+    Location myLocation;
+    String provider;
+    Criteria criteria;
+    LocationManager locationManager;
 
     public FragmentMapa() {
         // Required empty public constructor
@@ -192,6 +193,8 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                 intent.putExtra("NombreSitio", NameCard.getText().toString());
                 intent.putExtra("DireccionSitio", DirectionCard.getText().toString());
                 intent.putExtra("RatingSitio", RatingCard.getText().toString());
+                Comunicador.setContextMapa(getActivity());
+                Comunicador.setGoogleMap(miMapa);
                 startActivity(intent);
             }
         });
@@ -226,17 +229,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
         mMapView.getMapAsync(this);
-
-        /*cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), LugarDetalle.class);
-                intent.putExtra("NombreSitio", NameCard.getText().toString());
-                intent.putExtra("DireccionSitio", DirectionCard.getText().toString());
-                intent.putExtra("RatingSitio", RatingCard.getText().toString());
-                startActivity(intent);
-            }
-        });*/
 
         fabLugares.setColorNormal(Color.parseColor("#F44336"));
         fabLugares.setColorPressed(Color.parseColor("#D32F2F"));
@@ -280,10 +272,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         miMapa = googleMap;
-
-        miMapa.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(4.60971, -74.08175), 5f));
-        miMapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(4.60971, -74.08175), 5f));
-
         miMapa.getUiSettings().setZoomControlsEnabled(true);
         miMapa.getUiSettings().setCompassEnabled(true);
         miMapa.getUiSettings().setMyLocationButtonEnabled(true);
@@ -293,6 +281,27 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
+        // Get LocationManager object from System Service LOCATION_SERVICE
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        // Create a criteria object to retrieve provider
+        criteria = new Criteria();
+
+        // Get the name of the best provider
+        provider = locationManager.getBestProvider(criteria, true);
+
+        myLocation = locationManager.getLastKnownLocation(provider);
+
+        miMapa.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 15f));
+        miMapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 17f));
+
+        // Get latitude of the current location // Get longitude of the current location
+        latitud = myLocation.getLatitude();
+        longitud = myLocation.getLongitude();
+
+        Comunicador.setMiPosicion(new LatLng(latitud, longitud));
+
         miMapa.setMyLocationEnabled(true);
 
         miMapa.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
@@ -309,26 +318,10 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
 
             @Override
             public boolean onMyLocationButtonClick() {
-                //Location miUbicacion = miMapa.getMyLocation();
-                //miMapa.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(miUbicacion.getLatitude(), miUbicacion.getLongitude()), 16f));
                 searchMarker.setVisibility(View.GONE);
                 if (cardView.getVisibility() == View.VISIBLE) {
                     fade_out();
                 }
-
-                return false;
-            }
-        });
-
-        miMapa.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                LatLng Destino = marker.getPosition();
-                latitudDestino = Destino.latitude;
-                longitudDestino = Destino.longitude;
-
-                DownloadTask.Parametros(getActivity(), new LatLng(latitud, longitud), Destino, miMapa);
-                new DownloadTask().execute();
                 return false;
             }
         });
@@ -473,6 +466,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                                                             break;
                                                         case "evento":
                                                             Evento ev = dataSnapshot.getValue(Evento.class);
+                                                            Comunicador.setMiPosicionDestino(new LatLng(ev.getLat(), ev.getLng()));
                                                             if (ev != null) {
                                                                 //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
                                                                 imageCard.setImageResource(R.drawable.loading);
@@ -570,9 +564,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     public void onPause() {
         super.onPause();
         mMapView.onPause();
-        /*if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, getActivity());
-        }*/
     }
 
     @Override
@@ -588,8 +579,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     }
 
     public void limpiarMapa() {
-
-
         for (Sitio s : Sitios) {
             s.getMarker().remove();
         }
@@ -628,6 +617,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                         e.setGeoPunto(g);
                         Sitios.add(e);
 
+                        Comunicador.setMiPosicionDestino(new LatLng(g.getLat(), g.getLng()));
                         final int id = getResources().getIdentifier("icon_" + filtroSitio + "_" + t, "drawable", "net.electrosoftware.myapp2");
 
                         e.setMarker(miMapa.addMarker(new MarkerOptions()
@@ -717,28 +707,6 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         }
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, x, y, false);
         return resizedBitmap;
-    }
-
-    protected void search(List<Address> addresses) {
-
-        Address address = (Address) addresses.get(0);
-        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-
-        String addressText = String.format(
-                "%s, %s",
-                address.getMaxAddressLineIndex() > 0 ? address
-                        .getAddressLine(0) : "", address.getCountryName());
-
-        MarkerOptions markerOptions = new MarkerOptions();
-
-        markerOptions.position(latLng);
-        markerOptions.title(addressText);
-        markerOptions.rotation(1);
-        markerOptions.draggable(true);
-        miMapa.addMarker(markerOptions);
-        miMapa.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        miMapa.animateCamera(CameraUpdateFactory.zoomTo(15));
-
     }
 
     public void fade_in() {

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,7 +51,7 @@ import java.util.List;
 
 public class EventoDetalle extends AppCompatActivity {
     ToggleButton btn_evento_favoritos;
-    Button btn_evento_comentar, btn_evento_act;
+    Button btn_evento_comentar;//, btn_evento_act;
     ToggleButton btn_evento_asistencia;
     TextView txt_evento_nombre;
     // COMENTARIO
@@ -67,6 +68,7 @@ public class EventoDetalle extends AppCompatActivity {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     RecyclerView rv_evento_comentarios;
     List<ComentariosData> dataModels;
+    FloatingActionButton fab_actualizar_evento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,15 +119,21 @@ public class EventoDetalle extends AppCompatActivity {
             }
         });
 
-        btn_evento_act = (Button) findViewById(R.id.btn_evento_act);
+        fab_actualizar_evento = (FloatingActionButton) findViewById(R.id.fab_actualizar_evento);
+        fab_actualizar_evento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cargarEventoInFragment();
+            }
+        });
+
+        /*btn_evento_act = (Button) findViewById(R.id.btn_evento_act);
         btn_evento_act.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 cargarEventoInFragment();
-
             }
-        });
+        });*/
 
         btn_evento_asistencia = (ToggleButton) findViewById(R.id.btn_evento_asistencia);
         btn_evento_asistencia.setOnClickListener(new View.OnClickListener() {

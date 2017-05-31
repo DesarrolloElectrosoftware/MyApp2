@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alexzh.circleimageview.CircleImageView;
+
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.activityes.EventoDetalle;
 import net.electrosoftware.myapp2.activityes.LugarDetalle;
@@ -60,80 +62,12 @@ public class FragmentUsuario extends Fragment {
                              Bundle savedInstanceState) {
         view = getActivity().getLayoutInflater().inflate(R.layout.fragment_usuario, null);
 
-        imv_usuario_foto = (ImageView) view.findViewById(R.id.imv_usuario_foto);
+        imv_usuario_foto = (CircleImageView) view.findViewById(R.id.imv_usuario_foto);
         imv_usuario_foto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Foto de Perfil", Toast.LENGTH_SHORT).show();
-            }
-        });
-        et_usuario_email = (EditText) view.findViewById(R.id.et_usuario_email);
-        et_usuario_nombreusuario = (EditText) view.findViewById(R.id.et_usuario_nombreusuario);
-        et_usuario_contrasena = (EditText) view.findViewById(R.id.et_usuario_contrasena);
-
-        btn_usuario_lugares = (Button) view.findViewById(R.id.btn_usuario_lugares);
-        btn_usuario_lugares.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        btn_usuario_eventos = (Button) view.findViewById(R.id.btn_usuario_eventos);
-        btn_usuario_eventos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        btn_usuario_promociones = (Button) view.findViewById(R.id.btn_usuario_promociones);
-        btn_usuario_promociones.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        btn_usuario_actualizar = (Button) view.findViewById(R.id.btn_usuario_actualizar);
-        btn_usuario_actualizar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actualizarDatos("Mis Datos");
-            }
-        });
-
-        btn_usuario_editar_foto = (ImageButton) view.findViewById(R.id.btn_usuario_editar_foto);
-        btn_usuario_editar_foto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                //Toast.makeText(getActivity(), "Foto de Perfil", Toast.LENGTH_SHORT).show();
                 CharSequence options[] = new CharSequence[]{"Cámara", "Galería"};
-
-                /*new AlertDialog.Builder(getActivity())
-                        .setMessage("Agregar Imagen desde...")
-                        .setItems(options, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // the user clicked on colors[which]
-                                switch (which) {
-                                    case 0:
-                                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                        startActivityForResult(takePicture, 0);//zero can be replaced with any action code
-                                        break;
-                                    case 1:
-                                        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                        startActivityForResult(pickPhoto, 1);//one can be replaced with any action code
-                                        break;
-                                }
-                            }
-                        })
-                        .setIcon(R.mipmap.ic_launcher)
-                        .setCancelable(true)
-                        .setNegativeButton("Cancelar", null)
-                        .show();*/
-
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Agregar Imagen desde...");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -153,8 +87,17 @@ public class FragmentUsuario extends Fragment {
                     }
                 });
                 builder.show();
+            }
+        });
+        et_usuario_email = (EditText) view.findViewById(R.id.et_usuario_email);
+        et_usuario_nombreusuario = (EditText) view.findViewById(R.id.et_usuario_nombreusuario);
+        et_usuario_contrasena = (EditText) view.findViewById(R.id.et_usuario_contrasena);
 
-
+        btn_usuario_actualizar = (Button) view.findViewById(R.id.btn_usuario_actualizar);
+        btn_usuario_actualizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actualizarDatos("Mis Datos");
             }
         });
 

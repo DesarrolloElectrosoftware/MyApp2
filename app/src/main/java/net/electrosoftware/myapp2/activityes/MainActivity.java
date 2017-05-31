@@ -1,7 +1,9 @@
 package net.electrosoftware.myapp2.activityes;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,9 +14,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alexzh.circleimageview.CircleImageView;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
             CURRENT_TAG = TAG_MAP;
             loadHomeFragment();
         }
+
     }
 
     /*
@@ -140,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
                 // favoritos
                 FragmentMisFavoritos favoritosFragment = new FragmentMisFavoritos();
                 return favoritosFragment;
-
             default:
                 return new FragmentMapa();
         }
@@ -172,6 +176,21 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_favoritos:
                         navItemIndex = 3;
                         CURRENT_TAG = TAG_FAVORITE;
+                        break;
+                    case R.id.nav_cerrar:
+                        // cerrar sesión
+                        new AlertDialog.Builder(MainActivity.this).setTitle("Cerrar Sesión")
+                                .setMessage("¿Está seguro de cerrar sesión?")
+                                .setIcon(R.mipmap.ic_launcher)
+                                .setCancelable(true)
+                                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                })
+                                .setNegativeButton("Cancelar", null)
+                                .show();
                         break;
                     default:
                         navItemIndex = 0;
@@ -266,15 +285,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public void onBackPressed() {
-        finish();
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawers();
             return;
         }
-
         // This code loads home fragment when back key is pressed
         // when user is in other fragment than home
         if (shouldLoadHomeFragOnBackPress) {
@@ -288,84 +304,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        super.onBackPressed();
-    }
-
-    /*@Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Presione ATRÁS de nuevo para salir", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 2000);
-    }*/
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        //super.onBackPressed();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //Toast.makeText(MainActivity.this, "No salir de la app", Toast.LENGTH_SHORT).show();
+        return super.onKeyDown(keyCode, event);
     }
-
-    /*@SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        boolean fragmentTransaction = false;
-        Fragment fragment = null;
-        Class fragmentClass;
-
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_mapa) {
-            fragment = new FragmentMapa();
-            fragmentTransaction = true;
-        } else if (id == R.id.nav_eventos) {
-            fragment = new FragmentMisEventos();
-            fragmentTransaction = true;
-        } else if (id == R.id.nav_favoritos) {
-            fragment = new FragmentMisFavoritos();
-            fragmentTransaction = true;
-        } else if (id == R.id.nav_perfil) {
-            fragment = new FragmentUsuario();
-            fragmentTransaction = true;
-        } else if (id == R.id.nav_cerrar) {
-            finish();
-        }
-
-        if (fragmentTransaction) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.frag_main, fragment)
-                    .commit();
-
-            //menuItem.setChecked(true);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }*/
 }

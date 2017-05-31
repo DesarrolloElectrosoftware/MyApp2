@@ -89,13 +89,29 @@ public class MultiSelectionSpinner extends Spinner implements
         builder.setNeutralButton("Todas", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                for (int j = 1; j == _items.length; j++) {
-                    setSelection(j);
-                }
+                Boolean wantToCloseDialog = false;
+                selectAll(true, (AlertDialog) dialogInterface);
+
+                if (wantToCloseDialog)
+                    dialogInterface.dismiss();
             }
         });
         builder.show();
         return true;
+    }
+
+    protected void selectAll(boolean isSelectAll, AlertDialog dialog) {
+        if (mSelection != null) {
+            for (int i = 0; i < _items.length; i++) {
+                mSelection[i] = isSelectAll;
+                ((AlertDialog) dialog).getListView().setItemChecked(i, isSelectAll);
+            }
+
+            simple_adapter.clear();
+            simple_adapter.add(buildSelectedItemString());
+        } else {
+            throw new IllegalArgumentException("mSelection is null");
+        }
     }
 
     @Override

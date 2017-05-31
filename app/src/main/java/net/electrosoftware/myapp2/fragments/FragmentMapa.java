@@ -129,7 +129,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     String markerSelect = "";
     RutaRef rutaRefSitio = null;
 
-    int[] itensCategoriaVistos = {0,1,2,3,4,5,6};
+    int[] itensCategoriaVistos = {0, 1, 2, 3, 4, 5, 6};
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -177,7 +177,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                         intent = new Intent(getActivity(), LugarDetalle.class);
                         break;
                     case "evento":
-                        if(rutaRefSitio != null){
+                        if (rutaRefSitio != null) {
                             rutaRefSitio.getdatabaseReference().removeEventListener(rutaRefSitio.getvalueEventListener());
                             rutaRefSitio = null;
                         }
@@ -188,7 +188,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                         intent = new Intent(getActivity(), PromoDetalle.class);
                         break;
                 }
-
+                fade_out();
                 intent.putExtra("NombreSitio", NameCard.getText().toString());
                 intent.putExtra("DireccionSitio", DirectionCard.getText().toString());
                 intent.putExtra("RatingSitio", RatingCard.getText().toString());
@@ -791,7 +791,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                 tipos.clear();
                 itensCategoriaVistos = new int[Integer.SIZE];
 
-                for (Integer i: indices){
+                for (Integer i : indices) {
                     itensCategoriaVistos[i] = i;
                     String tipo = "";
                     switch (i) {

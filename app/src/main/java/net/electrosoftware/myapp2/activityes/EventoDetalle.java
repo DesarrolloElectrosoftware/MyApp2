@@ -3,6 +3,7 @@ package net.electrosoftware.myapp2.activityes;
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -120,6 +121,7 @@ public class EventoDetalle extends AppCompatActivity {
         });
 
         fab_actualizar_evento = (FloatingActionButton) findViewById(R.id.fab_actualizar_evento);
+
         fab_actualizar_evento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -44,6 +44,7 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:src="@drawable/ic_actualizar"
+        app:backgroundTint="@color/colorPrimaryDark"
         app:layout_anchor="@+id/includeEvento"
         app:layout_anchorGravity="bottom|right|end" />
 

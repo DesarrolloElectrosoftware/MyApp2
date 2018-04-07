@@ -56,6 +56,7 @@ import net.electrosoftware.myapp2.clasesbases.FetchAddressIntentService;
 import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.firebaseClases.Evento;
 import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
+import net.electrosoftware.myapp2.firebaseClases.Lugar;
 import net.electrosoftware.myapp2.firebaseClases.Punto;
 import net.electrosoftware.myapp2.firebaseClases.itemListaSitio;
 
@@ -64,7 +65,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class AgregarSitioMapa extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -79,15 +80,15 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
     /**
      * The formatted location address.
      */
-    public Evento evento;
+
     protected String mAddressOutput;
     protected String mAreaOutput;
     protected String mCityOutput;
     protected String mStateOutput;
-    TextView txt_eventomap_buscar;
+    TextView txt_sitiomap_buscar;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
 
-    Button btn_eventomap_cancelar, btn_eventomap_guardar;
+    Button btn_sitiomap_cancelar, btn_sitiomap_guardar;
 
     public Bitmap bitmap;
 
@@ -96,12 +97,12 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agregar_evento_mapa);
+        setContentView(R.layout.activity_agregar_sitio_mapa);
         mContext = this;
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        txt_eventomap_buscar = (TextView) findViewById(R.id.txt_eventomap_buscar);
-        txt_eventomap_buscar.setOnClickListener(new View.OnClickListener() {
+        txt_sitiomap_buscar = (TextView) findViewById(R.id.txt_sitiomap_buscar);
+        txt_sitiomap_buscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openAutocompleteActivity();
@@ -132,84 +133,138 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
             Toast.makeText(mContext, "Localización no admitida en este dispositivo", Toast.LENGTH_SHORT).show();
         }
 
-        btn_eventomap_cancelar = (Button) findViewById(R.id.btn_eventomap_cancelar);
-        btn_eventomap_guardar = (Button) findViewById(R.id.btn_eventomap_guardar);
+        btn_sitiomap_cancelar = (Button) findViewById(R.id.btn_sitiomap_cancelar);
+        btn_sitiomap_guardar = (Button) findViewById(R.id.btn_sitiomap_guardar);
 
-        btn_eventomap_cancelar.setOnClickListener(new View.OnClickListener() {
+        btn_sitiomap_cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        btn_eventomap_guardar.setOnClickListener(new View.OnClickListener() {
+        btn_sitiomap_guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final DatabaseReference SitiosRef = database.getReference(FirebaseReferences.SITIO_REFERENCE);
                 LatLng pos = mMap.getCameraPosition().target;
                 Punto p = new Punto(pos.latitude, pos.longitude);
 
-                evento.setLat(pos.latitude);
-                evento.setLng(pos.longitude);
-                try {
-                    evento.setDireccion(LagLngToDir(pos.latitude, pos.longitude));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    evento.setDireccion("");
+                String rutaFoto = "";
+
+
+                if (Comunicador.getObjeto1() instanceof Lugar) {
+                    Lugar lugar = (Lugar) Comunicador.getObjeto1();
+                    lugar.setLat(pos.latitude);
+                    lugar.setLng(pos.longitude);
+                    try {
+                        lugar.setDireccion(LagLngToDir(pos.latitude, pos.longitude));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        lugar.setDireccion("");
+                    }
+                    String key = lugar.writeNewEvento(SitiosRef);
+                    if (Comunicador.getTipoSitio() != null) {
+                        final DatabaseReference ListaUserEventoRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
+                                .child(user.getUid())
+                                //.child(FirebaseReferences.EVENTO_REFERENCE)
+                                .child(Comunicador.getTipoSitio())
+                                .child(key);
+                        itemListaSitio iten = new itemListaSitio(lugar.getNombre(), lugar.getTipo(), lugar.getRutaFoto());
+                        iten.writeItemListaSitio(ListaUserEventoRef);
+
+                        final DatabaseReference FiltroEventosTipoRef = database.getReference(FirebaseReferences.FILTRO_REFERENCE)
+                                //.child(FirebaseReferences.EVENTO_REFERENCE)
+                                .child(Comunicador.getTipoSitio())
+                                .child(lugar.getTipo());
+                        p.writePunto(FiltroEventosTipoRef, key);
+                    }
+
+                    guardarFoto(lugar.getRutaFoto(), Comunicador.getTipoSitio());
+                    Toast.makeText(AgregarSitioMapa.this, "El Lugar se a registrado", Toast.LENGTH_SHORT).show();
+                    AgregarLugar.agregarLugar.finish();
+
+
+                } else if(Comunicador.getObjeto1() instanceof Evento) {
+                    Evento evento = (Evento) Comunicador.getObjeto1();
+                    evento.setLat(pos.latitude);
+                    evento.setLng(pos.longitude);
+                    try {
+                        evento.setDireccion(LagLngToDir(pos.latitude, pos.longitude));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        evento.setDireccion("");
+                    }
+                    String key = evento.writeNewEvento(SitiosRef);
+                    if (Comunicador.getTipoSitio() != null) {
+                        final DatabaseReference ListaUserEventoRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
+                                .child(user.getUid())
+                                //.child(FirebaseReferences.EVENTO_REFERENCE)
+                                .child(Comunicador.getTipoSitio())
+                                .child(key);
+                        itemListaSitio iten = new itemListaSitio(evento.getNombre(), evento.getTipo(), evento.getRutaFoto());
+                        iten.writeItemListaSitio(ListaUserEventoRef);
+
+                        final DatabaseReference FiltroEventosTipoRef = database.getReference(FirebaseReferences.FILTRO_REFERENCE)
+                                //.child(FirebaseReferences.EVENTO_REFERENCE)
+                                .child(Comunicador.getTipoSitio())
+                                .child(evento.getFechaIni())
+                                .child(evento.getTipo());
+                        p.writePunto(FiltroEventosTipoRef, key);
+                    }
+
+                    guardarFoto(evento.getRutaFoto(), Comunicador.getTipoSitio());
+
+                    Toast.makeText(AgregarSitioMapa.this, "El Evento se a registrado", Toast.LENGTH_SHORT).show();
+                    AgregarEvento.agregarEvento.finish();
                 }
 
-                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                //Toast.makeText(AgregarEventoMapa.this, "User key: " + userRef.getKey(), Toast.LENGTH_SHORT).show();
-
-                final DatabaseReference SitiosRef = database.getReference(FirebaseReferences.SITIO_REFERENCE);
-                String key = evento.writeNewEvento(SitiosRef);
-
-                final DatabaseReference ListaUserEventoRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
-                        .child(user.getUid())
-                        .child(FirebaseReferences.EVENTO_REFERENCE)
-                        .child(key);
-                itemListaSitio iten = new itemListaSitio(evento.getNombre(), evento.getTipo(), evento.getRutaFoto());
-                iten.writeItemListaSitio(ListaUserEventoRef);
-
-                final DatabaseReference FiltroEventosTipoRef = database.getReference(FirebaseReferences.FILTRO_REFERENCE)
-                        .child(FirebaseReferences.EVENTO_REFERENCE).child(evento.getFechaIni()).child(evento.getTipo());
-                p.writePunto(FiltroEventosTipoRef, key);
-
-
-                if (bitmap != null) {
-                    final FirebaseStorage storage = FirebaseStorage.getInstance();
-                    StorageReference storageRef = storage.getReference("foto sitios").child("evento").child(evento.getRutaFoto());
-
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] data = baos.toByteArray();
-
-                    UploadTask uploadTask = storageRef.putBytes(data);
-                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                            //Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        }
-                    });
-
+                if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Consumidor")) {
+                    startActivity(new Intent(AgregarSitioMapa.this, MainActivity.class));
+                } else if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Empresario")) {
+                    startActivity(new Intent(AgregarSitioMapa.this, Empresarios.class));
+                }else{
+                    Toast.makeText(AgregarSitioMapa.this, "No encontramos la información de su cuenta, si el problema continua comuniquece con nosotros", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(AgregarSitioMapa.this, Login.class));
                 }
 
-                Toast.makeText(AgregarEventoMapa.this, "El evento se a registrado", Toast.LENGTH_SHORT).show();
-                AgregarEvento.agregarEvent.finish();
                 finish();
-                startActivity(new Intent(AgregarEventoMapa.this, MainActivity.class));
             }
         });
 
-        evento = (Evento) Comunicador.getObjeto1();
-        bitmap = (Bitmap) Comunicador.getObjeto2();
+
+
     }
+
+    private void guardarFoto(String rutaFoto, String tipoSitio){
+        bitmap = (Bitmap) Comunicador.getObjeto2();
+        if (bitmap != null) {
+            final FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference("foto sitios").child(tipoSitio).child(rutaFoto);
+
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            UploadTask uploadTask = storageRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    //Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                }
+            });
+
+        }
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -392,9 +447,9 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
         /*/  mLocationAddressTextView.setText(mAddressOutput);
         try {
             if (mAreaOutput != null)
-            //txt_eventomap_buscar.setText(mAreaOutput+ "");
+            //txt_sitiomap_buscar.setText(mAreaOutput+ "");
             //mLocationAddress.setText(mAddressOutput);
-            //txt_eventomap_buscar.setText(mAreaOutput);
+            //txt_sitiomap_buscar.setText(mAreaOutput);
         } catch (Exception e) {
             e.printStackTrace();
         }*/
@@ -455,7 +510,7 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
                 Place place = PlaceAutocomplete.getPlace(mContext, data);
                 LatLng latLong;
                 latLong = place.getLatLng();
-                //txt_eventomap_buscar.setText(place.getName() + "");
+                //txt_sitiomap_buscar.setText(place.getName() + "");
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(latLong).zoom(19f).build();
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
@@ -472,7 +527,7 @@ public class AgregarEventoMapa extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
-    public String LagLngToDir(double latitude, double longitude ) throws IOException {
+    public String LagLngToDir(double latitude, double longitude) throws IOException {
         try {
             Geocoder geocoder;
             List<Address> addresses;

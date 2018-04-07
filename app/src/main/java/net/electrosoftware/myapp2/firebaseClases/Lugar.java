@@ -2,37 +2,45 @@ package net.electrosoftware.myapp2.firebaseClases;
 
 import android.graphics.Bitmap;
 
+import com.google.firebase.database.DatabaseReference;
+
 /**
  * Created by CARLOS MAESTRE on 13/03/2017.
  */
 
 public class Lugar {
 
-    String nombre;
-    String direccion;
-    String telefono;
-    String descripcion;
-    Float calificacion;
-    String foto_presentacion;
-    String geolocalizacion;
-    //List<String> horario;
-    String pagina;
-    //List<String> tipo;
-    Bitmap fotoP;
+    public String nombre;
+    public String telefono;
+    public String horario;
+    public String tipo;
+    public String descripcion;
+    public String rutaFoto;
+    public String direccion;
+    public double lat;
+    public double lng;
+    public double calificacion;
 
-    public Lugar(){
-
+    public Lugar() {
     }
 
-    public Lugar(String nombre, String direccion, String telefono, String descripcion, Float calificacion, String foto_presentacion, String geolocalizacion, String pagina) {
+    public String writeNewEvento(DatabaseReference dataRef) {
+        String key = dataRef.push().getKey();
+        dataRef.child(key).setValue(this);
+        return key;
+    }
+
+    public Lugar(String nombre, String telefono, String horario, String tipo, String descripcion, String rutaFoto, String direccion, double lat, double lng, double calificacion) {
         this.nombre = nombre;
-        this.direccion = direccion;
         this.telefono = telefono;
+        this.horario = horario;
+        this.tipo = tipo;
         this.descripcion = descripcion;
+        this.rutaFoto = rutaFoto;
+        this.direccion = direccion;
+        this.lat = lat;
+        this.lng = lng;
         this.calificacion = calificacion;
-        this.foto_presentacion = foto_presentacion;
-        this.geolocalizacion = geolocalizacion;
-        this.pagina = pagina;
     }
 
     public String getNombre() {
@@ -43,20 +51,28 @@ public class Lugar {
         this.nombre = nombre;
     }
 
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
     public String getTelefono() {
         return telefono;
     }
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getDescripcion() {
@@ -67,75 +83,43 @@ public class Lugar {
         this.descripcion = descripcion;
     }
 
-    public Float getCalificacion() {
+    public String getRutaFoto() {
+        return rutaFoto;
+    }
+
+    public void setRutaFoto(String rutaFoto) {
+        this.rutaFoto = rutaFoto;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public double getCalificacion() {
         return calificacion;
     }
 
-    public void setCalificacion(Float calificacion) {
+    public void setCalificacion(double calificacion) {
         this.calificacion = calificacion;
-    }
-
-    public String getFoto_presentacion() {
-        return foto_presentacion;
-    }
-
-    public void setFoto_presentacion(String foto_presentacion) {
-        this.foto_presentacion = foto_presentacion;
-    }
-
-    public String getGeolocalizacion() {
-        return geolocalizacion;
-    }
-
-    public void setGeolocalizacion(String geolocalizacion) {
-        this.geolocalizacion = geolocalizacion;
-    }
-
-    /*public List<String> getHorario() {
-        return horario;
-    }
-
-    public void setHorario(List<String> horario) {
-        this.horario = horario;
-    }*/
-
-    public String getPagina() {
-        return pagina;
-    }
-
-    public void setPagina(String pagina) {
-        this.pagina = pagina;
-    }
-
-    /*public List<String> getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(List<String> tipo) {
-        this.tipo = tipo;
-    }*/
-
-    @Override
-    public String toString() {
-        return "Lugar{" +
-                "nombre='" + nombre + '\'' +
-                ", direccion='" + direccion + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", calificacion=" + calificacion +
-                ", foto_presentacion='" + foto_presentacion + '\'' +
-                ", geolocalizacion='" + geolocalizacion + '\'' +
-                //", horario=" + horario +
-                ", pagina='" + pagina + '\'' +
-                //", tipo=" + tipo +
-                '}';
-    }
-
-    public Bitmap getFotoP() {
-        return fotoP;
-    }
-
-    public void setFotoP(Bitmap fotoP) {
-        this.fotoP = fotoP;
     }
 }

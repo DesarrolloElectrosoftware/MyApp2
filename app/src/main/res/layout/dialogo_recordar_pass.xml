@@ -44,7 +44,6 @@
             android:layout_marginTop="16dp"
             android:drawableLeft="@drawable/ic_email"
             android:hint="Correo electronico"
-            android:text="cmaestre@unab.edu.co"
             android:inputType="textEmailAddress"
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>

@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -16,13 +17,17 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
+
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +83,7 @@ import net.electrosoftware.myapp2.firebaseClases.Empresa;
 import net.electrosoftware.myapp2.firebaseClases.Evento;
 import net.electrosoftware.myapp2.firebaseClases.FirebaseReferences;
 import net.electrosoftware.myapp2.firebaseClases.GeoPunto;
+import net.electrosoftware.myapp2.firebaseClases.Lugar;
 import net.electrosoftware.myapp2.firebaseClases.RutaRef;
 import net.electrosoftware.myapp2.firebaseClases.Sitio;
 
@@ -136,8 +142,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
 
     MultiSelectionSpinner spinner_categoria_multi;
     Location myLocation;
-    String provider;
-    Criteria criteria;
+
     LocationManager locationManager;
 
     public FragmentMapa() {
@@ -147,6 +152,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
@@ -269,6 +275,68 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         super.onActivityCreated(savedInstanceState);
     }
 
+    private boolean checkLocation() {
+        if (!isLocationEnabled())
+            showAlert();
+        return isLocationEnabled();
+    }
+
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setTitle("Localización GPS apagada")
+                .setMessage("Su ubicación esta desactivada.\npor favor active su ubicación " +
+                        "usa esta app")
+                .setPositiveButton("Configuración de ubicación", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    }
+                });
+        dialog.show();
+    }
+
+    private boolean isLocationEnabled() {
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    public void ubicarCamaraMapa(){
+        if (!checkLocation()){
+            if (ActivityCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(getActivity(),
+                            Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            }
+        }
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        String provider = locationManager.getBestProvider(criteria, true);
+        if (provider != null) {
+            myLocation = locationManager.getLastKnownLocation(provider);
+            if (myLocation != null){
+                miMapa.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 15f));
+                miMapa.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()), 17f));
+                latitud = myLocation.getLatitude();
+                longitud = myLocation.getLongitude();
+                Comunicador.setMiPosicion(new LatLng(latitud, longitud));
+            }
+            miMapa.setMyLocationEnabled(true);
+        }
+
+    }
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         miMapa = googleMap;
@@ -278,7 +346,9 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         miMapa.getUiSettings().setAllGesturesEnabled(true);
         miMapa.getUiSettings().setMapToolbarEnabled(true);
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        ubicarCamaraMapa();
+
+        /*if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
@@ -300,9 +370,7 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         latitud = myLocation.getLatitude();
         longitud = myLocation.getLongitude();
 
-        Comunicador.setMiPosicion(new LatLng(latitud, longitud));
-
-        miMapa.setMyLocationEnabled(true);
+        Comunicador.setMiPosicion(new LatLng(latitud, longitud));*/
 
         miMapa.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -354,11 +422,11 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         tipos.add("restaurante");
         tipos.add("religion");
         tipos.add("rumba");
-        tipos.add("arte");
+        tipos.add("cultura");
         tipos.add("musica");
         tipos.add("ropa");
 
-        filtrarSitrios();
+        filtrarSitios();
 
         /*for (final String t : tipos) {
             final DatabaseReference EmpresasTipoRef = database.getReference(
@@ -463,49 +531,10 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                                     switch (filtroSitio) {
                                                         case "lugar":
+                                                            cargarInfoTargetaLugar(dataSnapshot);
                                                             break;
                                                         case "evento":
-                                                            Evento ev = dataSnapshot.getValue(Evento.class);
-                                                            Comunicador.setMiPosicionDestino(new LatLng(ev.getLat(), ev.getLng()));
-                                                            if (ev != null) {
-                                                                //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
-                                                                imageCard.setImageResource(R.drawable.loading);
-                                                                if (ev.getRutaFoto() != null && !(ev.getRutaFoto().equalsIgnoreCase("Sin imagen"))) {
-                                                                    StorageReference imagesRef = storage.getReference("foto sitios/" + filtroSitio + "/" + ev.getRutaFoto());
-                                                                    imagesRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                                                        @Override
-                                                                        public void onSuccess(byte[] bytes) {
-                                                                            Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                                                            imageCard.setImageBitmap(b);
-                                                                            // Use the bytes to display the image
-                                                                        }
-                                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                                        @Override
-                                                                        public void onFailure(@NonNull Exception exception) {
-                                                                            // Handle any errors
-                                                                            imageCard.setImageResource(R.drawable.no_image_found);
-                                                                        }
-                                                                    });
-                                                                } else {
-                                                                    imageCard.setImageResource(R.drawable.no_image_found);
-                                                                }
-
-                                                                cardView.setClickable(true);
-                                                                Comunicador.setObjeto1(imageCard);
-                                                                Comunicador.setIdEvento(markerSelect);
-                                                                Comunicador.setEvento(ev);
-
-                                                                NameCard.setText(ev.getNombre());
-                                                                DirectionCard.setText(ev.getDireccion());
-                                                                RatingCard.setText(ev.getAsistentes() + "");
-
-                                                            } else {
-                                                                cardView.setClickable(false);
-                                                                imageCard.setImageResource(R.drawable.no_image_found);
-                                                                NameCard.setText("Lo sentimos, no tenemos información de este punto");
-                                                                DirectionCard.setText("X_X");
-                                                                RatingCard.setText("0");
-                                                            }
+                                                            cargarInfoTargetaEvento(dataSnapshot);
                                                             break;
                                                         case "promocion":
                                                             break;
@@ -590,7 +619,121 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         rutasReferenciadas.clear();
     }
 
-    public void filtrarSitrios() {
+    public void cargarInfoTargetaEvento(DataSnapshot dataSnapshot){
+        try {
+            Evento ev = dataSnapshot.getValue(Evento.class);
+            Comunicador.setMiPosicionDestino(new LatLng(ev.getLat(), ev.getLng()));
+            Comunicador.setMiPosicionDestino(new LatLng(ev.getLat(), ev.getLng()));
+            if (ev != null) {
+                //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
+                imageCard.setImageResource(R.drawable.loading);
+                if (ev.getRutaFoto() != null && !(ev.getRutaFoto().equalsIgnoreCase("Sin imagen"))) {
+                    StorageReference imagesRef = storage.getReference("foto sitios/" + filtroSitio + "/" + ev.getRutaFoto());
+                    imagesRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            imageCard.setImageBitmap(b);
+                            // Use the bytes to display the image
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                            imageCard.setImageResource(R.drawable.no_image_found);
+                        }
+                    });
+                } else {
+                    imageCard.setImageResource(R.drawable.no_image_found);
+                }
+
+                cardView.setClickable(true);
+                Comunicador.setObjeto1(imageCard);
+                Comunicador.setIdEvento(markerSelect);
+                Comunicador.setEvento(ev);
+
+
+
+                NameCard.setText(ev.getNombre());
+                DirectionCard.setText(ev.getDireccion());
+                RatingCard.setText(ev.getAsistentes() + "");
+
+            } else {
+                cardView.setClickable(false);
+                imageCard.setImageResource(R.drawable.no_image_found);
+                NameCard.setText("Lo sentimos, no tenemos información de este punto");
+                DirectionCard.setText("X_X");
+                RatingCard.setText("0");
+            }
+        }catch (Exception e){
+            cardView.setClickable(false);
+            imageCard.setImageResource(R.drawable.no_image_found);
+            NameCard.setText("Lo sentimos, no tenemos información de este punto");
+            DirectionCard.setText("X_X");
+            RatingCard.setText("0");
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void cargarInfoTargetaLugar(DataSnapshot dataSnapshot){
+        try {
+
+            Lugar lg = dataSnapshot.getValue(Lugar.class);
+            Comunicador.setMiPosicionDestino(new LatLng(lg.getLat(), lg.getLng()));
+            if (lg != null) {
+                //Toast.makeText(getActivity(), ic.getNombre(), Toast.LENGTH_SHORT).show();
+                imageCard.setImageResource(R.drawable.loading);
+                if (lg.getRutaFoto() != null && !(lg.getRutaFoto().equalsIgnoreCase("Sin imagen"))) {
+                    StorageReference imagesRef = storage.getReference("foto sitios/" + filtroSitio + "/" + lg.getRutaFoto());
+                    imagesRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            imageCard.setImageBitmap(b);
+                            // Use the bytes to display the image
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                            imageCard.setImageResource(R.drawable.no_image_found);
+                        }
+                    });
+                } else {
+                    imageCard.setImageResource(R.drawable.no_image_found);
+                }
+
+                cardView.setClickable(true);
+                Comunicador.setObjeto1(imageCard);
+                Comunicador.setIdEvento(markerSelect);
+                Comunicador.setLugar(lg);
+
+
+
+                NameCard.setText(lg.getNombre());
+                DirectionCard.setText(lg.getDireccion());
+                RatingCard.setText("");
+
+            } else {
+                cardView.setClickable(false);
+                imageCard.setImageResource(R.drawable.no_image_found);
+                NameCard.setText("Lo sentimos, no tenemos información de este punto");
+                DirectionCard.setText("X_X");
+                RatingCard.setText("0");
+            }
+        }catch (Exception e){
+            cardView.setClickable(false);
+            imageCard.setImageResource(R.drawable.no_image_found);
+            NameCard.setText("Lo sentimos, no tenemos información de este punto");
+            DirectionCard.setText("X_X");
+            RatingCard.setText("0");
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void filtrarSitios() {
 
         limpiarMapa();
         for (final String t : tipos) {
@@ -757,10 +900,10 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
                 //Toast.makeText(getActivity(),"aaaaaaaaaaaa", Toast.LENGTH_LONG).show();
 
                 tipos.clear();
-                itensCategoriaVistos = new int[Integer.SIZE];
+                //itensCategoriaVistos = new int[indices.size()];
 
                 for (Integer i : indices) {
-                    itensCategoriaVistos[i] = i;
+                    //itensCategoriaVistos[i] = i;
                     String tipo = "";
                     switch (i) {
                         case 0:
@@ -828,11 +971,11 @@ public class FragmentMapa extends Fragment implements OnMapReadyCallback {
         btn_filtar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "Filtro Aplicado", Toast.LENGTH_SHORT).show();
+
                 if (ocultarSpiner == 0) {
                     fechaFiltro = txt_fecha_filtro.getText().toString().replace("/", "-").replace(" ", "");
                 }
-                filtrarSitrios();
+                filtrarSitios();
                 dialog.dismiss();
                 dialog.cancel();
             }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -28,6 +29,7 @@ import com.google.firebase.storage.StorageReference;
 
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.activityes.AgregarEvento;
+import net.electrosoftware.myapp2.activityes.AgregarLugar;
 import net.electrosoftware.myapp2.clasesbases.MisEventosAdapter;
 import net.electrosoftware.myapp2.clasesbases.MisSitiosData;
 import net.electrosoftware.myapp2.firebaseClases.Comunicador;
@@ -37,9 +39,9 @@ import net.electrosoftware.myapp2.firebaseClases.itemListaSitio;
 
 import java.util.List;
 
-public class FragmentMisEventos extends Fragment {
+public class FragmentListaSitios extends Fragment {
     View view;
-    TextView txt_mis_eventos_crear;
+    TextView txt_crear_sitio;
 
 
     List<MisSitiosData> dataModels;
@@ -53,7 +55,7 @@ public class FragmentMisEventos extends Fragment {
     private FirebaseRecyclerAdapter<itemListaSitio, PostViewHolder> mPostAdapter;
     private DatabaseReference listaEventosRef;
 
-    public FragmentMisEventos() {
+    public FragmentListaSitios() {
         // Required empty public constructor
     }
 
@@ -67,14 +69,32 @@ public class FragmentMisEventos extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = getActivity().getLayoutInflater().inflate(R.layout.fragment_mis_eventos, container, false);
-
         mToolbar = (Toolbar) view.findViewById(R.id.toolbarMisEventos);
-        mToolbar.setTitle("Mis Eventos");
+        txt_crear_sitio = (TextView) view.findViewById(R.id.txt_crear_sitio);
+        if(Comunicador.getTipoSitio() != null){
+
+            switch (Comunicador.getTipoSitio()){
+                case "lugar":
+                    mToolbar.setTitle("Mis Lugares");
+                    txt_crear_sitio.setText("Crear Lugar");
+                    break;
+                case "evento":
+                    mToolbar.setTitle("Mis Eventos");
+                    txt_crear_sitio.setText("Crear Evento");
+                    break;
+                case "promocion":
+                    mToolbar.setTitle("Mis Promociones");
+                    txt_crear_sitio.setText("Crear Promoción");
+                    break;
+            }
+        }else{
+            Toast.makeText(getActivity(), "No podemos tramitar la solicitud, tipo sitio null", Toast.LENGTH_SHORT).show();
+        }
 
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        txt_mis_eventos_crear = (TextView) view.findViewById(R.id.txt_mis_eventos_crear);
-        txt_mis_eventos_crear.setOnClickListener(new View.OnClickListener() {
+
+        txt_crear_sitio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //startActivity(new Intent(getActivity(), AgregarEvento.class));
@@ -99,7 +119,23 @@ public class FragmentMisEventos extends Fragment {
                         //Log.w(TAG, "Failed to read value.", error.toException());
                     }
                 });
-                startActivity(new Intent(getActivity(), AgregarEvento.class));
+                if(Comunicador.getTipoSitio() != null){
+
+                    switch (Comunicador.getTipoSitio()){
+                        case "lugar":
+                            startActivity(new Intent(getActivity(), AgregarLugar.class));
+                            break;
+                        case "evento":
+                            startActivity(new Intent(getActivity(), AgregarEvento.class));
+                            break;
+                        case "promocion":
+                            //startActivity(new Intent(getActivity(), AgregarEvento.class));
+                            break;
+                    }
+                }else{
+                    Toast.makeText(getActivity(), "No podemos tramitar la solicitud, tipo sitio null", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -165,14 +201,19 @@ public class FragmentMisEventos extends Fragment {
     }
 
     private void initialiseScreen() {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        rv_mis_eventos = (RecyclerView) view.findViewById(R.id.rv_mis_eventos);
-        rv_mis_eventos.setLayoutManager(new LinearLayoutManager(getActivity()));
-        listaEventosRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
-                .child(user.getUid())
-                .child(FirebaseReferences.EVENTO_REFERENCE);
-        setupAdapter();
-        rv_mis_eventos.setAdapter(mPostAdapter);
+        if(Comunicador.getTipoSitio() != null){
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            rv_mis_eventos = (RecyclerView) view.findViewById(R.id.rv_mis_eventos);
+            rv_mis_eventos.setLayoutManager(new LinearLayoutManager(getActivity()));
+            listaEventosRef = database.getReference(FirebaseReferences.LISTA_REFERENCE)
+                    .child(user.getUid())
+                    .child(Comunicador.getTipoSitio());
+            setupAdapter();
+            rv_mis_eventos.setAdapter(mPostAdapter);
+        }else{
+            Toast.makeText(getActivity(), "No podemos tramitar la solicitud, tipo sitio null", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void setupAdapter() {
@@ -184,7 +225,8 @@ public class FragmentMisEventos extends Fragment {
         ) {
             @Override
             protected void populateViewHolder(PostViewHolder viewHolder, final itemListaSitio model, int position) {
-                StorageReference storageReference = storage.getReference().child("foto sitios/evento/" + model.getFoto());
+                StorageReference storageReference = storage.getReference()
+                        .child("foto sitios/"+Comunicador.getTipoSitio()+"/" + model.getFoto());
                // StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(model.getFoto());
                 Glide.with(getActivity())
                         .using(new FirebaseImageLoader())

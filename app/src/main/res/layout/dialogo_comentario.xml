@@ -44,7 +44,7 @@
             android:gravity="top"
             android:hint="Deja tu comentario"
             android:isScrollContainer="true"
-            android:text="@string/lorem_ipsum"
+
             android:textSize="21sp" />
     </android.support.design.widget.TextInputLayout>
     <!--/LinearLayout>

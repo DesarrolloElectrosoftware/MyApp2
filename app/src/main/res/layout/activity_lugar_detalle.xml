@@ -83,13 +83,13 @@
                     android:textColor="@color/colorPrimaryText"
                     android:textSize="14sp" />
 
-                <TextView
+                <!--TextView
                     android:id="@+id/text_lugar_calificacion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Califcación: 4,8"
                     android:textColor="@color/colorPrimaryText"
-                    android:textSize="14sp" />
+                    android:textSize="14sp" /-->
 
                 <TextView
                     android:id="@+id/text_lugar_horario"
@@ -158,7 +158,7 @@
             android:textColor="@color/colorPrimaryText" />
 
         <!-- EVENTOS PROMOS lugar -->
-        <LinearLayout
+        <!--LinearLayout
             android:id="@+id/linear_info_lug"
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -172,7 +172,7 @@
             <Button
                 android:id="@+id/btn_lugar_promociones"
                 style="@style/TogglePromociones" />
-        </LinearLayout>
+        </LinearLayout-->
 
         <!-- SECCION DE COMENTARIOS -->
 

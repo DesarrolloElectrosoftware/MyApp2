@@ -90,13 +90,18 @@
             android:name=".activityes.PromoDetalle"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activityes.AgregarEventoMapa"
+            android:name=".activityes.AgregarSitioMapa"
             android:label="@string/title_activity_crear_evento_map"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activityes.AgregarEvento"
             android:label="Crear Evento"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activityes.AgregarLugar"
+            android:label="Crear Lugar"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
@@ -108,7 +113,7 @@
             android:label="@string/title_activity_empresarios"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activityes.EventosEmpresario"
+            android:name=".activityes.ListaSitiosEmpresario"
             android:label="Eventos"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

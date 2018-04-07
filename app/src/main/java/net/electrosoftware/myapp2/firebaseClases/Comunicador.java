@@ -24,13 +24,31 @@ public class Comunicador {
     private static Object objeto2 = null;
     private static Usuario usuario = null;
     private static Evento evento = null;
+    private static Lugar lugar = null;
     private static String idEvento = null;
+    private static String tipoSitio = null;
     private static Bitmap fotoEvento = null;
     private static Drawable fotoGaleriaItem = null;
     private static LatLng MiPosicion = null;
     private static LatLng MiPosicionDestino = null;
     private static GoogleMap googleMap = null;
     private static Context contextMapa = null;
+
+    public static Lugar getLugar() {
+        return lugar;
+    }
+
+    public static void setLugar(Lugar lugar) {
+        Comunicador.lugar = lugar;
+    }
+
+    public static String getTipoSitio() {
+        return tipoSitio;
+    }
+
+    public static void setTipoSitio(String tipoSitio) {
+        Comunicador.tipoSitio = tipoSitio;
+    }
 
     public static void setObjeto1(Object newObjeto) {
         objeto1 = newObjeto;
@@ -125,6 +143,26 @@ public class Comunicador {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 evento = dataSnapshot.getValue(Evento.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    public static void cargarLugar(String idLugar) {
+
+        actualizarAsistentesEvento(idLugar);
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dr = database.getReference(FirebaseReferences.SITIO_REFERENCE).child(idEvento);
+
+        dr.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                lugar = dataSnapshot.getValue(Lugar.class);
             }
 
             @Override

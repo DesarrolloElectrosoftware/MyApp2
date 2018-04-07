@@ -104,7 +104,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_fragment_usuario">FragmentUsuario</string>
     <string name="title_activity_crear_evento_map">Map</string>
-    <string name="evento_mapa_titulo">"Busque la ubicación del evento\n" "mueva el marcador para mejorar la precisión"</string>
+    <string name="sitio_mapa_titulo">"Busque la ubicación \n" "mueva el marcador para mejorar la precisión"</string>
 
     <!--Fetch Address-->
     <string name="no_geocoder_available">No geocoder available</string>

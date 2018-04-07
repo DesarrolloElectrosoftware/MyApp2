@@ -5,12 +5,12 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/txt_evento_mapa_titulo"
+        android:id="@+id/txt_sitio_mapa_titulo"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="@color/cardBackGround"
         android:gravity="center"
-        android:text="@string/evento_mapa_titulo"
+        android:text="@string/sitio_mapa_titulo"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -18,8 +18,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/linear_eventomap_botones"
-        android:layout_below="@+id/txt_evento_mapa_titulo">
+        android:layout_above="@+id/linear_sitiomap_botones"
+        android:layout_below="@+id/txt_sitio_mapa_titulo">
 
         <fragment xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/map"
@@ -53,7 +53,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/txt_eventomap_buscar"
+                android:id="@+id/txt_sitiomap_buscar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
@@ -71,7 +71,7 @@
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/linear_eventomap_botones"
+        android:id="@+id/linear_sitiomap_botones"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -79,7 +79,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btn_eventomap_cancelar"
+            android:id="@+id/btn_sitiomap_cancelar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="3dp"
@@ -91,7 +91,7 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/btn_eventomap_guardar"
+            android:id="@+id/btn_sitiomap_guardar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="3dp"
@@ -112,15 +112,15 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="net.electrosoftware.myapp2.activityes.AgregarEventoMapa">
+        tools:context="net.electrosoftware.myapp2.activityes.AgregarSitioMapa>
 
         <TextView
-            android:id="@+id/txt_evento_mapa_titulo"
+            android:id="@+id/txt_sitio_mapa_titulo"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="@color/cardBackGround"
             android:gravity="center"
-            android:text="@string/evento_mapa_titulo"
+            android:text="@string/sitio_mapa_titulo"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -130,7 +130,7 @@
             class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/txt_evento_mapa_titulo" />
+            android:layout_below="@+id/txt_sitio_mapa_titulo" />
 
         <LinearLayout
             android:layout_alignParentBottom="true"

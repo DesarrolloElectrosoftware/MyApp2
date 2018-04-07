@@ -45,7 +45,7 @@ public class Login extends AppCompatActivity {
 
     ProgressDialog PDInicioSesion = null;
     Usuario usuario;
-    int correoLength, contrasenaLength;
+    //int correoLength, contrasenaLength;
     String correoText, contrasenaText;
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -56,7 +56,7 @@ public class Login extends AppCompatActivity {
 
     ValueEventListener cargarUsuarioEvent = null;
 
-    boolean flagTask = false;
+    //boolean flagTask = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +77,8 @@ public class Login extends AppCompatActivity {
         btn_login_ingresar.setTypeface(custom_font);
         et_correo_usuario.setTypeface(custom_font);
 
-        correoLength = et_correo_usuario.getText().toString().length();
-        contrasenaLength = et_login_contrasena.getText().toString().length();
+        //correoLength = et_correo_usuario.getText().toString().length();
+        //contrasenaLength = et_login_contrasena.getText().toString().length();
 
         correoText = et_correo_usuario.getText().toString();
         contrasenaText = et_login_contrasena.getText().toString();
@@ -93,7 +93,8 @@ public class Login extends AppCompatActivity {
         btn_login_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new Logueo().execute();
+                //new Logueo().execute();
+                validarUsuario();
             }
         });
         txt_login_recordar_contrasena.setOnClickListener(new View.OnClickListener() {
@@ -173,10 +174,75 @@ public class Login extends AppCompatActivity {
         dialog.show();
     }
 
+    private void validarUsuario(){
+
+        PDInicioSesion = ProgressDialog.show(Login.this, "Iniciando Sesión", "Iniciando Sesión, espera un momento...", true, true);
+        PDInicioSesion.setCancelable(false);
+
+        correoText = et_correo_usuario.getText().toString();
+        contrasenaText = et_login_contrasena.getText().toString();
+
+        if (correoText.length() > 0 && contrasenaText.length() > 0) {
+            mAuth.signInWithEmailAndPassword(correoText, contrasenaText)
+                    .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            //Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                            if (task.isSuccessful()) {
+
+                                user = FirebaseAuth.getInstance().getCurrentUser();
+                                if (user != null) {
+                                    cargarUsuarioEvent = userRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            usuario = dataSnapshot.getValue(Usuario.class);
+                                            Comunicador.setUsuario(usuario);
+                                            //flagTask = true;
+                                            Login.this.PDInicioSesion.dismiss();
+                                            if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Consumidor")) {
+                                                Toast.makeText(Login.this, "Bienvenido " + usuario.nombre, Toast.LENGTH_LONG).show();
+                                                startActivity(new Intent(Login.this, MainActivity.class));
+                                            } else if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Empresario")) {
+                                                Toast.makeText(Login.this, "Bienvenido " + usuario.nombre, Toast.LENGTH_LONG).show();
+                                                startActivity(new Intent(Login.this, Empresarios.class));
+                                            }else{
+                                                Toast.makeText(Login.this, "No encontramos la información de su cuenta, si el problema continua comuniquece con nosotros", Toast.LENGTH_LONG).show();
+                                            }
+                                            //Login.this.PDInicioSesion.dismiss();
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError error) {
+                                            Login.this.PDInicioSesion.dismiss();
+                                            Toast.makeText(Login.this, "Fallo al intentar validar los datos. " + error.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                } else {
+                                    Login.this.PDInicioSesion.dismiss();
+                                    Toast.makeText(Login.this, "No se ha establecido conexión con el servicio, por favor revisa tu conexión a internet", Toast.LENGTH_LONG).show();
+                                }
+
+                            } else {
+                                Login.this.PDInicioSesion.dismiss();
+                                Toast.makeText(Login.this, "Correo o contraseña incorrecta", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    });
+            //startActivity(new Intent(Login.this, MainActivity.class));
+        } else {
+            Login.this.PDInicioSesion.dismiss();
+            Toast.makeText(Login.this, "Correo o contraseña vacios", Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
     private class Logueo extends AsyncTask<String, Float, Integer> {
 
         protected void onPreExecute() {
-            flagTask = false;
+            //flagTask = false;
             PDInicioSesion = ProgressDialog.show(Login.this, "Iniciando Sesión", "Iniciando Sesión, espera un momento...", true, true);
             PDInicioSesion.setCancelable(false);
         }
@@ -184,15 +250,17 @@ public class Login extends AppCompatActivity {
         protected Integer doInBackground(String... parametros) {
 
             //FirebaseAuth.AuthStateListener mAuthListener;
+            correoText = et_correo_usuario.getText().toString();
+            contrasenaText = et_login_contrasena.getText().toString();
 
-            if (correoLength > 0 && contrasenaLength > 0) {
+            if (correoText.length() > 0 && contrasenaText.length() > 0) {
                 mAuth.signInWithEmailAndPassword(correoText, contrasenaText)
                         .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 //Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
                                 if (task.isSuccessful()) {
-                                    //flagTask = true;
+
                                     user = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user != null) {
 
@@ -202,11 +270,13 @@ public class Login extends AppCompatActivity {
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 usuario = dataSnapshot.getValue(Usuario.class);
                                                 Comunicador.setUsuario(usuario);
-
+                                                //flagTask = true;
                                                 if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Consumidor")) {
                                                     startActivity(new Intent(Login.this, MainActivity.class));
                                                 } else if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Empresario")) {
                                                     startActivity(new Intent(Login.this, Empresarios.class));
+                                                }else{
+                                                    Toast.makeText(Login.this, "No encontramos la información de su cuenta, si el problema continua comuniquece con nosotros", Toast.LENGTH_LONG).show();
                                                 }
                                                 //Login.this.PDInicioSesion.dismiss();
 
@@ -219,24 +289,20 @@ public class Login extends AppCompatActivity {
                                             }
                                         });
                                     } else {
-                                        //flagTask = true;
                                         Login.this.PDInicioSesion.dismiss();
-                                        Toast.makeText(Login.this, "No se ha establecido conexión con el servicio", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(Login.this, "No se ha establecido conexión con el servicio, por favor revisa tu conexión a internet", Toast.LENGTH_LONG).show();
                                     }
 
-
-
                                 } else {
-                                    //Log.w(TAG, "signInWithEmail:failed", task.getException());
-
+                                    Login.this.PDInicioSesion.dismiss();
                                     Toast.makeText(Login.this, "Correo o contraseña incorrecta", Toast.LENGTH_LONG).show();
-                                    //Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_LONG).show();
                                 }
 
                             }
                         });
                 //startActivity(new Intent(Login.this, MainActivity.class));
             } else {
+                Login.this.PDInicioSesion.dismiss();
                 Toast.makeText(Login.this, "Correo o contraseña incorrecta", Toast.LENGTH_LONG).show();
             }
             return 0;
@@ -244,13 +310,16 @@ public class Login extends AppCompatActivity {
 
         protected void onPostExecute(Integer bytes) {
 
-           /* while (!flagTask) {
-                Login.this.PDInicioSesion.dismiss();
-                if (user != null) {
+            /*Login.this.PDInicioSesion.dismiss();
+            if (flagTask) {
+
+                if (Comunicador.getUsuario() != null) {
                     if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Consumidor")) {
                         startActivity(new Intent(Login.this, MainActivity.class));
                     } else if (Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Empresario")) {
                         startActivity(new Intent(Login.this, Empresarios.class));
+                    }else{
+                        Toast.makeText(Login.this, "No encontramos la información de su cuenta, si el problema continua comuniquece con nosotros", Toast.LENGTH_LONG).show();
                     }
                 }
             }*/

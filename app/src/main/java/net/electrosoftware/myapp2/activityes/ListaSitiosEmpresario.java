@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
-import net.electrosoftware.myapp2.fragments.FragmentMisEventos;
+import net.electrosoftware.myapp2.fragments.FragmentListaSitios;
 
 /**
  * Created by Jonathan on 19/05/2017.
  */
 
-public class EventosEmpresario extends AppCompatActivity {
+public class ListaSitiosEmpresario extends AppCompatActivity {
     private static final int CONTENT_VIEW_ID = 10101010;
 
     @Override
@@ -24,7 +24,7 @@ public class EventosEmpresario extends AppCompatActivity {
                 FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
         if (savedInstanceState == null) {
-            Fragment newFragment = new FragmentMisEventos();
+            Fragment newFragment = new FragmentListaSitios();
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.add(CONTENT_VIEW_ID, newFragment).commit();
         }

@@ -7,6 +7,7 @@ import android.support.v7.widget.CardView;
 import android.view.View;
 
 import net.electrosoftware.myapp2.R;
+import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 
 public class Empresarios extends AppCompatActivity {
     CardView cv_empreseario_perfil, cv_empreseario_lugares, cv_empresario_eventos, cv_empresario_promociones, cv_empresario_cerrar_sesion;
@@ -31,14 +32,16 @@ public class Empresarios extends AppCompatActivity {
         cv_empreseario_lugares.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Comunicador.setTipoSitio("lugar");
+                startActivity(new Intent(Empresarios.this, ListaSitiosEmpresario.class));
             }
         });
 
         cv_empresario_eventos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Empresarios.this, EventosEmpresario.class));
+                Comunicador.setTipoSitio("evento");
+                startActivity(new Intent(Empresarios.this, ListaSitiosEmpresario.class));
             }
         });
 

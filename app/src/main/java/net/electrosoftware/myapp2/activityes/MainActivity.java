@@ -15,10 +15,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alexzh.circleimageview.CircleImageView;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,7 +30,7 @@ import com.google.firebase.storage.StorageReference;
 import net.electrosoftware.myapp2.R;
 import net.electrosoftware.myapp2.firebaseClases.Comunicador;
 import net.electrosoftware.myapp2.fragments.FragmentMapa;
-import net.electrosoftware.myapp2.fragments.FragmentMisEventos;
+import net.electrosoftware.myapp2.fragments.FragmentListaSitios;
 import net.electrosoftware.myapp2.fragments.FragmentMisFavoritos;
 import net.electrosoftware.myapp2.fragments.FragmentUsuario;
 
@@ -133,13 +131,15 @@ public class MainActivity extends AppCompatActivity {
                 // mapa
                 FragmentMapa mapFragment = new FragmentMapa();
                 return mapFragment;
+
             case 1:
                 // perfil
                 FragmentUsuario usuarioFragment = new FragmentUsuario();
                 return usuarioFragment;
             case 2:
                 // eventos
-                FragmentMisEventos eventosFragment = new FragmentMisEventos();
+                Comunicador.setTipoSitio("evento");
+                FragmentListaSitios eventosFragment = new FragmentListaSitios();
                 return eventosFragment;
             case 3:
                 // favoritos

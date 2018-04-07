@@ -55,7 +55,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_email"
-                        android:text="cmaestre@unab.edu.co"
                         android:hint="Correo electrónico"
                         android:inputType="textEmailAddress"
                         android:singleLine="true" />
@@ -72,7 +71,6 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_usuario"
                         android:hint="Nombre de Usuario"
-                        android:text="Carlos Maestre"
                         android:inputType="textEmailAddress"
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
@@ -103,7 +101,6 @@
                         android:layout_marginTop="16dp"
                         android:drawableLeft="@drawable/ic_password"
                         android:hint="Contraseña"
-                        android:text="1234567"
                         android:inputType="textPassword"
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
@@ -117,7 +114,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="1234567"
                         android:drawableLeft="@drawable/ic_password"
                         android:hint="Confirmar contraseña"
                         android:inputType="textPassword"

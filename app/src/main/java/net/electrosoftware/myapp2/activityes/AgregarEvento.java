@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.alexzh.circleimageview.CircleImageView;
 
@@ -50,13 +51,13 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
     String file_name = "Sin imagen";
     Imageutils imageutils;
     LinearLayout linear_evento_patrocinador;
-    public static Activity agregarEvent;
+    public static Activity agregarEvento;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_agregar_evento);
 
-        agregarEvent = this;
+        agregarEvento = this;
 
         mToolbar = (Toolbar) findViewById(R.id.toolbarCrearEvento);
         setSupportActionBar(mToolbar);
@@ -215,54 +216,60 @@ public class AgregarEvento extends AppCompatActivity implements Imageutils.Image
             @Override
             public void onClick(View view) {
 
-                String tipo = "";
-                switch (spinner_evento_categoria.getSelectedItemPosition()) {
-                    case 1:
-                        tipo = "restaurante";
-                        break;
-                    case 2:
-                        tipo = "rumba";
-                        break;
-                    case 3:
-                        tipo = "cultura";
-                        break;
-                    case 4:
-                        tipo = "musica";
-                        break;
-                    case 5:
-                        tipo = "deporte";
-                        break;
-                    case 6:
-                        tipo = "ropa";
-                        break;
-                    case 7:
-                        tipo = "religion";
-                        break;
+                int idCategoria = spinner_evento_categoria.getSelectedItemPosition();
+                if(idCategoria!=0){
+                    String tipo = "";
+                    switch (idCategoria) {
+                        case 1:
+                            tipo = "restaurante";
+                            break;
+                        case 2:
+                            tipo = "rumba";
+                            break;
+                        case 3:
+                            tipo = "cultura";
+                            break;
+                        case 4:
+                            tipo = "musica";
+                            break;
+                        case 5:
+                            tipo = "deporte";
+                            break;
+                        case 6:
+                            tipo = "ropa";
+                            break;
+                        case 7:
+                            tipo = "religion";
+                            break;
+                    }
+
+                    String patrosinador = "Patrocina: ";
+                    if(Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Consumidor")){
+                        patrosinador = patrosinador + Comunicador.getUsuario().getNombre();
+                    }else{
+                        patrosinador = patrosinador + spinner_evento_patrocinador.getSelectedItem().toString();
+                    }
+                    Evento evento = new Evento(
+                            et_evento_nombre.getText().toString(),
+                            et_evento_telefono.getText().toString(),
+                            et_evento_fechainicio.getText().toString().replace("/", "-").replace(" " , ""),
+                            et_evento_fechafin.getText().toString().replace("/", "-").replace(" " , ""),
+                            et_evento_horainicio.getText().toString(),
+                            et_evento_horainicio.getText().toString(),
+                            patrosinador,
+                            tipo,
+                            et_evento_descripcion.getText().toString(),
+                            file_name,
+                            "", 0, 0.0, 0.0);
+                    //evento.setFoto(bitmap);
+                    Comunicador.setObjeto1(evento);
+                    Comunicador.setObjeto2(bitmap);
+                    //Intent intent = new Intent(AgregarEvento.this, AgregarSitioMapa.class);
+                    startActivity(new Intent(AgregarEvento.this, AgregarSitioMapa.class));
+                }else{
+                    Toast.makeText(AgregarEvento.this, "Debe seleccionar la categoria", Toast.LENGTH_SHORT).show();
                 }
 
-                String patrosinador = "Patrocina: ";
-                if(Comunicador.getUsuario().getPerfil().equalsIgnoreCase("Consumidor")){
-                    patrosinador = patrosinador + Comunicador.getUsuario().getNombre();
-                }else{
-                    patrosinador = patrosinador + spinner_evento_patrocinador.getSelectedItem().toString();
-                }
-                Evento evento = new Evento(
-                        et_evento_nombre.getText().toString(),
-                        et_evento_telefono.getText().toString(),
-                        et_evento_fechainicio.getText().toString().replace("/", "-").replace(" " , ""),
-                        et_evento_fechafin.getText().toString().replace("/", "-").replace(" " , ""),
-                        et_evento_horainicio.getText().toString(),
-                        et_evento_horainicio.getText().toString(),
-                        patrosinador,
-                        tipo,
-                        et_evento_descripcion.getText().toString(),
-                        file_name,
-                        "", 0, 0.0, 0.0);
-                //evento.setFoto(bitmap);
-                Comunicador.setObjeto1(evento);
-                Comunicador.setObjeto2(bitmap);
-                //Intent intent = new Intent(AgregarEvento.this, AgregarEventoMapa.class);
-                startActivity(new Intent(AgregarEvento.this, AgregarEventoMapa.class));
             }
         });
 
